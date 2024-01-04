@@ -47,9 +47,9 @@ public class Cours implements Serializable {
     @JoinColumn(name = "TYPECOURS_ID")
     private TypeCours typecours;
 
-//    @ManyToOne
-//    @JoinColumn(name = "PARCOURS_ID")
-//    private Parcours parcours;
+    @ManyToOne
+    @JoinColumn(name = "PARCOURS_ID")
+    private Parcours parcours;
 
     @ManyToOne
     @JoinColumn(name = "SEMESTRE_ID")
