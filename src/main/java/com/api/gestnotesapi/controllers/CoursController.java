@@ -42,11 +42,10 @@ public class CoursController {
         if (cours == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        Parcours parcours = parcoursRepo.findById(cours.getParcours().getId()).get();
-        Option option = optionRepo.findById(parcours.getOption().getId()).get();
-        Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).get();
+
         Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
-        Departement departement = departementRepo.findById(option.getDepartement().getId()).get();
+        Departement departement = departementRepo.findById(cours.getDepartement().getId()).get();
+        Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).get();
         String codeDepart = departement.getCode();
         int valeurNiveau = niveau.getValeur();
         int valeurSemestre = semestre.getValeur();
@@ -118,9 +117,16 @@ public class CoursController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         for (Cours cours : coursRepo.findAll()){
-            Parcours parc = parcoursRepo.findById(cours.getParcours().getId()).get();
-            if (parc.getLabel().equals(parcours.get().getLabel())){
-                coursList.add(cours);
+            Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
+            Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).get();
+            Departement departement = departementRepo.findById(cours.getDepartement().getId()).get();
+            for (Option option : optionRepo.findAll()){
+                if (option.getDepartement().getCode().equals(departement.getCode())){
+                    if ((option.getCode().equals(parcours.get().getOption().getCode()))
+                            && (niveau.getValeur().equals(parcours.get().getNiveau().getValeur()))){
+                        coursList.add(cours);
+                    }
+                }
             }
         }
         return new ResponseEntity<>(coursList, HttpStatus.OK);
@@ -139,7 +145,6 @@ public class CoursController {
         coursFromDb.setDepartement(cours.getDepartement());
         coursFromDb.setIntitule(cours.getIntitule());
         coursFromDb.setNatureUE(cours.getNatureUE());
-        coursFromDb.setParcours(cours.getParcours());
         coursFromDb.setTypecours(cours.getTypecours());
 
         return new ResponseEntity<>(coursRepo.save(coursFromDb), HttpStatus.OK);

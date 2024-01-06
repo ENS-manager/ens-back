@@ -82,25 +82,13 @@ public class EvaluationController {
     public ResponseEntity<Integer> getPourcentageFromEvaluation(@PathVariable String code, @PathVariable int year, @RequestParam("code") String codeModule){
 
         int pourcentage = 0;
-        List<Etudiant> etudiantList = new ArrayList<>();
-        //        Evaluation evaluation = evaluationRepo.findByCode(code).get();
+        Evaluation evaluation = evaluationRepo.findByCode(code).get();
         List<Note> noteList = new ArrayList<>();
         Module module = moduleRepo.findByCode(codeModule).get();
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Cours cours = coursRepo.findByCoursId(module.getCours().getCoursId());
-        Parcours parcours = parcoursRepo.findById(cours.getParcours().getId()).get();
 
-        for (Inscription inscription : inscriptionRepo.findAll()){
-            Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-            AnneeAcademique anneeAca = anneeAcademiqueRepo.findById(inscription.getAnneeAcademique().getId()).get();
-            Parcours parcour = parcoursRepo.findById(inscription.getParcours().getId()).get();
-            if ((anneeAca.getNumeroDebut().equals(anneeAcademique.getNumeroDebut()))
-                    && (parcour.getLabel().equals(parcours.getLabel()))){
-                etudiantList.add(etudiant);
-            }
-        }
-
-        int nombreTotalEtudiant = etudiantList.size();
+        int nombreTotalEtudiant = 0;
 
         for (Note note : noteRepo.findAll()){
             Evaluation evaluer = evaluationRepo.findById(note.getEvaluation().getId()).get();
@@ -115,12 +103,13 @@ public class EvaluationController {
         }
 
         int nombreEtudiantValid = 0;
-        for (Etudiant etudiant : etudiantList){
+        for (Etudiant etudiant : etudiantRepo.findAll()){
             double noteEtudiant = 0.0;
             for (Note note : noteList) {
                 Etudiant etud = etudiantRepo.findById(note.getEtudiant().getId()).get();
                 if (etud.getMatricule().equals(etudiant.getMatricule())) {
                     noteEtudiant = note.getValeur();
+                    ++nombreTotalEtudiant;
                     if (noteEtudiant >= 10){
                         ++nombreEtudiantValid;
                     }
@@ -129,16 +118,6 @@ public class EvaluationController {
 
         }
         pourcentage = (nombreEtudiantValid*100)/nombreTotalEtudiant;
-//        Temporaire
-        Evaluation evaluation = new Evaluation();
-        for (Evaluation eval : evaluationRepo.findAll()){
-            if (eval.getCode().equals(code)){
-                evaluation = eval;
-            }
-        }
-//
-        evaluation.setPourcentage(pourcentage);
-        evaluationRepo.save(evaluation);
         return new ResponseEntity<>(pourcentage, HttpStatus.OK);
     }
 
@@ -147,24 +126,12 @@ public class EvaluationController {
     public ResponseEntity<Integer> getPourcentageFromEvaluationCours(@PathVariable String code, @PathVariable int year, @PathVariable int session, @RequestParam("code") String codeCours){
 
         int pourcentage = 0;
-//        Evaluation evaluation = evaluationRepo.findByCode(code).get();
-        List<Etudiant> etudiantList = new ArrayList<>();
+        Evaluation evaluation = evaluationRepo.findByCode(code).get();
         List<Note> noteList = new ArrayList<>();
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Cours cours = coursRepo.findByCode(codeCours).get();
-        Parcours parcours = parcoursRepo.findById(cours.getParcours().getId()).get();
 
-        for (Inscription inscription : inscriptionRepo.findAll()){
-            Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-            AnneeAcademique anneeAca = anneeAcademiqueRepo.findById(inscription.getAnneeAcademique().getId()).get();
-            Parcours parcour = parcoursRepo.findById(inscription.getParcours().getId()).get();
-            if ((anneeAca.getNumeroDebut().equals(anneeAcademique.getNumeroDebut()))
-                    && (parcour.getLabel().equals(parcours.getLabel()))){
-                etudiantList.add(etudiant);
-            }
-        }
-
-        int nombreTotalEtudiant = etudiantList.size();
+        int nombreTotalEtudiant = 0;
 
         for (Note note : noteRepo.findAll()){
             Evaluation evaluer = evaluationRepo.findById(note.getEvaluation().getId()).get();
@@ -179,13 +146,13 @@ public class EvaluationController {
             }
         }
         int nombreEtudiantValid = 0;
-        for (Etudiant etudiant : etudiantList){
+        for (Etudiant etudiant : etudiantRepo.findAll()){
             double noteEtudiant = 0.0;
             for (Note note : noteList) {
                 Etudiant etud = etudiantRepo.findById(note.getEtudiant().getId()).get();
                 if (etud.getMatricule().equals(etudiant.getMatricule())) {
                     noteEtudiant = note.getValeur();
-
+                    ++nombreTotalEtudiant;
                     if (noteEtudiant >= 10){
                         ++nombreEtudiantValid;
                     }
@@ -193,17 +160,7 @@ public class EvaluationController {
             }
 
         }
-        pourcentage = (nombreEtudiantValid*100)/nombreTotalEtudiant;;
-        //        Temporaire
-        Evaluation evaluation = new Evaluation();
-        for (Evaluation eval : evaluationRepo.findAll()){
-            if (eval.getCode().equals(code)){
-                evaluation = eval;
-            }
-        }
-//
-        evaluation.setPourcentage(pourcentage);
-        evaluationRepo.save(evaluation);
+        pourcentage = (nombreEtudiantValid*100)/nombreTotalEtudiant;
         return new ResponseEntity<>(pourcentage, HttpStatus.OK);
     }
 

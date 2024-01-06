@@ -21,8 +21,8 @@ public class Module implements Serializable {
     @Column(name = "CODE", unique = true)
     private String code;
 
-    @Column(name = "NATUREUE")
-    private NatureUE natureUE;
+//    @Column(name = "NATUREUE")
+//    private NatureUE natureUE;
 
     @Column(name = "INTITULE")
     private String intitule;
@@ -31,9 +31,9 @@ public class Module implements Serializable {
     @JoinColumn(name = "COURS_ID")
     private Cours cours;
 
-    @ManyToOne
-    @JoinColumn(name = "SEMESTRE_ID")
-    private Semestre semestre;
+//    @ManyToOne
+//    @JoinColumn(name = "SEMESTRE_ID")
+//    private Semestre semestre;
 
     @ManyToOne
     @JoinColumn(name = "CREDIT_ID")

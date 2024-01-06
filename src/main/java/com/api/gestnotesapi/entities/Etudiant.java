@@ -52,7 +52,12 @@ public class Etudiant implements Serializable{
     private String numeroTelephone;
 
     @Column(name = "VALIDE")
+    @JsonIgnore
     private Boolean valide = false;
+
+    @Column(name = "VALIDEALL")
+    @JsonIgnore
+    private Boolean valideAll = false;
     
     @OneToMany(mappedBy = "etudiant")
     @JsonIgnore

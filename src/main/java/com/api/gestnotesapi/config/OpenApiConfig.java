@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @OpenAPIDefinition(
 
                 servers = {
-                                @Server(description = "Local ENV", url = "http://localhost:9194"),
+                                @Server(description = "Local ENV", url = "http://localhost:8080"),
                 }, security = {
                                 @SecurityRequirement(name = "bearerAuth")
                 })

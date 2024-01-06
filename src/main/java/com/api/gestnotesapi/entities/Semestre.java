@@ -41,8 +41,8 @@ public class Semestre implements Serializable {
     @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 
-    @OneToMany(mappedBy = "semestre")
-    @JsonIgnore
-    private List<Module> modules = new ArrayList<>();
+//    @OneToMany(mappedBy = "semestre")
+//    @JsonIgnore
+//    private List<Module> modules = new ArrayList<>();
 
 }

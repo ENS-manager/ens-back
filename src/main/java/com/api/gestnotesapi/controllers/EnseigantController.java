@@ -71,9 +71,7 @@ public class EnseigantController {
         }
         for (Enseignant enseignant : enseignantRepo.findAll()){
             for (Cours cours : enseignant.getCours()){
-                Parcours parcours = parcoursRepo.findById(cours.getParcours().getId()).get();
-                Option option = optionRepo.findById(parcours.getOption().getId()).get();
-                Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
+                Departement depart = departementRepo.findById(cours.getDepartement().getId()).get();
                 if (depart.getCode().equals(departement.getCode())){
                     enseignantList.add(enseignant);
                 }

@@ -39,20 +39,31 @@ public class ModuleController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Cours cours = coursRepo.findByCoursId(module.getCours().getCoursId());
-        Parcours parcours = parcoursRepo.findById(cours.getParcours().getId()).get();
-        Option option = optionRepo.findById(parcours.getOption().getId()).get();
-        Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).get();
-        Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
-        Departement departement = departementRepo.findById(option.getDepartement().getId()).get();
-        String codeDepart = departement.getCode();
-        NatureUE natureUE = cours.getNatureUE();
-        int valeurNiveau = niveau.getValeur();
-        int valeurSemestre = semestre.getValeur();
-        Module updateModule = moduleRepo.save(module);
-        String code = cours.getCode()+"_"+updateModule.getId();
+        int creditCours = cours.getCredit().getValeur();
+        int creditModule = module.getCredit().getValeur();
+        int sommeCreditModule = 0;
+        int reste = 0;
+        int n = 0;
+        int size = moduleRepo.findAll().size();
+        if (size != 0){
+            for (Module mod : moduleRepo.findAll()){
+                Cours cour = coursRepo.findByCoursId(mod.getCours().getCoursId());
+                if (cour.getCode().equals(cours.getCode())){
+                    ++n;
+                    sommeCreditModule = sommeCreditModule + mod.getCredit().getValeur();
+                }
+            }
+            reste = creditCours - sommeCreditModule;
+            n = n+1;
+            if (creditModule > reste){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            String code = cours.getCode()+"_"+n;
+            module.setCode(code);
+            return new ResponseEntity<>(moduleRepo.save(module), HttpStatus.OK);
+        }
+        String code = cours.getCode()+"_"+1;
         module.setCode(code);
-        module.setNatureUE(natureUE);
-        module.setSemestre(semestre);
         return new ResponseEntity<>(moduleRepo.save(module), HttpStatus.OK);
     }
 
@@ -97,17 +108,15 @@ public class ModuleController {
     }
 
     //    Modifier un module
-    @PutMapping("/updateModule/{id}")
-    public ResponseEntity<Module> updateModule(@PathVariable("id") Long id, @RequestBody Module module){
+    @PatchMapping("/updateModule/{id}")
+    public ResponseEntity<Module> updateModule(@PathVariable("id") Long id, @RequestBody String intitule){
 
         Module moduleFromDb = moduleRepo.findById(id).orElse(null);
         if (moduleFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        moduleFromDb.setCode(module.getCode());
-        moduleFromDb.setIntitule(module.getIntitule());
-        moduleFromDb.setNatureUE(module.getNatureUE());
+        moduleFromDb.setIntitule(intitule);
         return new ResponseEntity<>(moduleRepo.save(moduleFromDb), HttpStatus.OK);
     }
 
