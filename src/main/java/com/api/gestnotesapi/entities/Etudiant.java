@@ -34,11 +34,12 @@ public class Etudiant implements Serializable{
     private String email;
 
     @Column(name = "GENRE")
-    private Integer genre;
+    private GENRE genre;
 
     @Column(name = "LIEUDENAISSANCE")
     private String lieuDeNaissance;
 
+//    auto
     @Column(name = "MATRICULE", unique = true)
     private String matricule;
 
@@ -50,6 +51,9 @@ public class Etudiant implements Serializable{
 
     @Column(name = "NUMEROTELEPHONE")
     private String numeroTelephone;
+
+    @Column(name = "TYPE")
+    private TYPE type;
 
     @Column(name = "VALIDE")
     @JsonIgnore

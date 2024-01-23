@@ -90,8 +90,8 @@ public class OptionController {
 
     //    Supprimer une option
     @DeleteMapping("/deleteOption/{id}")
-    public String deleteOption(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteOption(@PathVariable("id") Long id){
         optionRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

@@ -19,12 +19,15 @@ com\api\gestnotesapi\repository\TypeCoursRepo.class
 com\api\gestnotesapi\controllers\NiveauController.class
 com\api\gestnotesapi\controllers\UserController.class
 com\api\gestnotesapi\config\JwtAuthenticationFilter.class
+com\api\gestnotesapi\entities\CodeEva.class
+com\api\gestnotesapi\entities\GENRE.class
 com\api\gestnotesapi\entities\Departement.class
 com\api\gestnotesapi\repository\InscriptionRepo.class
 com\api\gestnotesapi\servicesImpl\CoursServiceImpl.class
 com\api\gestnotesapi\servicesImpl\AnonymatServiceImpl.class
 com\api\gestnotesapi\entities\Cycle.class
 com\api\gestnotesapi\controllers\ModuleController.class
+com\api\gestnotesapi\entities\TYPE.class
 com\api\gestnotesapi\token\Token.class
 com\api\gestnotesapi\entities\Note.class
 com\api\gestnotesapi\entities\Programme.class
@@ -42,7 +45,6 @@ com\api\gestnotesapi\repository\CoursRepo.class
 com\api\gestnotesapi\entities\Option.class
 com\api\gestnotesapi\config\LogoutService.class
 com\api\gestnotesapi\controllers\CoursController.class
-com\api\gestnotesapi\dto\FormEtudiant.class
 com\api\gestnotesapi\repository\ModuleRepo.class
 com\api\gestnotesapi\entities\Semestre.class
 com\api\gestnotesapi\auth\AuthenticationController.class
@@ -57,7 +59,6 @@ com\api\gestnotesapi\token\TokenType.class
 com\api\gestnotesapi\auth\RegisterRequest$RegisterRequestBuilder.class
 com\api\gestnotesapi\repository\ParcoursRepo.class
 com\api\gestnotesapi\services\CoursService.class
-com\api\gestnotesapi\dto\FormAnonymat.class
 com\api\gestnotesapi\entities\AnneeAcademique.class
 com\api\gestnotesapi\repository\CycleRepo.class
 com\api\gestnotesapi\repository\EtudiantRepo.class
@@ -81,6 +82,7 @@ com\api\gestnotesapi\entities\Etudiant.class
 com\api\gestnotesapi\repository\EnseignantRepo.class
 com\api\gestnotesapi\services\EtudiantService.class
 com\api\gestnotesapi\repository\CreditRepo.class
+com\api\gestnotesapi\entities\CodeCycle.class
 com\api\gestnotesapi\repository\DepartementRepo.class
 com\api\gestnotesapi\services\MatriculeService.class
 com\api\gestnotesapi\entities\User.class

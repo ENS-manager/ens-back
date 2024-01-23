@@ -30,7 +30,7 @@ public class Parcours implements Serializable{
     @Column(name = "ID")
     private Long id;
 
-//    La valeur est remplacee automatquement, pas besoin de l'entrer de l'utilisateur
+//    auto
     @Column(name = "LABEL")
     private String label;
 

@@ -41,6 +41,10 @@ public class EvaluationController {
         if (evaluation == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        if (evaluation.getCode().equals("EE")){
+            evaluation.setIsExam(true);
+            return new ResponseEntity<>(evaluationRepo.save(evaluation), HttpStatus.OK);
+        }
         return new ResponseEntity<>(evaluationRepo.save(evaluation), HttpStatus.OK);
     }
 
@@ -82,11 +86,9 @@ public class EvaluationController {
     public ResponseEntity<Integer> getPourcentageFromEvaluation(@PathVariable String code, @PathVariable int year, @RequestParam("code") String codeModule){
 
         int pourcentage = 0;
-        Evaluation evaluation = evaluationRepo.findByCode(code).get();
         List<Note> noteList = new ArrayList<>();
         Module module = moduleRepo.findByCode(codeModule).get();
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
-        Cours cours = coursRepo.findByCoursId(module.getCours().getCoursId());
 
         int nombreTotalEtudiant = 0;
 
@@ -126,7 +128,6 @@ public class EvaluationController {
     public ResponseEntity<Integer> getPourcentageFromEvaluationCours(@PathVariable String code, @PathVariable int year, @PathVariable int session, @RequestParam("code") String codeCours){
 
         int pourcentage = 0;
-        Evaluation evaluation = evaluationRepo.findByCode(code).get();
         List<Note> noteList = new ArrayList<>();
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Cours cours = coursRepo.findByCode(codeCours).get();
@@ -152,9 +153,9 @@ public class EvaluationController {
                 Etudiant etud = etudiantRepo.findById(note.getEtudiant().getId()).get();
                 if (etud.getMatricule().equals(etudiant.getMatricule())) {
                     noteEtudiant = note.getValeur();
-                    ++nombreTotalEtudiant;
+                    nombreTotalEtudiant++;
                     if (noteEtudiant >= 10){
-                        ++nombreEtudiantValid;
+                        nombreEtudiantValid++;
                     }
                 }
             }
@@ -182,9 +183,9 @@ public class EvaluationController {
 
     //    Supprimer une Evaluation
     @DeleteMapping("/deleteEvaluation/{id}")
-    public String deleteEvaluation(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteEvaluation(@PathVariable("id") Long id){
         evaluationRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 
 }

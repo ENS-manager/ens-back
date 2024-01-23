@@ -88,8 +88,8 @@ public class AnonymatController {
 
     //    Supprimer un anonymat
     @DeleteMapping("/deleteAnonymat/{id}")
-    public String deleteAnonymat(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteAnonymat(@PathVariable("id") Long id){
         anonymatRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

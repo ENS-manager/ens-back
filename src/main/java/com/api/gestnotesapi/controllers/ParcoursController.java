@@ -66,6 +66,29 @@ public class ParcoursController {
         return new ResponseEntity<>(parcours, HttpStatus.OK);
     }
 
+//    Parcours par niveau et option
+    @GetMapping("/findParcoursByNiveauAndOption/niveau/{value}/option")
+    public ResponseEntity<Parcours> getParcoursByNiveauAndOption(@PathVariable int value, @RequestParam("code") String code){
+
+        Option option = optionRepo.findByCode(code).get();
+        Niveau niveau = niveauRepo.findByValeur(value).get();
+        Parcours parcours = new Parcours();
+
+        if ((option == null) || (niveau == null)){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        for (Parcours parcour : parcoursRepo.findAll()){
+            Option opt = optionRepo.findById(parcour.getOption().getId()).get();
+            Niveau niv = niveauRepo.findById(parcour.getNiveau().getId()).get();
+
+            if ((opt.getCode().equals(option.getCode())) && (niv.getValeur().equals(niveau.getValeur()))){
+                parcours = parcour;
+                break;
+            }
+        }
+        return new ResponseEntity<>(parcours, HttpStatus.OK);
+    }
+
 //    Liste des parcours pour un departement
     @GetMapping("/findParcoursByDepart")
     public ResponseEntity<List<Parcours>> getParcoursByDepart(@RequestParam String code){
@@ -88,8 +111,8 @@ public class ParcoursController {
 
     //    Supprimer un parcours
     @DeleteMapping("/deleteParcours/{id}")
-    public String deleteParcours(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteParcours(@PathVariable("id") Long id){
         parcoursRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

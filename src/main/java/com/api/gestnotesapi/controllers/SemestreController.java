@@ -55,8 +55,8 @@ public class SemestreController {
     }
     
     @DeleteMapping("/deleteSemestre/{id}")
-    public String deleteSemestre(@RequestBody @PathVariable Long id){
+    public ResponseEntity<String> deleteSemestre(@RequestBody @PathVariable Long id){
         semestreRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

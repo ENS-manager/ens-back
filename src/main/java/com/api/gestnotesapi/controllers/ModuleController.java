@@ -31,6 +31,8 @@ public class ModuleController {
     private NiveauRepo niveauRepo;
     @Autowired
     private SemestreRepo semestreRepo;
+    @Autowired
+    private CreditRepo creditRepo;
 
     @PostMapping("/addModule")
     public ResponseEntity<Module> saveModule(@RequestBody Module module){
@@ -40,7 +42,7 @@ public class ModuleController {
         }
         Cours cours = coursRepo.findByCoursId(module.getCours().getCoursId());
         int creditCours = cours.getCredit().getValeur();
-        int creditModule = module.getCredit().getValeur();
+        int creditModule = creditRepo.findById(module.getCredit().getId()).get().getValeur();
         int sommeCreditModule = 0;
         int reste = 0;
         int n = 0;
@@ -122,8 +124,8 @@ public class ModuleController {
 
     //    Supprimer un module
     @DeleteMapping("/deleteModule/{id}")
-    public String deleteModule(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteModule(@PathVariable("id") Long id){
         moduleRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

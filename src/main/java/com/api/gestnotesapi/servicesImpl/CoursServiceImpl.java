@@ -4,7 +4,6 @@ import com.api.gestnotesapi.entities.Cours;
 import com.api.gestnotesapi.repository.CoursRepo;
 import com.api.gestnotesapi.services.CoursService;
 import org.jvnet.hk2.annotations.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 

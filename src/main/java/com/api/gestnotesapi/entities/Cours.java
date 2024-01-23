@@ -25,7 +25,8 @@ public class Cours implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long coursId;
-    
+
+//    auto
     @Column(name = "CODE", unique = true)
     private String code;
 

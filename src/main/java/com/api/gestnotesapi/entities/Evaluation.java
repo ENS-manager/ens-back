@@ -28,20 +28,20 @@ public class Evaluation implements Serializable {
     private Long id;
 
     @Column(name = "CODE")
-    private String code;
+    private CodeEva code;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "ISEXAM")
-    private Boolean isExam;
+    private Boolean isExam = false;
 
-    @Column(name = "POURCENTAGE")
-    private Integer pourcentage;
+//    @Column(name = "POURCENTAGE")
+//    private Integer pourcentage;
 
-    @JoinColumn(name = "TYPECOURS_ID")
-    @ManyToOne
-    private TypeCours typeCours;
+//    @JoinColumn(name = "TYPECOURS_ID")
+//    @ManyToOne
+//    private TypeCours typeCours;
 
 //    @OneToMany(mappedBy = "evaluation")
 //    private List<EvaluationDetails> eds = new ArrayList<>();

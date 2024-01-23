@@ -68,8 +68,8 @@ public class TypeCoursController {
 
     //    Supprimer un typeCours
     @DeleteMapping("/deleteTypeCours/{id}")
-    public String deleteTypeCours(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteTypeCours(@PathVariable("id") Long id){
         typeCoursRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

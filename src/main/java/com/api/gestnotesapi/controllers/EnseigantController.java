@@ -103,8 +103,8 @@ public class EnseigantController {
     }
     
     @DeleteMapping("/deleteEnseignant/{id}")
-    public String deleteEnseignant(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteEnseignant(@PathVariable("id") Long id) {
         enseignantRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

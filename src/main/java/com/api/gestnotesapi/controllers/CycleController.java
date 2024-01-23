@@ -50,17 +50,15 @@ public class CycleController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        cycleFromDb.setCode(cycle.getCode());
-        cycleFromDb.setDiplomeEn(cycle.getDiplomeEn());
-        cycleFromDb.setDiplomeFr(cycle.getDiplomeFr());
+        cycleFromDb.setValeur(cycle.getValeur());
         cycleFromDb.setEstAffichable(cycle.getEstAffichable());
 
         return new ResponseEntity<>(cyclesRepo.save(cycleFromDb), HttpStatus.OK);
     }
     
     @DeleteMapping("/deleteCycle/{id}")
-    public String deleteCycle(@RequestBody @PathVariable Long id){
+    public ResponseEntity<String> deleteCycle(@RequestBody @PathVariable Long id){
         cyclesRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

@@ -29,8 +29,11 @@ public class AnneeAcademiqueController {
     @PostMapping("/addAnneeAcademique")
     public ResponseEntity<AnneeAcademique> saveAnnee(@RequestBody AnneeAcademique anneeAcademique) {
 
-        Integer numero = anneeAcademique.getDebut().getYear();
-        anneeAcademique.setNumeroDebut(numero);
+        int debut = anneeAcademique.getDebut().getYear();
+        int fin = anneeAcademique.getFin().getYear();
+        String code = debut + "-" + fin;
+        anneeAcademique.setNumeroDebut(debut);
+        anneeAcademique.setCode(code);
         AnneeAcademique update = anneeAcademiqueRepo.save(anneeAcademique);
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
@@ -62,8 +65,8 @@ public class AnneeAcademiqueController {
 
 //    Supprimer une annee academique
     @DeleteMapping("/deleteAnneeAca/{id}")
-    public String deleteAnnee(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteAnnee(@PathVariable("id") Long id){
             anneeAcademiqueRepo.deleteById(id);
-            return "Deleted with Successfully from database";
+            return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

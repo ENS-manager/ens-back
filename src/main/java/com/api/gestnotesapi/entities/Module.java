@@ -18,6 +18,7 @@ public class Module implements Serializable {
     @Column(name = "ID")
     private Long id;
 
+//    auto
     @Column(name = "CODE", unique = true)
     private String code;
 

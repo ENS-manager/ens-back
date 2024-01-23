@@ -67,8 +67,8 @@ public class CreditController {
 
     //    Supprimer un credit
     @DeleteMapping("/deleteCredit/{id}")
-    public String deleteCredit(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteCredit(@PathVariable("id") Long id){
         creditRepo.deleteById(id);
-        return "Deleted with Successfully from database";
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

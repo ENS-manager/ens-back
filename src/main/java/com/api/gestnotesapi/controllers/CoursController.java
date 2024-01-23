@@ -152,8 +152,8 @@ public class CoursController {
 
 //    Supprimer un cours
     @DeleteMapping("/deleteCours/{id}")
-    public String deleteCours(@PathVariable("id") Long id){
-            coursRepo.deleteById(id);
-            return "Deleted with Successfully from database";
+    public ResponseEntity<String> deleteCours(@PathVariable("id") Long id){
+        coursRepo.deleteById(id);
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

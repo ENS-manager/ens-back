@@ -29,14 +29,20 @@ public class AnneeAcademique implements Serializable {
     private Long id;
     
     @Column(name = "DEBUT")
+    @JsonIgnore
     private LocalDate debut;
     
     @Column(name = "FIN")
+    @JsonIgnore
     private LocalDate fin;
-    
+
+//    auto
     @Column(name = "NUMERODEBUT", unique = true)
-//    @JsonIgnore
     private Integer numeroDebut;
+
+//    auto
+    @Column(name = "CODE", unique = true)
+    private String code;
 
     @OneToMany(mappedBy = "anneeAcademique")
     @JsonIgnore

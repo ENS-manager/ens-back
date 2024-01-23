@@ -6,6 +6,7 @@ C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Enseignant.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\InscriptionRepo.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\UserController.java
+C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\GENRE.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\TypeCours.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\auth\AuthenticationController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Permission.java
@@ -17,12 +18,12 @@ C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\NoteRepo.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\SemestreController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\EtudiantService.java
-C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\FormEtudiant.java
+C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\CodeEva.java
+C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\TYPE.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\servicesImpl\NotesModulesCoursServiceImpl.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\ParcoursController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\CoursController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\TypeCoursController.java
-C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\FormAnonymat.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\EtudiantController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\User.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Inscription.java
@@ -74,6 +75,7 @@ C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Semestre.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Cycle.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\config\SecurityConfiguration.java
+C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\CodeCycle.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Departement.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\AnneeAcademiqueController.java
 C:\Users\kayaa\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\config\OpenApiConfig.java

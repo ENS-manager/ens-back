@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
     @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "PARCOURS_ID"}, name = "UNQ_INSCRIPTION_0")
 })
 public class Inscription implements Serializable{
-  @Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;

@@ -27,17 +27,11 @@ public class Cycle implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "DIPLOMEEN", unique = true)
-    private String diplomeEn;
-
-    @Column(name = "DIPLOMEFR", unique = true)
-    private String diplomeFr;
-
     @Column(name = "ESTAFFICHABLE")
-    private Boolean estAffichable;
+    private Boolean estAffichable = false;
 
-    @Column(name = "CODE", unique = true)
-    private String code;
+    @Column(name = "VALEUR", unique = true)
+    private Integer valeur;
 
     @OneToMany(mappedBy = "cycle")
     @JsonIgnore
