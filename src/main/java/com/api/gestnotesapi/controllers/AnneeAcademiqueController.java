@@ -59,6 +59,7 @@ public class AnneeAcademiqueController {
         anneeAcaFromDb.setDebut(anneeAcademique.getDebut());
         anneeAcaFromDb.setNumeroDebut(anneeAcademique.getDebut().getYear());
         anneeAcaFromDb.setFin(anneeAcademique.getFin());
+        anneeAcaFromDb.setCode(anneeAcademique.getCode());
 
         return new ResponseEntity<>(anneeAcademiqueRepo.save(anneeAcaFromDb), HttpStatus.OK);
     }

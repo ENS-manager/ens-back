@@ -34,7 +34,7 @@ public class Credit implements Serializable{
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "VALEUR")
+    @Column(name = "VALEUR", unique = true)
     private Integer valeur;
 
 //    @ManyToOne

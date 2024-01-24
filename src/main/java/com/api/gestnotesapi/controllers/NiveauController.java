@@ -55,6 +55,7 @@ public class NiveauController {
 
           niveauFromDb.setTerminal(niveau.getTerminal());
           niveauFromDb.setValeur(niveau.getValeur());
+          niveauFromDb.setCycle(niveau.getCycle());
 
           return new ResponseEntity<>(niveauRepo.save(niveauFromDb), HttpStatus.OK);
     }

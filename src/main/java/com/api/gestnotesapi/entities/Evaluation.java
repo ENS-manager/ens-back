@@ -27,7 +27,7 @@ public class Evaluation implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "CODE")
+    @Column(name = "CODE", unique = true)
     private CodeEva code;
 
     @Column(name = "DESCRIPTION")

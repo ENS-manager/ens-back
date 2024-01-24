@@ -40,9 +40,13 @@ public class EtudiantController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Etudiant updateEtudiant = etudiantRepo.save(etudiant);
-        String matricule = matriculeService.matriculeGenerator(etudiant.getId());
-        updateEtudiant.setMatricule(matricule);
-        return new ResponseEntity<>(etudiantRepo.save(updateEtudiant), HttpStatus.OK);
+        String matricule = "";
+        if (updateEtudiant.getMatricule().equals(null)){
+            matricule = matriculeService.matriculeGenerator(etudiant.getId());
+            updateEtudiant.setMatricule(matricule);
+            return new ResponseEntity<>(etudiantRepo.save(updateEtudiant), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(updateEtudiant, HttpStatus.OK);
     }
 
     //    Liste des etudiant

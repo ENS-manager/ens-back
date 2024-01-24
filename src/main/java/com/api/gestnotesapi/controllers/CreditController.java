@@ -54,7 +54,7 @@ public class CreditController {
     }
 
     //    Modifier la valeur d'un credit
-    @PatchMapping("/updateCredit/{id}")
+    @PutMapping("/updateCredit/{id}")
     public ResponseEntity<Credit> updateCredit(@PathVariable("id") Long id, @RequestBody Credit credit){
 
         Credit creditFromDb = creditRepo.findById(id).orElse(null);

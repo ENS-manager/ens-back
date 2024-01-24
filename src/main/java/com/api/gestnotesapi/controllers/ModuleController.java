@@ -110,15 +110,18 @@ public class ModuleController {
     }
 
     //    Modifier un module
-    @PatchMapping("/updateModule/{id}")
-    public ResponseEntity<Module> updateModule(@PathVariable("id") Long id, @RequestBody String intitule){
+    @PutMapping("/updateModule/{id}")
+    public ResponseEntity<Module> updateModule(@PathVariable("id") Long id, @RequestBody Module module){
 
         Module moduleFromDb = moduleRepo.findById(id).orElse(null);
         if (moduleFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        moduleFromDb.setIntitule(intitule);
+        moduleFromDb.setIntitule(module.getIntitule());
+        moduleFromDb.setCode(module.getCode());
+        moduleFromDb.setCours(module.getCours());
+        moduleFromDb.setCredit(module.getCredit());
         return new ResponseEntity<>(moduleRepo.save(moduleFromDb), HttpStatus.OK);
     }
 

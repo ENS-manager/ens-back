@@ -1293,9 +1293,12 @@ public class NoteController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        noteFromDb.setSessions(note.getSessions());
         noteFromDb.setValeur(note.getValeur());
-
+        noteFromDb.setModule(note.getModule());
+        noteFromDb.setCours(note.getCours());
+        noteFromDb.setAnneeAcademique(note.getAnneeAcademique());
+        noteFromDb.setEtudiant(note.getEtudiant());
+        noteFromDb.setEvaluation(note.getEvaluation());
 
         return new ResponseEntity<>(noteRepo.save(noteFromDb), HttpStatus.OK);
     }

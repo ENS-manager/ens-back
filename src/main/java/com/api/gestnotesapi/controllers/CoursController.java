@@ -146,6 +146,7 @@ public class CoursController {
         coursFromDb.setIntitule(cours.getIntitule());
         coursFromDb.setNatureUE(cours.getNatureUE());
         coursFromDb.setTypecours(cours.getTypecours());
+        coursFromDb.setSemestre(cours.getSemestre());
 
         return new ResponseEntity<>(coursRepo.save(coursFromDb), HttpStatus.OK);
     }

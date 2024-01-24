@@ -74,6 +74,20 @@ public class InscriptionController {
         return new ResponseEntity<>(inscription, HttpStatus.OK);
     }
 
+    @PutMapping("/updateInscription/{id}")
+    public ResponseEntity<Inscription> editInscription(@PathVariable Long id, @RequestBody Inscription inscription){
+
+        Inscription inscriptionFromDb = inscriptionRepo.findById(id).orElse(null);
+        if (inscriptionFromDb == null){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        inscriptionFromDb.setEtudiant(inscription.getEtudiant());
+        inscriptionFromDb.setAnneeAcademique(inscription.getAnneeAcademique());
+        inscriptionFromDb.setParcours(inscription.getParcours());
+
+        return new ResponseEntity<>(inscriptionRepo.save(inscriptionFromDb), HttpStatus.OK);
+    }
+
     //    Supprimer une Inscription
     @DeleteMapping("/deleteInscription/{id}")
     public ResponseEntity<String> deleteInscription(@PathVariable("id") Long id){
