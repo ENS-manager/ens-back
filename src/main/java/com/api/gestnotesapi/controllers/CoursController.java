@@ -3,8 +3,6 @@ package com.api.gestnotesapi.controllers;
 
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.*;
-import com.api.gestnotesapi.services.CoursService;
-import com.api.gestnotesapi.servicesImpl.CoursServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +41,15 @@ public class CoursController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
-        Departement departement = departementRepo.findById(cours.getDepartement().getId()).get();
-        Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).get();
+        Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).orElse(null);
+        Departement departement = departementRepo.findById(cours.getDepartement().getId()).orElse(null);
+        if (semestre == null || departement == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).orElse(null);
+        if (niveau == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         String codeDepart = departement.getCode();
         int valeurNiveau = niveau.getValeur();
         int valeurSemestre = semestre.getValeur();

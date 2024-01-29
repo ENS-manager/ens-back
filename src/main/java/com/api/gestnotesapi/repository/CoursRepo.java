@@ -1,10 +1,13 @@
 
 package com.api.gestnotesapi.repository;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Cours;
 import java.util.List;
 import java.util.Optional;
 
+import com.api.gestnotesapi.entities.Departement;
+import com.api.gestnotesapi.entities.Semestre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +28,5 @@ public interface CoursRepo extends JpaRepository<Cours, Long>{
 
     Cours findByCoursId(Long id);
 
+    List<Cours> findBySemestreAndDepartement(Semestre semestre, Departement departement);
 }

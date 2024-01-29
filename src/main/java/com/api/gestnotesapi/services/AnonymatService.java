@@ -1,9 +1,12 @@
 package com.api.gestnotesapi.services;
 
-import org.jvnet.hk2.annotations.Service;
+import java.time.LocalDate;
 
-import java.util.List;
+public class AnonymatService{
 
-public interface AnonymatService {
-    public String anonymatGenerator(String codeUE, int session, int n);
+    public String anonymatGenerator(String codeUE, int session, int n) {
+        int annee = LocalDate.now().getYear();
+        int year = annee-2000;
+        return String.valueOf(codeUE + session + year + "_" + n);
+    }
 }

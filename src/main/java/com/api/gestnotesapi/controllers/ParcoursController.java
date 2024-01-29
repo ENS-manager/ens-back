@@ -5,6 +5,7 @@ import com.api.gestnotesapi.repository.DepartementRepo;
 import com.api.gestnotesapi.repository.NiveauRepo;
 import com.api.gestnotesapi.repository.OptionRepo;
 import com.api.gestnotesapi.repository.ParcoursRepo;
+import com.api.gestnotesapi.services.ParcoursService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,20 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/parcours")
 public class ParcoursController {
 
-    @Autowired
     private ParcoursRepo parcoursRepo;
-    @Autowired
     private NiveauRepo niveauRepo;
-    @Autowired
     private OptionRepo optionRepo;
-    @Autowired
     private DepartementRepo departementRepo;
+    private ParcoursService parcoursService;
+
+    @Autowired
+    public ParcoursController(ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, OptionRepo optionRepo, DepartementRepo departementRepo, ParcoursService parcoursService) {
+        this.parcoursRepo = parcoursRepo;
+        this.niveauRepo = niveauRepo;
+        this.optionRepo = optionRepo;
+        this.departementRepo = departementRepo;
+        this.parcoursService = parcoursService;
+    }
 
     //  Ajouter un parcours
     @PostMapping("/addParcours")
@@ -70,21 +77,10 @@ public class ParcoursController {
     @GetMapping("/findParcoursByNiveauAndOption/niveau/{value}/option")
     public ResponseEntity<Parcours> getParcoursByNiveauAndOption(@PathVariable int value, @RequestParam("code") String code){
 
-        Option option = optionRepo.findByCode(code).get();
-        Niveau niveau = niveauRepo.findByValeur(value).get();
-        Parcours parcours = new Parcours();
+        Parcours parcours = parcoursService.getParcoursByOptionAndNiveau(value, code);
 
-        if ((option == null) || (niveau == null)){
+        if (parcours == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        for (Parcours parcour : parcoursRepo.findAll()){
-            Option opt = optionRepo.findById(parcour.getOption().getId()).get();
-            Niveau niv = niveauRepo.findById(parcour.getNiveau().getId()).get();
-
-            if ((opt.getCode().equals(option.getCode())) && (niv.getValeur().equals(niveau.getValeur()))){
-                parcours = parcour;
-                break;
-            }
         }
         return new ResponseEntity<>(parcours, HttpStatus.OK);
     }

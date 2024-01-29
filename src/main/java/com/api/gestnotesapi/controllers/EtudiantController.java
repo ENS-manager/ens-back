@@ -2,8 +2,8 @@ package com.api.gestnotesapi.controllers;
 
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.*;
-import com.api.gestnotesapi.servicesImpl.EtudiantServiceImpl;
-import com.api.gestnotesapi.servicesImpl.MatriculeServiceImpl;
+import com.api.gestnotesapi.services.EtudiantService;
+import com.api.gestnotesapi.services.MatriculeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,31 +18,34 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/etudiant")
 public class EtudiantController {
 
-    @Autowired
     private EtudiantRepo etudiantRepo;
-    @Autowired
     private DepartementRepo departementRepo;
-    @Autowired
     private OptionRepo optionRepo;
-    @Autowired
     private InscriptionRepo inscriptionRepo;
-    @Autowired
     private ParcoursRepo parcoursRepo;
-//    @Autowired
-//    private EtudiantServiceImpl etudiantService;
+    private EtudiantService etudiantService;
+    @Autowired
+    public EtudiantController(EtudiantRepo etudiantRepo, DepartementRepo departementRepo, OptionRepo optionRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, EtudiantService etudiantService) {
+        this.etudiantRepo = etudiantRepo;
+        this.departementRepo = departementRepo;
+        this.optionRepo = optionRepo;
+        this.inscriptionRepo = inscriptionRepo;
+        this.parcoursRepo = parcoursRepo;
+        this.etudiantService = etudiantService;
+    }
 
     //  Ajouter un etudiant
     @PostMapping("/addEtudiant")
     public ResponseEntity<Etudiant> saveEtudiant(@RequestBody Etudiant etudiant){
 
-        MatriculeServiceImpl matriculeService = new MatriculeServiceImpl();
+        MatriculeService matriculeService = new MatriculeService();
         if (etudiant == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Etudiant updateEtudiant = etudiantRepo.save(etudiant);
         String matricule = "";
-        if (updateEtudiant.getMatricule().equals(null)){
-            matricule = matriculeService.matriculeGenerator(etudiant.getId());
+        if (etudiant.getMatricule() == null){
+            matricule = matriculeService.matriculeGenerator(updateEtudiant.getId());
             updateEtudiant.setMatricule(matricule);
             return new ResponseEntity<>(etudiantRepo.save(updateEtudiant), HttpStatus.OK);
         }
@@ -73,10 +76,10 @@ public class EtudiantController {
 
     //    Un etudiant par le matricule de l'etudiant
     @GetMapping("/findEtudiantByMatricule")
-    public ResponseEntity<Optional<Etudiant>> getEtudiantByMatricule(@RequestParam String matricule){
+    public ResponseEntity<Etudiant> getEtudiantByMatricule(@RequestParam String matricule){
 
-        Optional<Etudiant> etudiant = etudiantRepo.findByMatricule(matricule);
-        if (!etudiant.isPresent()){
+        Etudiant etudiant = etudiantRepo.findByMatricule(matricule).orElse(null);
+        if (etudiant == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(etudiant, HttpStatus.OK);
@@ -87,8 +90,8 @@ public class EtudiantController {
     public ResponseEntity<List<Etudiant>> getAllEtudiantByDepart(@RequestParam("code") String code){
 
         List<Etudiant> etudiantList = new ArrayList<>();
-        Optional<Departement> departement = departementRepo.findByCode(code);
-        if (!departement.isPresent()){
+        Departement departement = departementRepo.findByCode(code).orElse(null);
+        if (departement == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         for (Inscription inscription: inscriptionRepo.findAll()){
@@ -96,7 +99,7 @@ public class EtudiantController {
             Option option = optionRepo.findById(parcours.getOption().getId()).get();
             Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
 
-            if (depart.getCode().equals(departement.get().getCode())){
+            if (depart.getCode().equals(departement.getCode())){
                 Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
                 etudiantList.add(etudiant);
             }
@@ -106,20 +109,12 @@ public class EtudiantController {
     }
 
 //    liste des etudiants d'un parcours
-    @GetMapping("/findAllEtudiantByParcours/{id}")
-    public ResponseEntity<List<Etudiant>> getAllEtudiantByParcours(@PathVariable("id") Long id){
+    @GetMapping("/findAllEtudiantByParcours/annee/{year}/typeEtudiant/{type}/parcours")
+    public ResponseEntity<List<Etudiant>> getAllEtudiantByParcours(@PathVariable int year, @PathVariable TYPE type, @RequestParam String label){
 
-        List<Etudiant> etudiantList = new ArrayList<>();
-        Parcours parcours = parcoursRepo.findById(id).get();
-        if (parcours == null){
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, year, type);
+        if (etudiantList.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        for (Inscription inscription: inscriptionRepo.findAll()){
-            Parcours parc = parcoursRepo.findById(inscription.getParcours().getId()).get();
-            if (parc.getLabel().equals(parcours.getLabel())){
-                Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-                etudiantList.add(etudiant);
-            }
         }
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
     }

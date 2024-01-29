@@ -5,8 +5,7 @@ import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
 import com.api.gestnotesapi.repository.AnonymatRepo;
 import com.api.gestnotesapi.repository.CoursRepo;
 import com.api.gestnotesapi.repository.ParcoursRepo;
-import com.api.gestnotesapi.servicesImpl.AnonymatServiceImpl;
-import com.api.gestnotesapi.servicesImpl.MatriculeServiceImpl;
+import com.api.gestnotesapi.services.AnonymatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -34,18 +32,25 @@ public class AnonymatController {
     @PostMapping("/addAnonymat/variable/{n}")
     public ResponseEntity<Anonymat> saveAnonymat(@RequestBody Anonymat anonymat, @PathVariable int n){
 
-        AnonymatServiceImpl anonymatService = new AnonymatServiceImpl();
+        AnonymatService anonymatService = new AnonymatService();
 
         if (anonymat == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        int session = anonymat.getSessions();
-        AnneeAcademique anneeAca = anneeAcademiqueRepo.findById(anonymat.getAnneeAcademique().getId()).get();
+        int session = 0;
+        if (anonymat.getSessions().equals(null)){
+            session = 1;
+        }else {
+            session = anonymat.getSessions();
+        }
         Cours cours = coursRepo.findByCoursId(anonymat.getCours().getCoursId());
 
-        String valeur = anonymatService.anonymatGenerator(cours.getCode(), session, n);
-        anonymat.setValeur(valeur);
-
+        String valeur = "";
+        if (anonymat.getValeur() == null){
+            valeur = anonymatService.anonymatGenerator(cours.getCode(), session, n);
+            anonymat.setValeur(valeur);
+            return new ResponseEntity<>(anonymatRepo.save(anonymat), HttpStatus.OK);
+        }
         return new ResponseEntity<>(anonymatRepo.save(anonymat), HttpStatus.OK);
     }
 

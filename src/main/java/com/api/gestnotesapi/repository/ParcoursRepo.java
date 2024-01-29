@@ -1,10 +1,14 @@
 package com.api.gestnotesapi.repository;
 
+import com.api.gestnotesapi.entities.Niveau;
+import com.api.gestnotesapi.entities.Option;
 import com.api.gestnotesapi.entities.Parcours;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface ParcoursRepo extends JpaRepository<Parcours, Long> {
-    public Optional<Parcours> findByLabel(String label);
+
+    Optional<Parcours> findByLabel(String label);
+    Parcours findByOptionAndNiveau(Option option, Niveau niveau);
 }

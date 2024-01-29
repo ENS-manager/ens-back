@@ -72,7 +72,7 @@ public class EvaluationController {
 
     //    Une Evaluation par le code de l'Evaluation
     @GetMapping("/findEvaluationByCode")
-    public ResponseEntity<Optional<Evaluation>> getEvaluationByCode(@RequestParam String code){
+    public ResponseEntity<Optional<Evaluation>> getEvaluationByCode(@RequestParam CodeEva code){
 
         Optional<Evaluation> evaluation = evaluationRepo.findByCode(code);
         if (!evaluation.isPresent()){

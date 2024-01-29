@@ -29,11 +29,9 @@ public class AnneeAcademique implements Serializable {
     private Long id;
     
     @Column(name = "DEBUT")
-    @JsonIgnore
     private LocalDate debut;
     
     @Column(name = "FIN")
-    @JsonIgnore
     private LocalDate fin;
 
 //    auto

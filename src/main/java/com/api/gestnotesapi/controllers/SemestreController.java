@@ -49,8 +49,9 @@ public class SemestreController {
         if (semestreFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        semestreFromDb.setValeur(semestre.getValeur());
 
+        semestreFromDb.setValeur(semestre.getValeur());
+        semestreFromDb.setNiveau(semestre.getNiveau());
         return new ResponseEntity<>(semestreRepo.save(semestreFromDb), HttpStatus.OK);
     }
     

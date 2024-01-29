@@ -5,8 +5,12 @@
 package com.api.gestnotesapi.repository;
 
 
-import com.api.gestnotesapi.entities.Note;
+import com.api.gestnotesapi.entities.*;
+
 import java.util.List;
+import java.util.Optional;
+
+import com.api.gestnotesapi.entities.Module;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +21,15 @@ import org.springframework.data.repository.query.Param;
  */
 public interface NoteRepo extends JpaRepository<Note, Long> {
     
-     @Query(value = "SELECT * FROM NOTE WHERE COURS_ID = :coursId", nativeQuery = true)
-     List<Note> ListNoteEc(@Param("coursId") Long coursId);
-    
+     List<Note> findAllByEtudiantAndAnneeAcademiqueAndCoursAndIsFinal(Etudiant etudiant, AnneeAcademique anneeAcademique, Cours cours, boolean b);
+
+    List<Note> findAllByCoursAndAnneeAcademiqueAndIsFinal(Cours cours, AnneeAcademique anneeAcademique, boolean b);
+
+    List<Note> findAllByCoursAndIsFinalAndAnneeAcademique(Cours cours, boolean b, AnneeAcademique anneeAcademique);
+
+    Note[] findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(Cours cours, Etudiant etudiant, AnneeAcademique anneeAcademique, boolean b);
+
+    List<Note> findAllByModuleAndAnneeAcademiqueAndIsFinal(Module module, AnneeAcademique anneeAcademique, boolean b);
+
+    List<Note> findAllByEtudiantAndAnneeAcademiqueAndModule(Etudiant etudiant, AnneeAcademique anneeAcademique, Module module);
 }

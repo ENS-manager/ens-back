@@ -36,7 +36,7 @@ public class Anonymat implements Serializable {
     private Long id;
     
     @Column(name = "SESSIONS")
-    private Integer sessions;
+    private Integer sessions = 1;
 
 //    auto
     @Column(name = "VALEUR", unique = true)
