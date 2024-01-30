@@ -271,8 +271,7 @@ public class NoteService {
         TypeCours typeCours = typeCoursRepo.findById(cours.get().getTypecours().getId()).get();
         String type = typeCours.getNom();
         for (Etudiant etudiant : etudiantRepo.findAll()){
-            Double sommeCC = 0.0, sommeTPE = 0.0, sommeTP = 0.0;
-            int i = 0, j = 0, k = 0;
+            Double sommeCC = -1.0, sommeTPE = -1.0, sommeTP = -1.0;
             for (Note note : noteList){
                 Evaluation evaluation = evaluationRepo.findById(note.getEvaluation().getId()).get();
                 Module module = moduleRepo.findById(note.getModule().getId()).get();
@@ -280,42 +279,27 @@ public class NoteService {
                 Etudiant etud = etudiantRepo.findById(note.getEtudiant().getId()).get();
 
                 if ((etud.getMatricule().equals(etudiant.getMatricule())) && (evaluation.getCode().equals(CodeEva.CC))){
-                    if (note.getValeur() == null){
-                        if (i == 0){
-                            sommeCC = -1.0;
-                        }
-                    }else {
+                    if (note.getValeur() != null) {
                         if (sommeCC == -1.0){
-                            sommeCC = (creditModule.getValeur()*note.getValeur());
-                        }else {
-                            sommeCC += (creditModule.getValeur()*note.getValeur());
-                            i++;
+                            sommeCC = note.getValeur() * creditModule.getValeur();
+                        }else{
+                            sommeCC += note.getValeur() * creditModule.getValeur();
                         }
                     }
                 }else if ((etud.getMatricule().equals(etudiant.getMatricule())) && (evaluation.getCode().equals(CodeEva.TPE))){
-                    if (note.getValeur() == null){
-                        if (j == 0){
-                            sommeTPE = -1.0;
-                        }
-                    }else {
-                        if (sommeTPE == -1.0){
-                            sommeTPE = (creditModule.getValeur()*note.getValeur());
-                        }else {
-                            sommeTPE += (creditModule.getValeur()*note.getValeur());
-                            j++;
+                    if (note.getValeur() != null) {
+                        if (sommeTPE == -1.0) {
+                            sommeTPE = note.getValeur() * creditModule.getValeur();
+                        } else {
+                            sommeTPE += note.getValeur() * creditModule.getValeur();
                         }
                     }
                 }else if ((etud.getMatricule().equals(etudiant.getMatricule())) && (evaluation.getCode().equals(CodeEva.TP))){
-                    if (note.getValeur() == null){
-                        if (k == 0){
-                            sommeTP = -1.0;
-                        }
-                    }else {
-                        if (sommeTP == -1.0){
-                            sommeTP = (creditModule.getValeur()*note.getValeur());
-                        }else {
-                            sommeTP += (creditModule.getValeur()*note.getValeur());
-                            k++;
+                    if (note.getValeur() != null) {
+                        if (sommeTP == -1.0) {
+                            sommeTP = note.getValeur() * creditModule.getValeur();
+                        } else {
+                            sommeTP += note.getValeur() * creditModule.getValeur();
                         }
                     }
                 }
@@ -345,7 +329,7 @@ public class NoteService {
                     newNote1.setIsFinal(true);
                     newNote1.setAnneeAcademique(anneeAcademique);
 
-                    noteRepo.save(newNote1);
+                    ajouterNoteCours(newNote1);
                 }
 
                 Note newNote2 = new Note();
@@ -357,7 +341,7 @@ public class NoteService {
                     newNote2.setIsFinal(true);
                     newNote2.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote2);
+                    ajouterNoteCours(newNote2);
                 }else {
                     valeurTPE = sommeTPE/creditCours;
                     Double resultTPE = Math.round(valeurTPE*100.0)/100.0;
@@ -369,7 +353,7 @@ public class NoteService {
                     newNote2.setIsFinal(true);
                     newNote2.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote2);
+                    ajouterNoteCours(newNote2);
                 }
 
                 Note newNote3 = new Note();
@@ -381,7 +365,7 @@ public class NoteService {
                     newNote3.setIsFinal(true);
                     newNote3.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote3);
+                    ajouterNoteCours(newNote3);
                 }else {
                     valeurTP = sommeTP/creditCours;
                     Double resultTP = Math.round(valeurTP*100.0)/100.0;
@@ -393,7 +377,7 @@ public class NoteService {
                     newNote3.setIsFinal(true);
                     newNote3.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote3);
+                    ajouterNoteCours(newNote3);
                 }
 
 
@@ -407,7 +391,7 @@ public class NoteService {
                     newNote1.setIsFinal(true);
                     newNote1.setAnneeAcademique(anneeAcademique);
 
-                    noteRepo.save(newNote1);
+                    ajouterNoteCours(newNote1);
                 }else {
                     valeurCC = sommeCC/creditCours;
                     double resultCC = Math.round(valeurCC*100.0)/100.0;
@@ -420,7 +404,7 @@ public class NoteService {
                     newNote1.setIsFinal(true);
                     newNote1.setAnneeAcademique(anneeAcademique);
 
-                    noteRepo.save(newNote1);
+                    ajouterNoteCours(newNote1);
                 }
 
                 Note newNote2 = new Note();
@@ -432,7 +416,7 @@ public class NoteService {
                     newNote2.setIsFinal(true);
                     newNote2.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote2);
+                    ajouterNoteCours(newNote2);
                 }else {
                     valeurTPE = sommeTPE/creditCours;
                     double resultTPE = Math.round(valeurTPE*100.0)/100.0;
@@ -444,7 +428,7 @@ public class NoteService {
                     newNote2.setIsFinal(true);
                     newNote2.setAnneeAcademique(noteList.get(0).getAnneeAcademique());
 
-                    noteRepo.save(newNote2);
+                    ajouterNoteCours(newNote2);
                 }
 
             }else if (type.equals("CC, EE")){
@@ -457,7 +441,7 @@ public class NoteService {
                     newNote1.setIsFinal(true);
                     newNote1.setAnneeAcademique(anneeAcademique);
 
-                    noteRepo.save(newNote1);
+                    ajouterNoteCours(newNote1);
                 }else {
                     valeurCC = sommeCC/creditCours;
                     double resultCC = Math.round(valeurCC*100.0)/100.0;
@@ -470,7 +454,7 @@ public class NoteService {
                     newNote1.setIsFinal(true);
                     newNote1.setAnneeAcademique(anneeAcademique);
 
-                    noteRepo.save(newNote1);
+                    ajouterNoteCours(newNote1);
                 }
             }
         }

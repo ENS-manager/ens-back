@@ -108,9 +108,9 @@ public class NoteController {
 
 //    Proces verbal d'un cours
     @GetMapping("/findPVCours")
-    public ResponseEntity<PVCoursResponse> getPVCours(@RequestBody PVCoursRequest pvCoursRequest){
+    public ResponseEntity<List<PVCoursResponse>> getPVCours(@RequestBody PVCoursRequest pvCoursRequest){
 
-        PVCoursResponse response = pvService.getPVCoursByEtudiant(pvCoursRequest);
+        List<PVCoursResponse> response = pvService.getPVCoursByEtudiant(pvCoursRequest);
         if (response == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }

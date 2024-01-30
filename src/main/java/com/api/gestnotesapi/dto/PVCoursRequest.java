@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.dto;
 
+import com.api.gestnotesapi.entities.TYPE;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ public class PVCoursRequest {
 
     int session;
     private String code;
+    private TYPE type;
     private String anneeAca;
-    private String matricule;
     private String parcours;
 }

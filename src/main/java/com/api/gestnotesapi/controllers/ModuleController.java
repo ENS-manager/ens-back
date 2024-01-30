@@ -17,22 +17,25 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/module")
 public class ModuleController {
 
-    @Autowired
     private ModuleRepo moduleRepo;
-    @Autowired
     private CoursRepo coursRepo;
-    @Autowired
     private DepartementRepo departementRepo;
-    @Autowired
     private ParcoursRepo parcoursRepo;
-    @Autowired
     private OptionRepo optionRepo;
-    @Autowired
     private NiveauRepo niveauRepo;
-    @Autowired
     private SemestreRepo semestreRepo;
-    @Autowired
     private CreditRepo creditRepo;
+
+    public ModuleController(ModuleRepo moduleRepo, CoursRepo coursRepo, DepartementRepo departementRepo, ParcoursRepo parcoursRepo, OptionRepo optionRepo, NiveauRepo niveauRepo, SemestreRepo semestreRepo, CreditRepo creditRepo) {
+        this.moduleRepo = moduleRepo;
+        this.coursRepo = coursRepo;
+        this.departementRepo = departementRepo;
+        this.parcoursRepo = parcoursRepo;
+        this.optionRepo = optionRepo;
+        this.niveauRepo = niveauRepo;
+        this.semestreRepo = semestreRepo;
+        this.creditRepo = creditRepo;
+    }
 
     @PostMapping("/addModule")
     public ResponseEntity<Module> saveModule(@RequestBody Module module){

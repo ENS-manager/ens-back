@@ -26,7 +26,7 @@ public class Semestre implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "VALEUR", unique = true)
+    @Column(name = "VALEUR")
     private Integer valeur;
 
     @ManyToOne

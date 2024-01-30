@@ -19,14 +19,18 @@ import java.util.List;
 //@RequestMapping("/api/v1/admin/anonymat")
 public class AnonymatController {
 
-    @Autowired
     private AnonymatRepo anonymatRepo;
-    @Autowired
     private AnneeAcademiqueRepo anneeAcademiqueRepo;
-    @Autowired
     private CoursRepo coursRepo;
-    @Autowired
     private ParcoursRepo parcoursRepo;
+
+    @Autowired
+    public AnonymatController(AnonymatRepo anonymatRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, CoursRepo coursRepo, ParcoursRepo parcoursRepo) {
+        this.anonymatRepo = anonymatRepo;
+        this.anneeAcademiqueRepo = anneeAcademiqueRepo;
+        this.coursRepo = coursRepo;
+        this.parcoursRepo = parcoursRepo;
+    }
 
     //  Ajouter un anonymat
     @PostMapping("/addAnonymat/variable/{n}")
