@@ -50,6 +50,7 @@ public class ModuleController {
         int reste = 0;
         int n = 0;
         int size = moduleRepo.findAll().size();
+        System.out.println("La taille: " + size);
         if (size != 0){
             for (Module mod : moduleRepo.findAll()){
                 Cours cour = coursRepo.findByCoursId(mod.getCours().getCoursId());

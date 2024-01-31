@@ -36,7 +36,7 @@ public class TypeCours implements Serializable {
     private Long id;
 
     @Column(name = "NOM", unique = true)
-    private String nom;  
+    private TYPECOURSENUM nom;
     
     @OneToMany(mappedBy = "typecours")
     @JsonIgnore

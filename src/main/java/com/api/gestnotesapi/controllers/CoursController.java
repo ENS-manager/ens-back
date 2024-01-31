@@ -47,9 +47,9 @@ public class CoursController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).orElse(null);
-        if (niveau == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+//        if (niveau == null){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
         String codeDepart = departement.getCode();
         int valeurNiveau = niveau.getValeur();
         int valeurSemestre = semestre.getValeur();

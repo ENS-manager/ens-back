@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.api.gestnotesapi.entities.TYPECOURSENUM.*;
+
 @Service
 public class NoteService {
 
@@ -115,7 +117,7 @@ public class NoteService {
 
         Double sommeCC = 0.0, sommeTPE = 0.0, sommeTP = 0.0, ccSurTrente = -1.0;
         TypeCours typeCours = typeCoursRepo.findById(cours.getTypecours().getId()).get();
-        String type = typeCours.getNom();
+        TYPECOURSENUM type = typeCours.getNom();
 
         for (Note note : noteList) {
             CodeEva evalCode = note.getEvaluation().getCode();
@@ -130,9 +132,9 @@ public class NoteService {
         }
 
         // Logique pour calculer la moyenne en fonction du type de cours
-        if (type.equals("CC, EE")) {
+        if (type.equals(CC_EE)) {
             ccSurTrente = (sommeCC == -1.0) ? -1.0 : convertirSurTrente(sommeCC);
-        } else if (type.equals("CC, TPE, EE")) {
+        } else if (type.equals(CC_TPE_EE)) {
             ccSurTrente = (sommeCC == -1.0 && sommeTPE == -1.0) ? -1.0 :
                     (sommeCC != -1.0 && sommeTPE != -1.0) ? (convertirSurTrente((sommeCC + sommeTPE) / 2)) : (convertirSurTrente(sommeCC + sommeTPE + 1.0));
         } else {
@@ -166,7 +168,7 @@ public class NoteService {
 
         Double sommeCC = 0.0, sommeTPE = 0.0, sommeTP = 0.0, ccSurTrente = -1.0;
         TypeCours typeCours = typeCoursRepo.findById(module.getCours().getTypecours().getId()).get();
-        String type = typeCours.getNom();
+        TYPECOURSENUM type = typeCours.getNom();
 
         for (Note note : noteList) {
             CodeEva evalCode = note.getEvaluation().getCode();
@@ -181,9 +183,9 @@ public class NoteService {
         }
 
         // Logique pour calculer la moyenne en fonction du type de cours
-        if (type.equals("CC, EE")) {
+        if (type.equals(CC_EE)) {
             ccSurTrente = (sommeCC == -1.0) ? -1.0 : convertirSurTrente(sommeCC);
-        } else if (type.equals("CC, TPE, EE")) {
+        } else if (type.equals(CC_TPE_EE)) {
             ccSurTrente = (sommeCC == -1.0 && sommeTPE == -1.0) ? -1.0 :
                     (sommeCC != -1.0 && sommeTPE != -1.0) ? (convertirSurTrente((sommeCC + sommeTPE) / 2)) : (convertirSurTrente(sommeCC + sommeTPE + 1.0));
         } else {
@@ -269,7 +271,7 @@ public class NoteService {
         int creditCours = credit.getValeur();
 
         TypeCours typeCours = typeCoursRepo.findById(cours.get().getTypecours().getId()).get();
-        String type = typeCours.getNom();
+        TYPECOURSENUM type = typeCours.getNom();
         for (Etudiant etudiant : etudiantRepo.findAll()){
             Double sommeCC = -1.0, sommeTPE = -1.0, sommeTP = -1.0;
             for (Note note : noteList){
@@ -306,7 +308,7 @@ public class NoteService {
 
             }
             Double valeurCC = 0.0, valeurTPE = 0.0,valeurTP = 0.0;
-            if (type.equals("CC, TPE, TP, EE")){
+            if (type.equals(CC_TPE_TP_EE)){
                 Note newNote1 = new Note();
                 if (sommeCC == -1.0){
                     newNote1.setSessions(0);
@@ -381,7 +383,7 @@ public class NoteService {
                 }
 
 
-            }else if (type.equals("CC, TPE, EE")){
+            }else if (type.equals(CC_TPE_EE)){
                 Note newNote1 = new Note();
                 if (sommeCC == -1.0){
                     newNote1.setSessions(0);
@@ -431,7 +433,7 @@ public class NoteService {
                     ajouterNoteCours(newNote2);
                 }
 
-            }else if (type.equals("CC, EE")){
+            }else if (type.equals(CC_EE)){
                 Note newNote1 = new Note();
                 if (sommeCC == -1.0){
                     newNote1.setSessions(0);
@@ -478,9 +480,9 @@ public class NoteService {
             return null;
         }
 
-        String type = typeCours.getNom();
-        boolean isValidType = (type.equals("CC, TPE, EE") && evaluation.getCode().equals(CodeEva.TP)) ||
-                (type.equals("CC, EE") && (evaluation.getCode().equals(CodeEva.TP) || evaluation.getCode().equals(CodeEva.TPE)));
+        TYPECOURSENUM type = typeCours.getNom();
+        boolean isValidType = (type.equals(CC_TPE_EE) && evaluation.getCode().equals(CodeEva.TP)) ||
+                (type.equals(CC_EE) && (evaluation.getCode().equals(CodeEva.TP) || evaluation.getCode().equals(CodeEva.TPE)));
 
         if (isValidType) {
             return null;
@@ -496,8 +498,7 @@ public class NoteService {
         if (note == null) {
             return null;
         }
-
-        Cours cours = coursRepo.findByCoursId(note.getCours().getCoursId());
+        Cours cours = coursRepo.findByCoursId(note.getModule().getCours().getCoursId());
         TypeCours typeCours = typeCoursRepo.findById(cours.getTypecours().getId()).orElse(null);
         Evaluation evaluation = evaluationRepo.findById(note.getEvaluation().getId()).orElse(null);
 
@@ -505,9 +506,9 @@ public class NoteService {
             return null;
         }
 
-        String type = typeCours.getNom();
-        boolean isValidType = (type.equals("CC, TPE, EE") && evaluation.getCode().equals(CodeEva.TP)) ||
-                (type.equals("CC, EE") && (evaluation.getCode().equals(CodeEva.TP) || evaluation.getCode().equals(CodeEva.TPE)));
+        TYPECOURSENUM type = typeCours.getNom();
+        boolean isValidType = (type.equals(CC_TPE_EE) && evaluation.getCode().equals(CodeEva.TP)) ||
+                (type.equals(CC_EE) && (evaluation.getCode().equals(CodeEva.TP) || evaluation.getCode().equals(CodeEva.TPE)));
 
         if (isValidType) {
             return null;
@@ -610,11 +611,11 @@ public class NoteService {
         }
 
         switch (typeCours.getNom()) {
-            case "CC, TPE, TP, Examen":
+            case CC_TPE_TP_EE:
                 return 0.7 * noteExamen + 0.1 * noteCC + 0.1 * noteTPE + 0.1 * noteTP;
-            case "CC, TPE, Examen":
+            case CC_TPE_EE:
                 return 0.7 * noteExamen + 0.2 * noteCC + 0.1 * noteTPE;
-            case "CC, Examen":
+            case CC_EE:
                 return 0.7 * noteExamen + 0.3 * noteCC;
             default:
                 return -1.0;
@@ -846,6 +847,8 @@ public class NoteService {
 
         return valeur;
     }
+
+//    public Integer getRank(Long id, Listv)
 
     public List<Note> getNotesEtudiantByModule(Long id, int year, String code) {
         Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
