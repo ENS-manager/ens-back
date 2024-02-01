@@ -36,10 +36,12 @@ public class Parcours implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "NIVEAU_ID")
+    @JsonIgnore
     private Niveau niveau;
 
     @ManyToOne
     @JoinColumn(name = "OPTION_ID")
+    @JsonIgnore
     private Option option;
     
 //    @OneToMany(mappedBy = "parcours")

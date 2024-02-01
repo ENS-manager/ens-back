@@ -66,9 +66,8 @@ public class PVService {
                     year,
                     cours.get().getCode()
             );
-            PVCoursResponse pvCoursResponse= new PVCoursResponse(cours.get(),
+            PVCoursResponse pvCoursResponse= new PVCoursResponse(session, etudiant.getMatricule(), etudiant.getNom(), parcours.get().getLabel(), code, cours.get().getIntitule(),
                     anneeAcademique.getCode(),
-                    parcours.get(),
                     noteList,
                     ccSurTrente,
                     moyenneSurCent,

@@ -241,26 +241,8 @@ public class NoteService {
             result = ccSurTrente + noteEE + 1.0;
         }
 
-        return result;
+        return Math.round(result*100.0)/100.0;
     }
-
-//    public Double moyenneCoursSurVingt(Long id, int session, int year, String code){
-//
-//        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
-//        Cours cours = coursRepo.findByCode(code).orElse(null);
-//        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
-//        Double result = 0.0;
-//
-//        if (etudiant == null || anneeAcademique == null || cours == null) {
-//            return result;
-//        }
-//
-//        result = moyenneCoursSurVingt(etudiant.getId(), session, anneeAcademique.getNumeroDebut(), cours.getCode());
-//        if (result == -1.0){
-//            return result;
-//        }
-//        return convertirSurVingt(result);
-//    }
 
 
 //    A revoir
@@ -694,7 +676,7 @@ public class NoteService {
                 result = 0.7 * temp + 0.3 * noteCC;
             }
         }
-        return result;
+        return Math.round(result*100.0)/100.0;
     }
 
     public Integer nombreCoursEtudiant(Etudiant etudiant, AnneeAcademique anneeAcademique){
@@ -823,7 +805,7 @@ public class NoteService {
         return (30*note)/20;
     }
     public Double convertirSurVingt(Double note){
-        return (20*note)/100;
+        return Math.round(((20*note)/100)*100.0)/100.0;
     }
     public String decision(Double note){
         String decision = "";

@@ -1,9 +1,10 @@
 package com.api.gestnotesapi.controllers;
 
 import com.api.gestnotesapi.entities.AnneeAcademique;
-import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
+
 import java.util.List;
-import java.util.Optional;
+
+import com.api.gestnotesapi.services.AnneeAcademiqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,21 @@ import org.springframework.web.bind.annotation.*;
 //@RequestMapping("/api/v1/admin/anneeAcademique")
 public class AnneeAcademiqueController {
 
-    @Autowired
-    private AnneeAcademiqueRepo anneeAcademiqueRepo;
+    private AnneeAcademiqueService anneeAcademiqueService;
 
-//    Liste des annees academiques
+    @Autowired
+    public AnneeAcademiqueController(AnneeAcademiqueService anneeAcademiqueService) {
+        this.anneeAcademiqueService = anneeAcademiqueService;
+    }
+
+    //    Liste des annees academiques
     @GetMapping("/findAllAnneeAcademique")
     public ResponseEntity<List<AnneeAcademique>> getAnnee() {
 
-        List<AnneeAcademique> list = anneeAcademiqueRepo.findAll();
+        List<AnneeAcademique> list = anneeAcademiqueService.getAll();
+        if (list == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -29,19 +37,17 @@ public class AnneeAcademiqueController {
     @PostMapping("/addAnneeAcademique")
     public ResponseEntity<AnneeAcademique> saveAnnee(@RequestBody AnneeAcademique anneeAcademique) {
 
-        int debut = anneeAcademique.getDebut().getYear();
-        int fin = anneeAcademique.getFin().getYear();
-        String code = debut + "-" + fin;
-        anneeAcademique.setNumeroDebut(debut);
-        anneeAcademique.setCode(code);
-        AnneeAcademique update = anneeAcademiqueRepo.save(anneeAcademique);
+        AnneeAcademique update = anneeAcademiqueService.addAnneeAcademique(anneeAcademique);
+        if (update == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
 //    Une annee par son id
     @GetMapping("/findAnneeAcaById/{id}")
     public ResponseEntity<AnneeAcademique> getAnneeAcaById(@PathVariable Long id){
-        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findById(id).orElse(null);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getById(id);
         if (anneeAcademique == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -52,22 +58,18 @@ public class AnneeAcademiqueController {
     @PutMapping("/uptadeAnneeAca/{id}")
     public ResponseEntity<AnneeAcademique> updateAnnee(@PathVariable("id") Long id, @RequestBody AnneeAcademique anneeAcademique) {
 
-        AnneeAcademique anneeAcaFromDb = anneeAcademiqueRepo.findById(id).orElse(null);
+        AnneeAcademique anneeAcaFromDb = anneeAcademiqueService.updateById(id, anneeAcademique);
         if (anneeAcaFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        anneeAcaFromDb.setDebut(anneeAcademique.getDebut());
-        anneeAcaFromDb.setNumeroDebut(anneeAcademique.getDebut().getYear());
-        anneeAcaFromDb.setFin(anneeAcademique.getFin());
-        anneeAcaFromDb.setCode(anneeAcademique.getCode());
 
-        return new ResponseEntity<>(anneeAcademiqueRepo.save(anneeAcaFromDb), HttpStatus.OK);
+        return new ResponseEntity<>(anneeAcaFromDb, HttpStatus.OK);
     }
 
 //    Supprimer une annee academique
     @DeleteMapping("/deleteAnneeAca/{id}")
     public ResponseEntity<String> deleteAnnee(@PathVariable("id") Long id){
-            anneeAcademiqueRepo.deleteById(id);
-            return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        anneeAcademiqueService.delete(id);
+        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

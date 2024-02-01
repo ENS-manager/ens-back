@@ -1,10 +1,7 @@
 package com.api.gestnotesapi.controllers;
 
+import com.api.gestnotesapi.dto.AnonymatResponse;
 import com.api.gestnotesapi.entities.*;
-import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
-import com.api.gestnotesapi.repository.AnonymatRepo;
-import com.api.gestnotesapi.repository.CoursRepo;
-import com.api.gestnotesapi.repository.ParcoursRepo;
 import com.api.gestnotesapi.services.AnonymatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,67 +16,31 @@ import java.util.List;
 //@RequestMapping("/api/v1/admin/anonymat")
 public class AnonymatController {
 
-    private AnonymatRepo anonymatRepo;
-    private AnneeAcademiqueRepo anneeAcademiqueRepo;
-    private CoursRepo coursRepo;
-    private ParcoursRepo parcoursRepo;
+    private AnonymatService anonymatService;
 
     @Autowired
-    public AnonymatController(AnonymatRepo anonymatRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, CoursRepo coursRepo, ParcoursRepo parcoursRepo) {
-        this.anonymatRepo = anonymatRepo;
-        this.anneeAcademiqueRepo = anneeAcademiqueRepo;
-        this.coursRepo = coursRepo;
-        this.parcoursRepo = parcoursRepo;
+    public AnonymatController(AnonymatService anonymatService) {
+        this.anonymatService = anonymatService;
     }
 
     //  Ajouter un anonymat
     @PostMapping("/addAnonymat/variable/{n}")
     public ResponseEntity<Anonymat> saveAnonymat(@RequestBody Anonymat anonymat, @PathVariable int n){
 
-        AnonymatService anonymatService = new AnonymatService();
-
-        if (anonymat == null){
+        Anonymat save = anonymatService.addAnonymat(anonymat, n);
+        if (save == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        int session = 0;
-        if (anonymat.getSessions().equals(null)){
-            session = 1;
-        }else {
-            session = anonymat.getSessions();
-        }
-        Cours cours = coursRepo.findByCoursId(anonymat.getCours().getCoursId());
-
-        String valeur = "";
-        if (anonymat.getValeur() == null){
-            valeur = anonymatService.anonymatGenerator(cours.getCode(), session, n);
-            anonymat.setValeur(valeur);
-            return new ResponseEntity<>(anonymatRepo.save(anonymat), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(anonymatRepo.save(anonymat), HttpStatus.OK);
-    }
-
-//    Liste des anonymats
-    @GetMapping("/findAllAnonymat")
-    public ResponseEntity<List<Anonymat>> getAllAnonymat(){
-        return new ResponseEntity<>(anonymatRepo.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(save, HttpStatus.OK);
     }
 
 //    Liste des anonymats pour un cours, une session et une annee academique
-    @GetMapping("/findListAnonymatByCourse/session/{session}/anneeAca/{year}/cours")
-    public ResponseEntity<List<Anonymat>> getListAnonymatByParcours(@PathVariable int session, @PathVariable int year, @RequestParam("code") String code){
+    @GetMapping("/findListAnonymatByCours/session/{session}/anneeAca/{year}/cours")
+    public ResponseEntity<List<AnonymatResponse>> getListAnonymatByCours(@PathVariable int session, @PathVariable int year, @RequestParam("code") String code){
 
-        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
-        Cours cours = coursRepo.findByCode(code).get();
-        List<Anonymat> anonymatList = new ArrayList<>();
-
-        for (Anonymat anonymat : anonymatRepo.findAll()){
-            AnneeAcademique anneeAca = anneeAcademiqueRepo.findById(anonymat.getAnneeAcademique().getId()).get();
-            Cours cour = coursRepo.findByCoursId(anonymat.getCours().getCoursId());
-            if ((anneeAca.getNumeroDebut().equals(anneeAcademique.getNumeroDebut()))
-                    && (cour.getCode().equals(cours.getCode()))
-                    && (anonymat.getSessions().equals(session))){
-                anonymatList.add(anonymat);
-            }
+        List<AnonymatResponse> anonymatList = anonymatService.getAnonymatCours(session, year, code);
+        if (anonymatList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(anonymatList, HttpStatus.OK);
     }
@@ -88,7 +49,7 @@ public class AnonymatController {
     @GetMapping("/findAnonymatById/{id}")
     public ResponseEntity<Anonymat> getAnonymatById(@PathVariable("id") Long id) {
 
-        Anonymat anonymat = anonymatRepo.findById(id).orElse(null);
+        Anonymat anonymat = anonymatService.getById(id);
         if (anonymat == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -98,7 +59,7 @@ public class AnonymatController {
     //    Supprimer un anonymat
     @DeleteMapping("/deleteAnonymat/{id}")
     public ResponseEntity<String> deleteAnonymat(@PathVariable("id") Long id){
-        anonymatRepo.deleteById(id);
+        anonymatService.delete(id);
         return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

@@ -53,6 +53,7 @@ public class Note implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "ETUDIANT_ID")
+    @JsonIgnore
     private Etudiant etudiant;
 
     @ManyToOne
