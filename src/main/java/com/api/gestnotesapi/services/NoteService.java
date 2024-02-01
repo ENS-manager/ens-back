@@ -1,5 +1,8 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.dto.MoyenneCours;
+import com.api.gestnotesapi.dto.PVGrandJuryRequest;
+import com.api.gestnotesapi.dto.PVGrandJuryResponse;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.entities.Module;
 import com.api.gestnotesapi.repository.*;
@@ -33,9 +36,10 @@ public class NoteService {
     private EtudiantService etudiantService;
     private DepartementRepo departementRepo;
     private OptionRepo optionRepo;
+    private CoursService coursService;
 
     @Autowired
-    public NoteService(EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, CoursRepo coursRepo, NoteRepo noteRepo, TypeCoursRepo typeCoursRepo, CreditRepo creditRepo, EvaluationRepo evaluationRepo, ModuleRepo moduleRepo, AnonymatRepo anonymatRepo, SemestreRepo semestreRepo, ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, InscriptionRepo inscriptionRepo, ParcoursService parcoursService, EtudiantService etudiantService, DepartementRepo departementRepo, OptionRepo optionRepo) {
+    public NoteService(EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, CoursRepo coursRepo, NoteRepo noteRepo, TypeCoursRepo typeCoursRepo, CreditRepo creditRepo, EvaluationRepo evaluationRepo, ModuleRepo moduleRepo, AnonymatRepo anonymatRepo, SemestreRepo semestreRepo, ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, InscriptionRepo inscriptionRepo, ParcoursService parcoursService, EtudiantService etudiantService, DepartementRepo departementRepo, OptionRepo optionRepo, CoursService coursService) {
         this.etudiantRepo = etudiantRepo;
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
         this.coursRepo = coursRepo;
@@ -53,6 +57,7 @@ public class NoteService {
         this.etudiantService = etudiantService;
         this.departementRepo = departementRepo;
         this.optionRepo = optionRepo;
+        this.coursService = coursService;
     }
 
     public List<Note> getNotesEtudiantByCours(
@@ -69,7 +74,7 @@ public class NoteService {
             return null;
         }
 
-        List<Note> noteList = noteRepo.findAllByEtudiantAndAnneeAcademiqueAndCoursAndIsFinal(etudiant, anneeAcademique, cours, true);
+        List<Note> noteList = noteRepo.findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(cours, etudiant, anneeAcademique, true);
         List<Note> filteredNotes = filterNotesCours(noteList, etudiant, anneeAcademique, cours, session);
 
         return filteredNotes;
@@ -239,40 +244,49 @@ public class NoteService {
         return result;
     }
 
-    public Double moyenneCoursSurVingt(Long id, int session, int year, String code){
+//    public Double moyenneCoursSurVingt(Long id, int session, int year, String code){
+//
+//        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
+//        Cours cours = coursRepo.findByCode(code).orElse(null);
+//        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
+//        Double result = 0.0;
+//
+//        if (etudiant == null || anneeAcademique == null || cours == null) {
+//            return result;
+//        }
+//
+//        result = moyenneCoursSurVingt(etudiant.getId(), session, anneeAcademique.getNumeroDebut(), cours.getCode());
+//        if (result == -1.0){
+//            return result;
+//        }
+//        return convertirSurVingt(result);
+//    }
 
-        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
-        Cours cours = coursRepo.findByCode(code).orElse(null);
-        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
-        Double result = 0.0;
 
-        if (etudiant == null || anneeAcademique == null || cours == null) {
-            return result;
-        }
-
-        result = moyenneCoursSurVingt(etudiant.getId(), session, anneeAcademique.getNumeroDebut(), cours.getCode());
-        if (result == -1.0){
-            return result;
-        }
-        return convertirSurVingt(result);
-    }
-
+//    A revoir
     public String caculMoyennePondere(int year, String code){
 
         Optional<Cours> cours = coursRepo.findByCode(code);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
+        if (cours == null){
+            return "Le cours specifie n'existe pas";
+        }
         List<Note> noteList = noteRepo.findAllByCoursAndIsFinalAndAnneeAcademique(cours.get(), false, anneeAcademique);
-
-        if (noteList.isEmpty()) {
+        Departement departement = departementRepo.findByCode(cours.get().getDepartement().getCode()).orElse(null);
+        if (departement == null){
+            return "Ce cours n'est pas associe a un departement";
+        }
+        if (noteList == null) {
             return "Aucune note trouvée pour le cours spécifié";
         }
+        List<Etudiant> etudiantList = etudiantService.getEtudiantByDepartement(departement.getCode());
 
         Credit credit = creditRepo.findById(cours.get().getCredit().getId()).get();
         int creditCours = credit.getValeur();
 
         TypeCours typeCours = typeCoursRepo.findById(cours.get().getTypecours().getId()).get();
         TYPECOURSENUM type = typeCours.getNom();
-        for (Etudiant etudiant : etudiantRepo.findAll()){
+        for (Etudiant etudiant : etudiantList){
             Double sommeCC = -1.0, sommeTPE = -1.0, sommeTP = -1.0;
             for (Note note : noteList){
                 Evaluation evaluation = evaluationRepo.findById(note.getEvaluation().getId()).get();
@@ -550,9 +564,8 @@ public class NoteService {
 
     public Double moyenneSemestre(Long id, int annee, int semestre, String code) {
         Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
-        Departement departement = departementRepo.findByCode(code).orElse(null);
 
-        if (etudiant == null || departement == null) {
+        if (etudiant == null) {
             return null;
         }
 
@@ -566,9 +579,10 @@ public class NoteService {
 
         Double sum = 0.0;
         int creditTotal = 0;
-
-        for (Cours cours : coursRepo.findBySemestreAndDepartement(semestreEntity, departement)) {
-            Double moyenneCours = calculMoyenneCours(etudiant, cours, anneeAcademique);
+        Parcours parcours = parcoursService.getParcoursEtudiant(etudiant.getId(), anneeAcademique.getCode());
+        List<Cours> coursList = coursService.getListCoursByParcours(parcours.getLabel());
+        for (Cours cours : coursList) {
+            Double moyenneCours = calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut());
             if (moyenneCours != -1.0) {
                 sum += moyenneCours * cours.getCredit().getValeur();
                 creditTotal += cours.getCredit().getValeur();
@@ -583,43 +597,112 @@ public class NoteService {
         return moyenneSemestre;
     }
 
-    private Double calculMoyenneCours(Etudiant etudiant, Cours cours, AnneeAcademique anneeAcademique) {
-        Double noteExamen = -1.0, noteCC = -1.0, noteTPE = -1.0, noteTP = -1.0;
-
-        for (Note note : noteRepo.findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(cours, etudiant, anneeAcademique, true)) {
+    public Double calculMoyenneCours(Long id, String code, int annee) {
+        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
+        Cours cours = coursRepo.findByCode(code).orElse(null);
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(annee);
+        if (etudiant == null || cours == null || anneeAcademique == null){
+            return null;
+        }
+        Double result = null, noteExamen = null, noteCC = null, noteTPE = null, noteTP = null;
+        List<Note> noteEE = new ArrayList<>();
+        int j=0, k=0;
+        List<Note> noteList = noteRepo.findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(cours, etudiant, anneeAcademique, true);
+        for (Note note : noteList) {
             Evaluation evaluation = note.getEvaluation();
-            switch (evaluation.getCode()) {
-                case EE:
-                    noteExamen = (note.getValeur() != null) ? note.getValeur() : 0.0;
-                    break;
-                case CC:
-                    noteCC = (note.getValeur() != null) ? note.getValeur() : 0.0;
-                    break;
-                case TPE:
-                    noteTPE = (note.getValeur() != null) ? note.getValeur() : 0.0;
-                    break;
-                case TP:
-                    noteTP = (note.getValeur() != null) ? note.getValeur() : 0.0;
-                    break;
+            if (evaluation.getCode() == CodeEva.EE) {
+                if (note.getValeur() != null){
+                    noteEE.add(note);
+                }
+            } else if (evaluation.getCode() == CodeEva.CC) {
+                if (note.getValeur() != null){
+                    noteCC = note.getValeur();
+                    System.out.println("Le CC: "+ note.getValeur()+ " "+ j);
+                }
+            } else if (evaluation.getCode() == CodeEva.TPE) {
+                if (note.getValeur() != null){
+                    noteTPE = note.getValeur();
+                }
+            } else if (evaluation.getCode() == CodeEva.TP) {
+                if (note.getValeur() != null){
+                    noteTP = note.getValeur();
+                }
             }
+
         }
 
         TypeCours typeCours = typeCoursRepo.findById(cours.getTypecours().getId()).orElse(null);
 
         if (typeCours == null) {
-            return -1.0;
+            return null;
         }
+        if (noteEE == null){
+            return null;
+        }else {
+            if (noteEE.size() == 2){
+                for (Note note : noteEE){
+                    if (note.getSessions() == 2 && note.getValeur() != null){
+                        noteExamen = note.getValeur();
+                    }else if (note.getSessions() == 2 && note.getValeur() == null){
+                        noteExamen = null;
+                    }
+                }
+            }else{
+                for (Note note : noteEE){
+                    if (note.getValeur() != null){
+                        noteExamen = note.getValeur();
+                    }else {
+                        noteExamen = null;
+                    }
+                }
+            }
 
-        switch (typeCours.getNom()) {
-            case CC_TPE_TP_EE:
-                return 0.7 * noteExamen + 0.1 * noteCC + 0.1 * noteTPE + 0.1 * noteTP;
-            case CC_TPE_EE:
-                return 0.7 * noteExamen + 0.2 * noteCC + 0.1 * noteTPE;
-            case CC_EE:
-                return 0.7 * noteExamen + 0.3 * noteCC;
-            default:
-                return -1.0;
         }
+        if (typeCours.getNom().equals(CC_TPE_TP_EE)) {
+            if (noteExamen == null) {
+                result = null;
+            }else {
+                if (noteCC == null && noteTPE == null && noteTP == null){
+//                    System.out.println("Tous sont nulls");
+                    result = null;
+                }else {
+//                    Double temp = examenSurVingt(noteExamen);
+                    result = 0.7 * noteExamen
+                            + (0.1 * noteCC > 0 ? 0.1 * noteCC : 0)
+                            + (0.1 * noteTPE > 0 ? 0.1 * noteTPE : 0)
+                            + (0.1 * noteTP > 0 ? 0.1 * noteTP : 0);
+                }
+            }
+        } else if (typeCours.getNom().equals(CC_TPE_EE)) {
+            if (noteExamen == null) {
+                result = null;
+            }else {
+                if (noteCC == null && noteTPE == null){
+                    result = null;
+                }else{
+//                    Double temp = examenSurVingt(noteExamen);
+                    result = 0.7 * noteExamen
+                            + (0.2 * noteCC > 0 ? 0.2 * noteCC : 0)
+                            + (0.1 * noteTPE > 0 ? 0.1 * noteTPE : 0);
+                }
+            }
+        } else if (typeCours.getNom().equals(CC_EE)) {
+            if (noteExamen == null || noteCC == null) {
+                result = null;
+            }else {
+                Double temp = examenSurVingt(noteExamen);
+                result = 0.7 * temp + 0.3 * noteCC;
+            }
+        }
+        return result;
+    }
+
+    public Integer nombreCoursEtudiant(Etudiant etudiant, AnneeAcademique anneeAcademique){
+        return coursService.getListCoursByParcours(parcoursService.getParcoursEtudiant(etudiant.getId(), anneeAcademique.getCode()).getLabel()).size();
+    }
+
+    public Double examenSurVingt(Double note){
+        return (note * 20)/70;
     }
 
     public Double moyenneAnnuelle(Long id, int annee, String code){
@@ -654,7 +737,7 @@ public class NoteService {
             return 0;
         }
         for (Cours cours : coursRepo.findBySemestreAndDepartement(semestreEntity, departement)) {
-            Double moyenneCours = calculMoyenneCours(etudiant, cours, anneeAcademique);
+            Double moyenneCours = calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut());
             if ((moyenneCours != -1.0) && (moyenneCours >= 10.0)) {
                 creditTotal += cours.getCredit().getValeur();
             }
@@ -847,6 +930,48 @@ public class NoteService {
 
         return valeur;
     }
+
+//    public Double getNoteStageFromEtudiant(Long id, List<Note> noteList){
+//
+//
+//    }
+
+//    public List<PVGrandJuryResponse> getPVGrandJury(PVGrandJuryRequest pvGrandJuryRequest){
+//
+//        Parcours parcours = parcoursRepo.findByLabel(pvGrandJuryRequest.getParcours()).orElse(null);
+//        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByCode(pvGrandJuryRequest.getAnneeAca()).orElse(null);
+//        if (parcours == null || anneeAcademique == null){
+//            return null;
+//        }
+//
+//        Option option = optionRepo.findByCode(parcours.getOption().getCode()).orElse(null);
+//        if (option == null){
+//            return null;
+//        }
+//        Departement departement = departementRepo.findByCode(option.getDepartement().getCode()).orElse(null);
+//        if (departement == null){
+//            return null;
+//        }
+//
+//        List<Cours> coursList = coursService.getListCoursByParcours(parcours.getLabel());
+//        int size = coursList.size();
+//        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut(), pvGrandJuryRequest.getType());
+//        if (coursList == null || etudiantList == null){
+//            return null;
+//        }
+//        List<MoyenneCours> moyenneCoursList = new ArrayList<>();
+//        for (Etudiant etudiant : etudiantList){
+//            PVGrandJuryResponse pvGrandJuryResponse = new PVGrandJuryResponse();
+//            Double moyGen = 0.0;
+//            pvGrandJuryResponse.setEtudiant(etudiant);
+//            for (Cours cours : coursList){
+//                Double moy = calculMoyenneCours(etudiant, cours, anneeAcademique);
+//                moyGen += moy;
+//                MoyenneCours moyenneCours = new MoyenneCours(cours, moy);
+//                moyenneCoursList.add(moyenneCours);
+//            }
+//        }
+//    }
 
 //    public Integer getRank(Long id, Listv)
 

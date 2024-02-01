@@ -34,6 +34,7 @@ public class Niveau implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "CYCLE_ID")
+    @JsonIgnore
     private Cycle cycle;
     
     @OneToMany(mappedBy = "niveau")

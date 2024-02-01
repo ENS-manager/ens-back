@@ -106,11 +106,17 @@ public class NoteController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-//    Proces verbal d'un cours
-    @GetMapping("/findPVCours")
-    public ResponseEntity<List<PVCoursResponse>> getPVCours(@RequestBody PVCoursRequest pvCoursRequest){
+    @GetMapping("/find/{id}/{annee}/cours")
+    public Double getMoy(@PathVariable Long id, @PathVariable int annee, @RequestParam String code){
+        return noteService.calculMoyenneCours(id, code, annee);
+    }
 
-        List<PVCoursResponse> response = pvService.getPVCoursByEtudiant(pvCoursRequest);
+//    Proces verbal d'un cours
+    @GetMapping("/findPVCours/session/{session}/annee/{annee}/type/{type}/cours")
+    public ResponseEntity<List<PVCoursResponse>> getPVCours(@PathVariable int session, @PathVariable int annee, @PathVariable TYPE type,
+                                                            @RequestParam String code, @RequestParam String label){
+
+        List<PVCoursResponse> response = pvService.getPVCoursByEtudiant(session, annee, type, code, label);
         if (response == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }

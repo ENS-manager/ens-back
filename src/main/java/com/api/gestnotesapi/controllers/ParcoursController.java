@@ -1,10 +1,7 @@
 package com.api.gestnotesapi.controllers;
 
 import com.api.gestnotesapi.entities.*;
-import com.api.gestnotesapi.repository.DepartementRepo;
-import com.api.gestnotesapi.repository.NiveauRepo;
-import com.api.gestnotesapi.repository.OptionRepo;
-import com.api.gestnotesapi.repository.ParcoursRepo;
+import com.api.gestnotesapi.repository.*;
 import com.api.gestnotesapi.services.ParcoursService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,14 +22,18 @@ public class ParcoursController {
     private OptionRepo optionRepo;
     private DepartementRepo departementRepo;
     private ParcoursService parcoursService;
+    private EtudiantRepo etudiantRepo;
+    private AnneeAcademiqueRepo anneeAcademiqueRepo;
 
     @Autowired
-    public ParcoursController(ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, OptionRepo optionRepo, DepartementRepo departementRepo, ParcoursService parcoursService) {
+    public ParcoursController(ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, OptionRepo optionRepo, DepartementRepo departementRepo, ParcoursService parcoursService, EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo) {
         this.parcoursRepo = parcoursRepo;
         this.niveauRepo = niveauRepo;
         this.optionRepo = optionRepo;
         this.departementRepo = departementRepo;
         this.parcoursService = parcoursService;
+        this.etudiantRepo = etudiantRepo;
+        this.anneeAcademiqueRepo = anneeAcademiqueRepo;
     }
 
     //  Ajouter un parcours

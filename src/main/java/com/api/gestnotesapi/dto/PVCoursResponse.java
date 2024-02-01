@@ -20,10 +20,10 @@ public class PVCoursResponse {
     private String grade;
     private Parcours parcours;
     private Cours cours;
-    private AnneeAcademique anneeAcademique;
+    private String anneeAcademique;
     private List<Note> notes;
 
-    public PVCoursResponse(Cours cours, AnneeAcademique anneeAcademique, Parcours parcours, List<Note> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
+    public PVCoursResponse(Cours cours, String anneeAcademique, Parcours parcours, List<Note> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
         this.cours = cours;
         this.anneeAcademique = anneeAcademique;
         this.parcours = parcours;

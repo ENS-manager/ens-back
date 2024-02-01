@@ -1,6 +1,7 @@
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\CodeEva.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVModuleResponse.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\NatureUE.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\InscriptionService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Enseignant.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\TypeCours.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Anonymat.java
@@ -15,6 +16,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\EtudiantService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\config\LogoutService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\TypeCoursController.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\MoyenneByTypeCours.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Departement.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\AnonymatService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\EvaluationController.java
@@ -24,6 +26,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\OptionController.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\config\JwtService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\GENRE.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\CoursService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\SemestreRepo.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\ParcoursController.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\ModuleRepo.java
@@ -56,6 +59,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVGrandJuryRequest.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\auth\RegisterRequest.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVCoursResponse.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\MoyenneCours.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVGrandJuryResponse.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Cours.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\CreditRepo.java

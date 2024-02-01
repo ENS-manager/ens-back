@@ -11,6 +11,7 @@ com\api\gestnotesapi\auth\AuthenticationResponse.class
 com\api\gestnotesapi\config\JwtAuthenticationFilter.class
 com\api\gestnotesapi\entities\CodeEva.class
 com\api\gestnotesapi\entities\GENRE.class
+com\api\gestnotesapi\dto\MoyenneByTypeCours.class
 com\api\gestnotesapi\entities\Departement.class
 com\api\gestnotesapi\repository\InscriptionRepo.class
 com\api\gestnotesapi\dto\PVModuleResponse.class
@@ -26,6 +27,7 @@ com\api\gestnotesapi\repository\ModuleRepo.class
 com\api\gestnotesapi\entities\Semestre.class
 com\api\gestnotesapi\entities\Credit.class
 com\api\gestnotesapi\token\TokenType.class
+com\api\gestnotesapi\services\CoursService.class
 com\api\gestnotesapi\repository\CycleRepo.class
 com\api\gestnotesapi\controllers\AnneeAcademiqueController.class
 com\api\gestnotesapi\dto\PVCoursRequest.class
@@ -37,6 +39,7 @@ com\api\gestnotesapi\repository\AnonymatRepo.class
 com\api\gestnotesapi\repository\ProgrammeRepo.class
 com\api\gestnotesapi\config\OpenApiConfig.class
 com\api\gestnotesapi\entities\Enseignant.class
+com\api\gestnotesapi\services\InscriptionService.class
 com\api\gestnotesapi\auth\RegisterRequest.class
 com\api\gestnotesapi\dto\PVCoursResponse.class
 com\api\gestnotesapi\repository\EnseignantRepo.class
@@ -64,7 +67,6 @@ com\api\gestnotesapi\config\SecurityConfiguration.class
 com\api\gestnotesapi\entities\Inscription.class
 com\api\gestnotesapi\controllers\TypeCoursController.class
 com\api\gestnotesapi\entities\Option.class
-com\api\gestnotesapi\services\NoteService$1.class
 com\api\gestnotesapi\entities\TYPECOURSENUM.class
 com\api\gestnotesapi\services\PVService.class
 com\api\gestnotesapi\auth\AuthenticationController.class
@@ -74,6 +76,7 @@ com\api\gestnotesapi\repository\EvaluationRepo.class
 com\api\gestnotesapi\auth\AuthenticationRequest$AuthenticationRequestBuilder.class
 com\api\gestnotesapi\controllers\InscriptionController.class
 com\api\gestnotesapi\token\TokenRepository.class
+com\api\gestnotesapi\dto\MoyenneCours.class
 com\api\gestnotesapi\auth\AuthenticationService.class
 com\api\gestnotesapi\auth\RegisterRequest$RegisterRequestBuilder.class
 com\api\gestnotesapi\repository\ParcoursRepo.class

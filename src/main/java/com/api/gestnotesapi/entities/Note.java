@@ -4,6 +4,7 @@
  */
 package com.api.gestnotesapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
@@ -37,14 +38,17 @@ public class Note implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
+    @JsonIgnore
     private AnneeAcademique anneeAcademique;
 
     @ManyToOne
     @JoinColumn(name = "COURS_ID")
+    @JsonIgnore
     private Cours cours;
 
     @ManyToOne
     @JoinColumn(name = "MODULE_ID")
+    @JsonIgnore
     private Module module;
 
     @ManyToOne

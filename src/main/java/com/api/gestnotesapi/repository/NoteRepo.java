@@ -21,13 +21,13 @@ import org.springframework.data.repository.query.Param;
  */
 public interface NoteRepo extends JpaRepository<Note, Long> {
     
-     List<Note> findAllByEtudiantAndAnneeAcademiqueAndCoursAndIsFinal(Etudiant etudiant, AnneeAcademique anneeAcademique, Cours cours, boolean b);
+//     List<Note> findAllByEtudiantAndAnneeAcademiqueAndCoursAndIsFinal(Etudiant etudiant, AnneeAcademique anneeAcademique, Cours cours, boolean b);
 
     List<Note> findAllByCoursAndAnneeAcademiqueAndIsFinal(Cours cours, AnneeAcademique anneeAcademique, boolean b);
 
     List<Note> findAllByCoursAndIsFinalAndAnneeAcademique(Cours cours, boolean b, AnneeAcademique anneeAcademique);
 
-    Note[] findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(Cours cours, Etudiant etudiant, AnneeAcademique anneeAcademique, boolean b);
+    List<Note> findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(Cours cours, Etudiant etudiant, AnneeAcademique anneeAcademique, boolean b);
 
     List<Note> findAllByModuleAndAnneeAcademiqueAndIsFinal(Module module, AnneeAcademique anneeAcademique, boolean b);
 

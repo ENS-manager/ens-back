@@ -123,13 +123,10 @@ public class CoursController {
         for (Cours cours : coursRepo.findAll()){
             Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
             Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).get();
-            Departement departement = departementRepo.findById(cours.getDepartement().getId()).get();
             for (Option option : optionRepo.findAll()){
-                if (option.getDepartement().getCode().equals(departement.getCode())){
-                    if ((option.getCode().equals(parcours.get().getOption().getCode()))
-                            && (niveau.getValeur().equals(parcours.get().getNiveau().getValeur()))){
-                        coursList.add(cours);
-                    }
+                Parcours par = parcoursRepo.findByOptionAndNiveau(option, niveau);
+                if (par.getLabel().equals(parcours.get().getLabel())){
+                    coursList.add(cours);
                 }
             }
         }

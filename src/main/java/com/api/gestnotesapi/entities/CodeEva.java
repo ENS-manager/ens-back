@@ -4,5 +4,7 @@ public enum CodeEva {
     CC,
     TPE,
     TP,
-    EE
+    EE,
+    STAGE,
+    STAGEPRAT
 }

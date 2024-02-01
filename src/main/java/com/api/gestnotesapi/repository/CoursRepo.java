@@ -29,4 +29,6 @@ public interface CoursRepo extends JpaRepository<Cours, Long>{
     Cours findByCoursId(Long id);
 
     List<Cours> findBySemestreAndDepartement(Semestre semestre, Departement departement);
+
+    List<Cours> findAllByDepartement(Departement departement);
 }

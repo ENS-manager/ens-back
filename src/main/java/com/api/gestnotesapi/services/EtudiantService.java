@@ -16,14 +16,16 @@ public class EtudiantService {
     private ParcoursRepo parcoursRepo;
     private AnneeAcademiqueRepo anneeAcademiqueRepo;
     private DepartementRepo departementRepo;
+    private OptionRepo optionRepo;
 
     @Autowired
-    public EtudiantService(EtudiantRepo etudiantRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, DepartementRepo departementRepo) {
+    public EtudiantService(EtudiantRepo etudiantRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, DepartementRepo departementRepo, OptionRepo optionRepo) {
         this.etudiantRepo = etudiantRepo;
         this.inscriptionRepo = inscriptionRepo;
         this.parcoursRepo = parcoursRepo;
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
         this.departementRepo = departementRepo;
+        this.optionRepo = optionRepo;
     }
 
     public List<Etudiant> getListEtudiantByParcours(String label, int year, TYPE type){
@@ -45,6 +47,25 @@ public class EtudiantService {
 
         if (etudiantList.isEmpty()){
             return null;
+        }
+        return etudiantList;
+    }
+
+    public List<Etudiant> getEtudiantByDepartement(String code){
+        List<Etudiant> etudiantList = new ArrayList<>();
+        Departement departement = departementRepo.findByCode(code).orElse(null);
+        if (departement == null){
+            return null;
+        }
+        for (Inscription inscription: inscriptionRepo.findAll()){
+            Parcours parcours = parcoursRepo.findById(inscription.getParcours().getId()).get();
+            Option option = optionRepo.findById(parcours.getOption().getId()).get();
+            Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
+
+            if (depart.getCode().equals(departement.getCode())){
+                Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
+                etudiantList.add(etudiant);
+            }
         }
         return etudiantList;
     }
