@@ -19,6 +19,7 @@ public class PVCoursResponse {
     private String decision;
     private String grade;
     int session;
+    int credit;
     private String matricule;
     private String nom;
     private String label;
@@ -27,7 +28,7 @@ public class PVCoursResponse {
     private String anneeAcademique;
     private List<Note> notes;
 
-    public PVCoursResponse(int session, String matricule, String nom, String label, String code, String intitule, String anneeAcademique, List<Note> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
+    public PVCoursResponse(int credit, int session, String matricule, String nom, String label, String code, String intitule, String anneeAcademique, List<Note> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
         this.anneeAcademique = anneeAcademique;
         this.session = session;
         this.notes = noteList;
@@ -42,5 +43,6 @@ public class PVCoursResponse {
         this.label = label;
         this.matricule = matricule;
         this.nom = nom;
+        this.credit = credit;
     }
 }
