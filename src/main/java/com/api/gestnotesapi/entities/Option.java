@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "OPTIONS")
 public class Option implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
