@@ -18,7 +18,6 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/etudiant")
 public class EtudiantController {
 
-    private EtudiantRepo etudiantRepo;
     private DepartementRepo departementRepo;
     private OptionRepo optionRepo;
     private InscriptionRepo inscriptionRepo;
@@ -26,7 +25,6 @@ public class EtudiantController {
     private EtudiantService etudiantService;
     @Autowired
     public EtudiantController(EtudiantRepo etudiantRepo, DepartementRepo departementRepo, OptionRepo optionRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, EtudiantService etudiantService) {
-        this.etudiantRepo = etudiantRepo;
         this.departementRepo = departementRepo;
         this.optionRepo = optionRepo;
         this.inscriptionRepo = inscriptionRepo;
@@ -38,16 +36,9 @@ public class EtudiantController {
     @PostMapping("/addEtudiant")
     public ResponseEntity<Etudiant> saveEtudiant(@RequestBody Etudiant etudiant){
 
-        MatriculeService matriculeService = new MatriculeService();
-        if (etudiant == null){
+        Etudiant updateEtudiant = etudiantService.addEtudiant(etudiant);
+        if (updateEtudiant == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Etudiant updateEtudiant = etudiantRepo.save(etudiant);
-        String matricule = "";
-        if (etudiant.getMatricule() == null){
-            matricule = matriculeService.matriculeGenerator(updateEtudiant.getId());
-            updateEtudiant.setMatricule(matricule);
-            return new ResponseEntity<>(etudiantRepo.save(updateEtudiant), HttpStatus.OK);
         }
         return new ResponseEntity<>(updateEtudiant, HttpStatus.OK);
     }
@@ -56,7 +47,7 @@ public class EtudiantController {
     @GetMapping("/findAllEtudiant")
     public ResponseEntity<List<Etudiant>> getAllEtudiant() {
 
-        List<Etudiant> list = etudiantRepo.findAll();
+        List<Etudiant> list = etudiantService.getAll();
         if (list == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -67,7 +58,7 @@ public class EtudiantController {
     @GetMapping("/findEtudiantById/{id}")
     public ResponseEntity<Etudiant> getEtudiantById(@PathVariable("id") Long id) {
 
-        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
+        Etudiant etudiant = etudiantService.getById(id);
         if (etudiant == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -78,7 +69,7 @@ public class EtudiantController {
     @GetMapping("/findEtudiantByMatricule")
     public ResponseEntity<Etudiant> getEtudiantByMatricule(@RequestParam String matricule){
 
-        Etudiant etudiant = etudiantRepo.findByMatricule(matricule).orElse(null);
+        Etudiant etudiant = etudiantService.getByMatricule(matricule);
         if (etudiant == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -89,31 +80,19 @@ public class EtudiantController {
     @GetMapping("/findAllEtudiantByDepart")
     public ResponseEntity<List<Etudiant>> getAllEtudiantByDepart(@RequestParam("code") String code){
 
-        List<Etudiant> etudiantList = new ArrayList<>();
-        Departement departement = departementRepo.findByCode(code).orElse(null);
-        if (departement == null){
+        List<Etudiant> etudiantList = etudiantService.getEtudiantByDepartement(code);
+        if (etudiantList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        for (Inscription inscription: inscriptionRepo.findAll()){
-            Parcours parcours = parcoursRepo.findById(inscription.getParcours().getId()).get();
-            Option option = optionRepo.findById(parcours.getOption().getId()).get();
-            Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
-
-            if (depart.getCode().equals(departement.getCode())){
-                Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-                etudiantList.add(etudiant);
-            }
-        }
-
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
     }
 
 //    liste des etudiants d'un parcours
-    @GetMapping("/findAllEtudiantByParcours/annee/{year}/typeEtudiant/{type}/parcours")
-    public ResponseEntity<List<Etudiant>> getAllEtudiantByParcours(@PathVariable int year, @PathVariable TYPE type, @RequestParam String label){
+    @GetMapping("/findAllEtudiantByParcours/annee/{year}/parcours")
+    public ResponseEntity<List<Etudiant>> getAllEtudiantByParcours(@PathVariable int year, @RequestParam String label){
 
-        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, year, type);
-        if (etudiantList.isEmpty()){
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, year);
+        if (etudiantList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
@@ -123,26 +102,18 @@ public class EtudiantController {
     @PutMapping("/updateEtudiant/{id}")
     public ResponseEntity<Etudiant> updateEtudiant(@PathVariable("id") Long id, @RequestBody Etudiant etudiant){
 
-        Etudiant etudiantFromDb = etudiantRepo.findById(id).orElse(null);
+        Etudiant etudiantFromDb = etudiantService.updateById(id, etudiant);
         if (etudiantFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        etudiantFromDb.setEmail(etudiant.getEmail());
-        etudiantFromDb.setGenre(etudiant.getGenre());
-        etudiantFromDb.setDateDeNaissance(etudiant.getDateDeNaissance());
-        etudiantFromDb.setLieuDeNaissance(etudiant.getLieuDeNaissance());
-        etudiantFromDb.setNom(etudiant.getNom());
-        etudiantFromDb.setNumeroTelephone(etudiant.getNumeroTelephone());
-        etudiantFromDb.setRegion(etudiant.getRegion());
-
-        return new ResponseEntity<>(etudiantRepo.save(etudiantFromDb), HttpStatus.OK);
+        return new ResponseEntity<>(etudiantFromDb, HttpStatus.OK);
     }
 
     //    Supprimer un Etudiant
     @DeleteMapping("/deleteEtudiant/{id}")
     public ResponseEntity<String> deleteEtudiant(@PathVariable("id") Long id){
-        etudiantRepo.deleteById(id);
+        etudiantService.delete(id);
         return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

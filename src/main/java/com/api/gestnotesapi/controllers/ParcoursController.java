@@ -17,46 +17,28 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/parcours")
 public class ParcoursController {
 
-    private ParcoursRepo parcoursRepo;
-    private NiveauRepo niveauRepo;
-    private OptionRepo optionRepo;
-    private DepartementRepo departementRepo;
-    private ParcoursService parcoursService;
-    private EtudiantRepo etudiantRepo;
-    private AnneeAcademiqueRepo anneeAcademiqueRepo;
+   private ParcoursService parcoursService;
 
     @Autowired
-    public ParcoursController(ParcoursRepo parcoursRepo, NiveauRepo niveauRepo, OptionRepo optionRepo, DepartementRepo departementRepo, ParcoursService parcoursService, EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo) {
-        this.parcoursRepo = parcoursRepo;
-        this.niveauRepo = niveauRepo;
-        this.optionRepo = optionRepo;
-        this.departementRepo = departementRepo;
+    public ParcoursController(ParcoursService parcoursService) {
         this.parcoursService = parcoursService;
-        this.etudiantRepo = etudiantRepo;
-        this.anneeAcademiqueRepo = anneeAcademiqueRepo;
     }
 
     //  Ajouter un parcours
     @PostMapping("/addParcours")
     public ResponseEntity<Parcours> saveParcours(@RequestBody Parcours parcours){
-
-        if (parcours == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Parcours update = parcoursService.addParcours(parcours);
+        if (update == null){
+            return null;
         }
-        Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).get();
-        Option option = optionRepo.findById(parcours.getOption().getId()).get();
-        String code = option.getCode();
-        int valeur = niveau.getValeur();
-        String label = code+" "+valeur;
-        parcours.setLabel(label);
-        return new ResponseEntity<>(parcoursRepo.save(parcours), HttpStatus.OK);
+        return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     //    Liste des parcours
     @GetMapping("/findAllParcours")
     public ResponseEntity<List<Parcours>> getAllParcours() {
 
-        List<Parcours> list = parcoursRepo.findAll();
+        List<Parcours> list = parcoursService.getAll();
         if (list == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -67,7 +49,7 @@ public class ParcoursController {
     @GetMapping("/findParcoursById/{id}")
     public ResponseEntity<Parcours> getParcoursById(@PathVariable("id") Long id) {
 
-        Parcours parcours = parcoursRepo.findById(id).orElse(null);
+        Parcours parcours = parcoursService.getById(id);
         if (parcours == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -90,26 +72,17 @@ public class ParcoursController {
     @GetMapping("/findParcoursByDepart")
     public ResponseEntity<List<Parcours>> getParcoursByDepart(@RequestParam String code){
 
-        List<Parcours> parcoursList = new ArrayList<>();
-        Optional<Departement> departement = departementRepo.findByCode(code);
-        if (!departement.isPresent()){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        List<Parcours> parcoursList = parcoursService.getAllByDepartement(code);
+        if (parcoursList == null){
+            return null;
         }
-        for (Parcours parcours : parcoursRepo.findAll()){
-            Option option = optionRepo.findById(parcours.getOption().getId()).get();
-            Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
-            if (depart.getCode().equals(departement.get().getCode())){
-                parcoursList.add(parcours);
-            }
-        }
-
         return new ResponseEntity<>(parcoursList, HttpStatus.OK);
     }
 
     //    Supprimer un parcours
     @DeleteMapping("/deleteParcours/{id}")
     public ResponseEntity<String> deleteParcours(@PathVariable("id") Long id){
-        parcoursRepo.deleteById(id);
+        parcoursService.delete(id);
         return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

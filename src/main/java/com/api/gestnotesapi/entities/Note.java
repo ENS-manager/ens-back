@@ -38,22 +38,18 @@ public class Note implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
-    @JsonIgnore
     private AnneeAcademique anneeAcademique;
 
     @ManyToOne
     @JoinColumn(name = "COURS_ID")
-    @JsonIgnore
     private Cours cours;
 
     @ManyToOne
     @JoinColumn(name = "MODULE_ID")
-    @JsonIgnore
     private Module module;
 
     @ManyToOne
     @JoinColumn(name = "ETUDIANT_ID")
-    @JsonIgnore
     private Etudiant etudiant;
 
     @ManyToOne

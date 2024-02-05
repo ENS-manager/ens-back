@@ -1,41 +1,51 @@
 
 package com.api.gestnotesapi.controllers;
 
-import com.api.gestnotesapi.entities.Cours;
 import com.api.gestnotesapi.entities.Cycle;
 import java.util.List;
-import java.util.Optional;
+
+import com.api.gestnotesapi.services.CycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.api.gestnotesapi.repository.CycleRepo;
 
 
 @RestController
 @CrossOrigin("*")
 //@RequestMapping("/api/v1/admin/cycle")
 public class CycleController {
-     @Autowired
-    private CycleRepo cyclesRepo;
+
+    private CycleService cycleService;
+
+    @Autowired
+    public CycleController(CycleService cycleService) {
+        this.cycleService = cycleService;
+    }
 
     @GetMapping("/findAllCycle")
     public ResponseEntity<List<Cycle>> getCycle() {
 
-        List<Cycle> list = cyclesRepo.findAll();
+        List<Cycle> list = cycleService.getAll();
+        if (list == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping("/addCycle")
     public ResponseEntity<Cycle> saveCycle(@RequestBody Cycle cycle) {
 
-        Cycle update = cyclesRepo.save(cycle);
+        Cycle update = cycleService.addCycle(cycle);
+        if (update == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     @GetMapping("/findCycleById/{id}")
     public ResponseEntity<Cycle> getCycleById(@PathVariable("id") Long id){
-        Cycle cycle = cyclesRepo.findById(id).orElse(null);
+        Cycle cycle = cycleService.getById(id);
         if (cycle == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -45,20 +55,17 @@ public class CycleController {
     @PutMapping("/updateCycle/{id}")
     public ResponseEntity<Cycle> updateCycle(@PathVariable("id") Long id, @RequestBody Cycle cycle){
 
-        Cycle cycleFromDb = cyclesRepo.findById(id).orElse(null);
+        Cycle cycleFromDb = cycleService.updateById(id, cycle);
         if (cycleFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        cycleFromDb.setValeur(cycle.getValeur());
-        cycleFromDb.setEstAffichable(cycle.getEstAffichable());
-
-        return new ResponseEntity<>(cyclesRepo.save(cycleFromDb), HttpStatus.OK);
+        return new ResponseEntity<>(cycleFromDb, HttpStatus.OK);
     }
     
     @DeleteMapping("/deleteCycle/{id}")
     public ResponseEntity<String> deleteCycle(@RequestBody @PathVariable Long id){
-        cyclesRepo.deleteById(id);
+        cycleService.delete(id);
         return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
     }
 }

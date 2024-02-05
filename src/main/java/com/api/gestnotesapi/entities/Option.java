@@ -39,10 +39,8 @@ public class Option implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "DEPARTEMENT_ID")
-    @JsonIgnore
     private Departement departement;
     
     @OneToMany(mappedBy = "option")
-    @JsonIgnore
     private List<Parcours> parcours = new ArrayList<>();
 }

@@ -57,9 +57,5 @@ public class AnneeAcademique implements Serializable {
     @OneToMany(mappedBy = "anneeAcademique")
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
-    
-//    @OneToMany(mappedBy = "anneeAcademique")
-//    @JsonIgnore
-//    private List<Credit> credits = new ArrayList<>();
 
 }

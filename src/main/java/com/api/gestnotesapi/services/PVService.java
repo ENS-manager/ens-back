@@ -1,6 +1,5 @@
 package com.api.gestnotesapi.services;
 
-import com.api.gestnotesapi.dto.PVCoursRequest;
 import com.api.gestnotesapi.dto.PVCoursResponse;
 import com.api.gestnotesapi.dto.PVModuleRequest;
 import com.api.gestnotesapi.dto.PVModuleResponse;
@@ -37,7 +36,7 @@ public class PVService {
     }
 
     public List<PVCoursResponse> getPVCoursByEtudiant(
-            int session, int year, TYPE type, String code, String label
+            int session, int year, String code, String label
     ) {
 
         List<PVCoursResponse> pvCoursResponseList = new ArrayList<>();
@@ -47,7 +46,7 @@ public class PVService {
         if (cours.isEmpty() || anneeAcademique == null || parcours.isEmpty()) {
             return null;
         }
-        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.get().getLabel(), anneeAcademique.getNumeroDebut(), type);
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.get().getLabel(), anneeAcademique.getNumeroDebut());
         if (etudiantList == null){
             return null;
         }

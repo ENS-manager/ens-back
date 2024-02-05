@@ -62,4 +62,12 @@ public class AnneeAcademiqueService {
     public void delete(Long id) {
         anneeAcademiqueRepo.deleteById(id);
     }
+
+    public AnneeAcademique getByCode(String anneeAca) {
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByCode(anneeAca).orElse(null);
+        if (anneeAcademique == null){
+            return null;
+        }
+        return anneeAcademique;
+    }
 }

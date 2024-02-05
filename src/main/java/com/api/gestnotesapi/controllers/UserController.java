@@ -17,8 +17,8 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/user")
 public class UserController {
 
-    @Autowired
-    private UserRepo userRepo;
+//    @Autowired
+//    private UserRepo userRepo;
 
 
 }

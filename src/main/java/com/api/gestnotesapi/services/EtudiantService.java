@@ -3,6 +3,8 @@ package com.api.gestnotesapi.services;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class EtudiantService {
         this.optionRepo = optionRepo;
     }
 
-    public List<Etudiant> getListEtudiantByParcours(String label, int year, TYPE type){
+    public List<Etudiant> getListEtudiantByParcours(String label, int year){
 
         List<Etudiant> etudiantList = new ArrayList<>();
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
@@ -40,9 +42,7 @@ public class EtudiantService {
         List<Inscription> inscriptions = inscriptionRepo.findAllByParcoursAndAnneeAcademique(parcours, anneeAcademique);
         for (Inscription inscription : inscriptions){
             Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-            if (etudiant.getType() == type){
-                etudiantList.add(etudiant);
-            }
+            etudiantList.add(etudiant);
         }
 
         if (etudiantList.isEmpty()){
@@ -68,5 +68,65 @@ public class EtudiantService {
             }
         }
         return etudiantList;
+    }
+
+    public Etudiant addEtudiant(Etudiant etudiant) {
+        if (etudiant == null){
+            return null;
+        }
+        Etudiant updateEtudiant = etudiantRepo.save(etudiant);
+        if (updateEtudiant.getMatricule() != null){
+            return updateEtudiant;
+        }
+        MatriculeService matriculeService = new MatriculeService();
+        String matricule = matriculeService.matriculeGenerator(updateEtudiant.getId());
+        updateEtudiant.setMatricule(matricule);
+        return etudiantRepo.save(updateEtudiant);
+    }
+
+    public List<Etudiant> getAll() {
+        List<Etudiant> list = etudiantRepo.findAll();
+        if (list == null){
+            return null;
+        }
+        return list;
+    }
+
+    public Etudiant getById(Long id) {
+        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
+        if (etudiant == null){
+            return null;
+        }
+        return etudiant;
+    }
+
+    public Etudiant getByMatricule(String matricule) {
+        Etudiant etudiant = etudiantRepo.findByMatricule(matricule).orElse(null);
+        if (etudiant == null){
+            return null;
+        }
+        return etudiant;
+    }
+
+    public Etudiant updateById(Long id, Etudiant etudiant) {
+        Etudiant update = etudiantRepo.findById(id).orElse(null);
+        if (update == null){
+            return null;
+        }
+        update.setEmail(etudiant.getEmail());
+        update.setGenre(etudiant.getGenre());
+        update.setMatricule(etudiant.getMatricule());
+        update.setNom(etudiant.getNom());
+        update.setDateDeNaissance(etudiant.getDateDeNaissance());
+        update.setLieuDeNaissance(etudiant.getLieuDeNaissance());
+        update.setNumeroTelephone(etudiant.getNumeroTelephone());
+        update.setRegion(etudiant.getRegion());
+        update.setType(etudiant.getType());
+
+        return etudiantRepo.save(update);
+    }
+
+    public void delete(Long id) {
+        etudiantRepo.deleteById(id);
     }
 }

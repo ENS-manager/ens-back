@@ -37,7 +37,6 @@ public class Cours implements Serializable {
     private String intitule;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;
 
@@ -47,7 +46,6 @@ public class Cours implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "TYPECOURS_ID")
-    @JsonIgnore
     private TypeCours typecours;
 
 //    @ManyToOne
@@ -56,7 +54,6 @@ public class Cours implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "SEMESTRE_ID")
-    @JsonIgnore
     private Semestre semestre;
     
     @OneToMany(mappedBy = "cours")
@@ -81,6 +78,5 @@ public class Cours implements Serializable {
             joinColumns = @JoinColumn(name = "cours_ID"),
             inverseJoinColumns = @JoinColumn(name = "enseignants_ID")
     )
-    @JsonIgnore
     private List<Enseignant> enseignant = new ArrayList<>();
 }

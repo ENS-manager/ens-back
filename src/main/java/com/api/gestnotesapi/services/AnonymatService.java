@@ -88,4 +88,12 @@ public class AnonymatService{
     public void delete(Long id) {
         anonymatRepo.deleteById(id);
     }
+
+    public Anonymat getByValeur(String valeur) {
+        Anonymat anonymat = anonymatRepo.findByValeur(valeur);
+        if (anonymat == null){
+            return null;
+        }
+        return anonymat;
+    }
 }
