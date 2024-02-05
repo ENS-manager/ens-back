@@ -26,9 +26,9 @@ public class PVCoursResponse {
     private String code;
     private String intitule;
     private String anneeAcademique;
-    private List<Note> notes;
+    private List<NoteDto> notes;
 
-    public PVCoursResponse(int credit, int session, String matricule, String nom, String label, String code, String intitule, String anneeAcademique, List<Note> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
+    public PVCoursResponse(int credit, int session, String matricule, String nom, String label, String code, String intitule, String anneeAcademique, List<NoteDto> noteList, Double ccSurTrente, Double moyenneSurCent, Double moyenneSurVingt, String decision, Double mgp, String grade) {
         this.anneeAcademique = anneeAcademique;
         this.session = session;
         this.notes = noteList;

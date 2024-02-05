@@ -21,7 +21,7 @@ public class ParcoursService {
 
 
     @Autowired
-    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, ParcoursService parcoursService, DepartementService departementService, OptionService optionService, EtudiantService etudiantService, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService) {
+    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantService etudiantService, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService) {
         this.optionService = optionService;
         this.etudiantService = etudiantService;
         this.anneeAcademiqueService = anneeAcademiqueService;

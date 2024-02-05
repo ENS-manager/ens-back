@@ -54,9 +54,9 @@ public class NoteController {
     @PostMapping("/addNoteExamen/anonymat/{valeur}/note")
     public ResponseEntity<Note> saveNoteExamen(@PathVariable String valeur, @RequestParam(name = "note", required = false) Double noteUE){
 
-        if (noteUE == null){
-            noteUE = -1.0;
-        }
+//        if (noteUE == null){
+//            noteUE = -1.0;
+//        }
         Note noteSave = noteService.ajouterNoteExamen(valeur, noteUE);
         if (noteSave == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

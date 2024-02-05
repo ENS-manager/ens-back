@@ -18,17 +18,9 @@ import java.util.Optional;
 //@RequestMapping("/api/v1/admin/etudiant")
 public class EtudiantController {
 
-    private DepartementRepo departementRepo;
-    private OptionRepo optionRepo;
-    private InscriptionRepo inscriptionRepo;
-    private ParcoursRepo parcoursRepo;
     private EtudiantService etudiantService;
     @Autowired
-    public EtudiantController(EtudiantRepo etudiantRepo, DepartementRepo departementRepo, OptionRepo optionRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, EtudiantService etudiantService) {
-        this.departementRepo = departementRepo;
-        this.optionRepo = optionRepo;
-        this.inscriptionRepo = inscriptionRepo;
-        this.parcoursRepo = parcoursRepo;
+    public EtudiantController(EtudiantService etudiantService) {
         this.etudiantService = etudiantService;
     }
 

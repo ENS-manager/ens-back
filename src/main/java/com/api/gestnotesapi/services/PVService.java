@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.dto.NoteDto;
 import com.api.gestnotesapi.dto.PVCoursResponse;
 import com.api.gestnotesapi.dto.PVModuleRequest;
 import com.api.gestnotesapi.dto.PVModuleResponse;
@@ -65,11 +66,16 @@ public class PVService {
                     year,
                     cours.get().getCode()
             );
+            List<NoteDto> noteDtoList = new ArrayList<>();
+            for (Note note : noteList){
+                NoteDto noteDto = new NoteDto(note.getValeur(), note.getEvaluation().getCode());
+                noteDtoList.add(noteDto);
+            }
             PVCoursResponse pvCoursResponse= new PVCoursResponse(cours.get().getCredit().getValeur(),
                     session, etudiant.getMatricule(), etudiant.getNom(), parcours.get().getLabel(),
                     code, cours.get().getIntitule(),
                     anneeAcademique.getCode(),
-                    noteList,
+                    noteDtoList,
                     ccSurTrente,
                     moyenneSurCent,
                     moyenneSurVingt,

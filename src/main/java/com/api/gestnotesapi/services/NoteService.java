@@ -30,12 +30,11 @@ public class NoteService {
     private SemestreService semestreService;
     private NiveauService niveauService;
     private CycleService cycleService;
-    private PVService pvService;
     private DepartementService departementService;
     private OptionService optionService;
 
     @Autowired
-    public NoteService(AnneeAcademiqueRepo anneeAcademiqueRepo, NoteRepo noteRepo, CoursService coursService, AnneeAcademiqueService anneeAcademiqueService, EvaluationService evaluationService, ModuleService moduleService, CreditService creditService, EtudiantService etudiantService, ParcoursService parcoursService, InscriptionService inscriptionService, AnonymatService anonymatService, TypeCoursService typeCoursService, SemestreService semestreService, NiveauService niveauService, CycleService cycleService, PVService pvService, DepartementService departementService, OptionService optionService) {
+    public NoteService(AnneeAcademiqueRepo anneeAcademiqueRepo, NoteRepo noteRepo, CoursService coursService, AnneeAcademiqueService anneeAcademiqueService, EvaluationService evaluationService, ModuleService moduleService, CreditService creditService, EtudiantService etudiantService, ParcoursService parcoursService, InscriptionService inscriptionService, AnonymatService anonymatService, TypeCoursService typeCoursService, SemestreService semestreService, NiveauService niveauService, CycleService cycleService, DepartementService departementService, OptionService optionService) {
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
         this.noteRepo = noteRepo;
         this.coursService = coursService;
@@ -51,7 +50,6 @@ public class NoteService {
         this.semestreService = semestreService;
         this.niveauService = niveauService;
         this.cycleService = cycleService;
-        this.pvService = pvService;
         this.departementService = departementService;
         this.optionService = optionService;
     }
@@ -531,9 +529,10 @@ public class NoteService {
             note.setEtudiant(etudiant);
             note.setCours(cours);
             note.setSessions(anonymat.getSessions());
-            if (noteUE != -1.0){
-                note.setValeur(noteUE);
-            }
+            note.setValeur(noteUE);
+//            if (noteUE != -1.0){
+//                note.setValeur(noteUE);
+//            }
             note.setAnneeAcademique(anneeAcademique);
             note.setIsFinal(true);
 

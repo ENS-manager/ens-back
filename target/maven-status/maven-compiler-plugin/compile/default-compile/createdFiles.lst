@@ -7,8 +7,8 @@ com\api\gestnotesapi\config\ApplicationConfig.class
 com\api\gestnotesapi\repository\UserRepo.class
 com\api\gestnotesapi\entities\Evaluation.class
 com\api\gestnotesapi\entities\Permission.class
+com\api\gestnotesapi\services\EnseignantService.class
 com\api\gestnotesapi\auth\AuthenticationResponse.class
-com\api\gestnotesapi\config\JwtAuthenticationFilter.class
 com\api\gestnotesapi\entities\CodeEva.class
 com\api\gestnotesapi\services\AnneeAcademiqueService.class
 com\api\gestnotesapi\entities\GENRE.class
@@ -22,6 +22,7 @@ com\api\gestnotesapi\entities\Note.class
 com\api\gestnotesapi\controllers\NoteController.class
 com\api\gestnotesapi\repository\NiveauRepo.class
 com\api\gestnotesapi\repository\CoursRepo.class
+com\api\gestnotesapi\services\CreditService.class
 com\api\gestnotesapi\services\ModuleService.class
 com\api\gestnotesapi\config\LogoutService.class
 com\api\gestnotesapi\controllers\CoursController.class
@@ -36,8 +37,8 @@ com\api\gestnotesapi\services\CoursService.class
 com\api\gestnotesapi\repository\CycleRepo.class
 com\api\gestnotesapi\controllers\AnneeAcademiqueController.class
 com\api\gestnotesapi\dto\AnonymatResponse.class
-com\api\gestnotesapi\dto\PVCoursRequest.class
 com\api\gestnotesapi\entities\TypeCours.class
+com\api\gestnotesapi\services\CycleService.class
 com\api\gestnotesapi\controllers\SemestreController.class
 com\api\gestnotesapi\controllers\OptionController.class
 com\api\gestnotesapi\GestnotesapiApplication.class
@@ -64,13 +65,13 @@ com\api\gestnotesapi\token\Token$TokenBuilder.class
 com\api\gestnotesapi\repository\TypeCoursRepo.class
 com\api\gestnotesapi\controllers\NiveauController.class
 com\api\gestnotesapi\controllers\UserController.class
+com\api\gestnotesapi\dto\NoteDto.class
 com\api\gestnotesapi\entities\Cycle.class
 com\api\gestnotesapi\controllers\ModuleController.class
 com\api\gestnotesapi\services\ParcoursService.class
 com\api\gestnotesapi\entities\Programme.class
 com\api\gestnotesapi\entities\User$UserBuilder.class
 com\api\gestnotesapi\repository\AnneeAcademiqueRepo.class
-com\api\gestnotesapi\config\SecurityConfiguration.class
 com\api\gestnotesapi\entities\Inscription.class
 com\api\gestnotesapi\controllers\TypeCoursController.class
 com\api\gestnotesapi\entities\Option.class

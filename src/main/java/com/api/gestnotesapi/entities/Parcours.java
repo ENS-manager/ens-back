@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PARCOURS", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"NIVEAU_ID", "OPTION_ID"}, name = "UNQ_PARCOURS_0")
+    @UniqueConstraint(columnNames = {"NIVEAU_ID", "OPTIONS_ID"}, name = "UNQ_PARCOURS_0")
 })
 public class Parcours implements Serializable{
     @Id
@@ -36,12 +36,10 @@ public class Parcours implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "NIVEAU_ID")
-    @JsonIgnore
     private Niveau niveau;
 
     @ManyToOne
-    @JoinColumn(name = "OPTION_ID")
-    @JsonIgnore
+    @JoinColumn(name = "OPTIONS_ID")
     private Option option;
     
 //    @OneToMany(mappedBy = "parcours")
