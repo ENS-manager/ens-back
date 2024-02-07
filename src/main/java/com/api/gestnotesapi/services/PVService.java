@@ -55,17 +55,29 @@ public class PVService {
         for (Etudiant etudiant : etudiantList){
             Double ccSurTrente = noteService.ccCoursSurTrente(etudiant.getId(), anneeAcademique.getNumeroDebut(), cours.get().getCode());
             Double moyenneSurCent = noteService.moyenneCoursSurCent(etudiant.getId(), session, anneeAcademique.getNumeroDebut(), cours.get().getCode());
-            Double moyenneSurVingt = noteService.convertirSurVingt(moyenneSurCent);
-            String decision = noteService.decision(moyenneSurVingt);
             Double mgp = noteService.mgpPourMoyenneSurCent(moyenneSurCent);
             String grade = noteService.grade(mgp);
+            Double moyenneSurVingt = 0.0;
+            String decision = "";
 
-            List<Note> noteList = noteService.getNotesEtudiantByCours(
+                    List<Note> noteList = noteService.getNotesEtudiantByCours(
                     etudiant.getId(),
                     session,
                     year,
                     cours.get().getCode()
             );
+            if (ccSurTrente == -1.0){
+                ccSurTrente = null;
+            }
+            if (moyenneSurCent == -1.0){
+                moyenneSurCent = null;
+                moyenneSurVingt = null;
+                decision = noteService.decision(-1.0);
+            }else {
+                moyenneSurVingt = noteService.convertirSurVingt(moyenneSurCent);
+                decision = noteService.decision(moyenneSurVingt);
+            }
+
             List<NoteDto> noteDtoList = new ArrayList<>();
             for (Note note : noteList){
                 NoteDto noteDto = new NoteDto(note.getValeur(), note.getEvaluation().getCode());

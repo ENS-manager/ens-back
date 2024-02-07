@@ -237,7 +237,7 @@ public class NoteService {
         }
 
         if (result == -1.0){
-            return null;
+            return -1.0;
         }
         return Math.round(result*100.0)/100.0;
     }
