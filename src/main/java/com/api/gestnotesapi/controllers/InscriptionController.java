@@ -57,9 +57,8 @@ public class InscriptionController {
     }
 
     //    Supprimer une Inscription
-    @DeleteMapping("/deleteInscription/{id}")
+    @PutMapping("/deleteInscription/{id}")
     public ResponseEntity<String> deleteInscription(@PathVariable("id") Long id){
-        inscriptionService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(inscriptionService.delete(id), HttpStatus.OK);
     }
 }

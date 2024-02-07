@@ -29,6 +29,9 @@ public class Semestre implements Serializable {
     @Column(name = "VALEUR")
     private Integer valeur;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "NIVEAU_ID")
     private Niveau niveau;

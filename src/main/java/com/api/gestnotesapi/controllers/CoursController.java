@@ -101,9 +101,8 @@ public class CoursController {
     }
 
 //    Supprimer un cours
-    @DeleteMapping("/deleteCours/{id}")
+    @PutMapping("/deleteCours/{id}")
     public ResponseEntity<String> deleteCours(@PathVariable("id") Long id){
-        coursService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(coursService.delete(id), HttpStatus.OK);
     }
 }

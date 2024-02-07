@@ -27,6 +27,9 @@ public class Programme implements Serializable {
     @Column(name = "ID")
     private Long id;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @JsonIgnore
     @XmlTransient
     @ManyToOne

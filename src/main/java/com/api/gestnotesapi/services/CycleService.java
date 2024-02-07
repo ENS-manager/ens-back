@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Cycle;
 import com.api.gestnotesapi.repository.CycleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,14 @@ public class CycleService {
         return cycleRepo.save(update);
     }
 
-    public void delete(Long id) {
-        cycleRepo.deleteById(id);
+    public String delete(Long id) {
+        Cycle cycle = getById(id);
+        if (cycle == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        cycle.setActive(false);
+        cycleRepo.save(cycle);
+
+        return "Operation reussi avec succes";
     }
 }

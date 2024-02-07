@@ -32,6 +32,9 @@ public class Niveau implements Serializable {
     @Column(name = "TERMINAL")
     private Boolean terminal;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "CYCLE_ID")
     private Cycle cycle;

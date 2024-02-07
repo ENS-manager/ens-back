@@ -65,10 +65,9 @@ public class NiveauController {
           return new ResponseEntity<>(niveauFromDb, HttpStatus.OK);
     }
     
-    @DeleteMapping("/deleteNiveau/{id}")
+    @PutMapping("/deleteNiveau/{id}")
     public ResponseEntity<String> deleteNiveau(@RequestBody @PathVariable Long id){
-        niveauService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(niveauService.delete(id), HttpStatus.OK);
     }
 }
 

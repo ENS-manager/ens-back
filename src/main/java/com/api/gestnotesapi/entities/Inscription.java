@@ -28,6 +28,9 @@ public class Inscription implements Serializable{
     @Column(name = "ID")
     private Long id;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
     private AnneeAcademique anneeAcademique;

@@ -56,8 +56,15 @@ public class InscriptionService {
         return inscriptionRepo.save(inscriptionFromDb);
     }
 
-    public void delete(Long id) {
-        inscriptionRepo.deleteById(id);
+    public String delete(Long id) {
+        Inscription inscription = getById(id);
+        if (inscription == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        inscription.setActive(false);
+        inscriptionRepo.save(inscription);
+
+        return "Operation reussi avec succes";
     }
 
     public Inscription getByEtudiantAndAnneeAcademique(Etudiant etudiant, AnneeAcademique anneeAcademique) {

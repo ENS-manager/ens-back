@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Semestre;
 import com.api.gestnotesapi.repository.SemestreRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,14 @@ public class SemestreService {
         return semestreRepo.save(update);
     }
 
-    public void delete(Long id) {
-        semestreRepo.deleteById(id);
+    public String delete(Long id) {
+        Semestre semestre = getById(id);
+        if (semestre == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        semestre.setActive(false);
+        semestreRepo.save(semestre);
+
+        return "Operation reussi avec succes";
     }
 }

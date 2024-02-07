@@ -83,9 +83,8 @@ public class OptionController {
     }
 
     //    Supprimer une option
-    @DeleteMapping("/deleteOption/{id}")
+    @PutMapping("/deleteOption/{id}")
     public ResponseEntity<String> deleteOption(@PathVariable("id") Long id){
-        optionService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(optionService.delete(id), HttpStatus.OK);
     }
 }

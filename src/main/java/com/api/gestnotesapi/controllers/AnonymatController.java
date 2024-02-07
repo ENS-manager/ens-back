@@ -57,9 +57,8 @@ public class AnonymatController {
     }
 
     //    Supprimer un anonymat
-    @DeleteMapping("/deleteAnonymat/{id}")
+    @PutMapping("/deleteAnonymat/{id}")
     public ResponseEntity<String> deleteAnonymat(@PathVariable("id") Long id){
-        anonymatService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(anonymatService.delete(id), HttpStatus.OK);
     }
 }

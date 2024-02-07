@@ -42,6 +42,9 @@ public class Anonymat implements Serializable {
     @Column(name = "VALEUR", unique = true)
     private String valeur;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
     private AnneeAcademique anneeAcademique;

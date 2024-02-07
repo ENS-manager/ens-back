@@ -67,9 +67,8 @@ public class AnneeAcademiqueController {
     }
 
 //    Supprimer une annee academique
-    @DeleteMapping("/deleteAnneeAca/{id}")
+    @PutMapping("/deleteAnneeAca/{id}")
     public ResponseEntity<String> deleteAnnee(@PathVariable("id") Long id){
-        anneeAcademiqueService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(anneeAcademiqueService.delete(id), HttpStatus.OK);
     }
 }

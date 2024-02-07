@@ -34,6 +34,9 @@ public class Parcours implements Serializable{
     @Column(name = "LABEL")
     private String label;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "NIVEAU_ID")
     private Niveau niveau;

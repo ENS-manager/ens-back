@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Niveau;
 import com.api.gestnotesapi.repository.NiveauRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,15 @@ public class NiveauService {
         return niveauRepo.save(niveauFromDb);
     }
 
-    public void delete(Long id) {
-        niveauRepo.deleteById(id);
+    public String delete(Long id) {
+        Niveau niveau = getById(id);
+        if (niveau == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        niveau.setActive(false);
+        niveauRepo.save(niveau);
+
+        return "Operation reussi avec succes";
     }
 
     public Niveau getByValeur(int level) {

@@ -37,7 +37,7 @@ public class AnonymatService{
     public Anonymat addAnonymat(Anonymat anonymat, int n) {
 
         if (anonymat == null){
-            return null;
+            throw new RuntimeException("Remplissez les champs");
         }
         int session = 0;
         if (anonymat.getSessions().equals(null)){
@@ -61,11 +61,11 @@ public class AnonymatService{
         Cours cours = coursRepo.findByCode(code).get();
         List<AnonymatResponse> list = new ArrayList<>();
         if (anneeAcademique == null || cours == null){
-            return null;
+            throw new RuntimeException("Aucune donnée trouvée pour les valeurs specifiées");
         }
         List<Anonymat> anonymatList = anonymatRepo.findAllByAnneeAcademiqueAndCoursAndSessions(anneeAcademique, cours, session);
         if (anonymatList == null){
-            return null;
+            throw new RuntimeException("Aucune donnée trouvée pour les valeurs specifiées");
         }
         for (Anonymat anonymat : anonymatList){
             AnonymatResponse anonymatResponse = new AnonymatResponse();
@@ -80,19 +80,26 @@ public class AnonymatService{
     public Anonymat getById(Long id) {
         Anonymat anonymat = anonymatRepo.findById(id).orElse(null);
         if (anonymat == null){
-            return null;
+            throw new RuntimeException("Aucune donnée trouvée pour l'id: "+ id);
         }
         return anonymat;
     }
 
-    public void delete(Long id) {
-        anonymatRepo.deleteById(id);
+    public String delete(Long id) {
+        Anonymat anonymat = getById(id);
+        if (anonymat == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        anonymat.setActive(false);
+        anonymatRepo.save(anonymat);
+
+        return "Operation reussi avec succes";
     }
 
     public Anonymat getByValeur(String valeur) {
         Anonymat anonymat = anonymatRepo.findByValeur(valeur);
         if (anonymat == null){
-            return null;
+            throw new RuntimeException("Aucune donnée trouvée pour l'anonymat: "+ valeur);
         }
         return anonymat;
     }

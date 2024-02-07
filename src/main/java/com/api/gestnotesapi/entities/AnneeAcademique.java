@@ -34,6 +34,9 @@ public class AnneeAcademique implements Serializable {
     @Column(name = "FIN")
     private LocalDate fin;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
 //    auto
     @Column(name = "NUMERODEBUT", unique = true)
     private Integer numeroDebut;

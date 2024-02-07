@@ -37,6 +37,9 @@ public class Option implements Serializable{
     @Column(name = "DESCRIPTIONENGLISH")
     private String descriptionEnglish;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;

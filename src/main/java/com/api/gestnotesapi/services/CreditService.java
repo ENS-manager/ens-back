@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Credit;
 import com.api.gestnotesapi.repository.CreditRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,14 @@ public class CreditService {
         return creditRepo.save(update);
     }
 
-    public void delete(Long id) {
-        creditRepo.deleteById(id);
+    public String delete(Long id) {
+        Credit credit = getById(id);
+        if (credit == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        credit.setActive(false);
+        creditRepo.save(credit);
+
+        return "Operation reussi avec succes";
     }
 }

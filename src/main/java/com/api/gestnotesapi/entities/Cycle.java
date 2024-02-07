@@ -33,6 +33,9 @@ public class Cycle implements Serializable {
     @Column(name = "VALEUR", unique = true)
     private Integer valeur;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @OneToMany(mappedBy = "cycle")
     @JsonIgnore
     private List<Niveau> niveaux = new ArrayList<>();

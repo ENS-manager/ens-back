@@ -73,9 +73,8 @@ public class DepartementController {
         return new ResponseEntity<>(departFromDb, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteDepart/{id}")
+    @PutMapping("/deleteDepart/{id}")
     public ResponseEntity<String> deleteNiveau(@RequestBody @PathVariable Long id) {
-        departementService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(departementService.delete(id), HttpStatus.OK);
     }
 }

@@ -72,8 +72,15 @@ public class OptionService {
         return optionRepo.save(update);
     }
 
-    public void delete(Long id) {
-        optionRepo.deleteById(id);
+    public String delete(Long id) {
+        Option option = getById(id);
+        if (option == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        option.setActive(false);
+        optionRepo.save(option);
+
+        return "Operation reussi avec succes";
     }
 
     public Option getByCode(String code) {

@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.CodeEva;
 import com.api.gestnotesapi.entities.Evaluation;
 import com.api.gestnotesapi.repository.*;
@@ -81,7 +82,14 @@ public class EvaluationService {
         return evaluationRepo.save(update);
     }
 
-    public void delete(Long id) {
-        evaluationRepo.deleteById(id);
+    public String delete(Long id) {
+        Evaluation evaluation = getById(id);
+        if (evaluation == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        evaluation.setActive(false);
+        evaluationRepo.save(evaluation);
+
+        return "Operation reussi avec succes";
     }
 }

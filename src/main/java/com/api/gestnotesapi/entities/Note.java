@@ -20,7 +20,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "NOTE", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "MODULE_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS"}, name = "UNQ_NOTE_0")})
+        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "MODULE_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS"}, name = "UNQ_NOTE_0"),
+        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "MODULE_ID", "EVALUATION_ID", "ISFINAL"}, name = "UNQ_NOTE_1"),
+//        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "EVALUATION_ID", "ISFINAL"}, name = "UNQ_NOTE_2")
+})
 public class Note implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +38,9 @@ public class Note implements Serializable{
 
     @Column(name = "ISFINAL")
     private Boolean isFinal = false;
+
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")

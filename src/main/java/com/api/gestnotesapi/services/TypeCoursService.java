@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.TypeCours;
 import com.api.gestnotesapi.repository.TypeCoursRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,14 @@ public class TypeCoursService {
         return typeCoursRepo.save(update);
     }
 
-    public void delete(Long id) {
-        typeCoursRepo.deleteById(id);
+    public String delete(Long id) {
+        TypeCours typeCours = getById(id);
+        if (typeCours == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        typeCours.setActive(false);
+        typeCoursRepo.save(typeCours);
+
+        return "Operation reussi avec succes";
     }
 }

@@ -67,9 +67,8 @@ public class TypeCoursController {
     }
 
     //    Supprimer un typeCours
-    @DeleteMapping("/deleteTypeCours/{id}")
+    @PutMapping("/deleteTypeCours/{id}")
     public ResponseEntity<String> deleteTypeCours(@PathVariable("id") Long id){
-        typeCoursService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(typeCoursService.delete(id), HttpStatus.OK);
     }
 }

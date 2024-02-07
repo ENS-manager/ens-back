@@ -3,8 +3,6 @@ package com.api.gestnotesapi.services;
 import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +18,11 @@ public class AnneeAcademiqueService {
     }
 
     public List<AnneeAcademique> getAll(){
-        return anneeAcademiqueRepo.findAll();
+        List<AnneeAcademique> anneeAcademiques = anneeAcademiqueRepo.findAll();
+        if (anneeAcademiques == null){
+            return null;
+        }
+        return anneeAcademiques;
     }
 
     public AnneeAcademique addAnneeAcademique(AnneeAcademique anneeAcademique){
@@ -59,8 +61,15 @@ public class AnneeAcademiqueService {
         return anneeAcademiqueRepo.save(anneeAcaFromDb);
     }
 
-    public void delete(Long id) {
-        anneeAcademiqueRepo.deleteById(id);
+    public String delete(Long id) {
+        AnneeAcademique anneeAcademique = getById(id);
+        if (anneeAcademique == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        anneeAcademique.setActive(false);
+        anneeAcademiqueRepo.save(anneeAcademique);
+
+        return "Operation reussi avec succes";
     }
 
     public AnneeAcademique getByCode(String anneeAca) {

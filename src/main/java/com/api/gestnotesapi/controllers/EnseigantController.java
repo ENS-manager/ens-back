@@ -95,9 +95,8 @@ public class EnseigantController {
         return new ResponseEntity<>(enseignantFromDb, HttpStatus.OK);
     }
     
-    @DeleteMapping("/deleteEnseignant/{id}")
+    @PutMapping("/deleteEnseignant/{id}")
     public ResponseEntity<String> deleteEnseignant(@PathVariable("id") Long id) {
-        enseignantService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(enseignantService.delete(id), HttpStatus.OK);
     }
 }

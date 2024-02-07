@@ -130,9 +130,8 @@ public class NoteController {
     }
 
     //    Supprimer une Note
-    @DeleteMapping("/deleteNote/{id}")
+    @PutMapping("/deleteNote/{id}")
     public ResponseEntity<String> deleteNote(@PathVariable("id") Long id){
-        noteService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(noteService.delete(id), HttpStatus.OK);
     }
 }

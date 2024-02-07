@@ -22,6 +22,9 @@ public class Module implements Serializable {
     @Column(name = "CODE", unique = true)
     private String code;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
 //    @Column(name = "NATUREUE")
 //    private NatureUE natureUE;
 

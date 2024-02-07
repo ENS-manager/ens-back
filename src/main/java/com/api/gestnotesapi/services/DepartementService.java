@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Departement;
 import com.api.gestnotesapi.repository.DepartementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,14 @@ public class DepartementService {
         return upate;
     }
 
-    public void delete(Long id) {
-        departementRepo.deleteById(id);
+    public String delete(Long id) {
+        Departement departement = getById(id);
+        if (departement == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        departement.setActive(false);
+        departementRepo.save(departement);
+
+        return "Operation reussi avec succes";
     }
 }

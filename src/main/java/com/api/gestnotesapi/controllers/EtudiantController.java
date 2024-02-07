@@ -105,7 +105,6 @@ public class EtudiantController {
     //    Supprimer un Etudiant
     @DeleteMapping("/deleteEtudiant/{id}")
     public ResponseEntity<String> deleteEtudiant(@PathVariable("id") Long id){
-        etudiantService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(etudiantService.delete(id), HttpStatus.OK);
     }
 }

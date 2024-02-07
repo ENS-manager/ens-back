@@ -125,7 +125,14 @@ public class CoursService {
         return coursRepo.save(update);
     }
 
-    public void delete(Long id) {
-        coursRepo.deleteById(id);
+    public String delete(Long id) {
+        Cours cours = getById(id);
+        if (cours == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        cours.setActive(false);
+        coursRepo.save(cours);
+
+        return "Operation reussi avec succes";
     }
 }

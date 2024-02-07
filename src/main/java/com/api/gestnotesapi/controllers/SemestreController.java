@@ -65,9 +65,8 @@ public class SemestreController {
         return new ResponseEntity<>(semestreFromDb, HttpStatus.OK);
     }
     
-    @DeleteMapping("/deleteSemestre/{id}")
+    @PutMapping("/deleteSemestre/{id}")
     public ResponseEntity<String> deleteSemestre(@RequestBody @PathVariable Long id){
-        semestreService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(semestreService.delete(id), HttpStatus.OK);
     }
 }

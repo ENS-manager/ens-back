@@ -97,10 +97,9 @@ public class EvaluationController {
     }
 
     //    Supprimer une Evaluation
-    @DeleteMapping("/deleteEvaluation/{id}")
+    @PutMapping("/deleteEvaluation/{id}")
     public ResponseEntity<String> deleteEvaluation(@PathVariable("id") Long id){
-        evaluationService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(evaluationService.delete(id), HttpStatus.OK);
     }
 
 }

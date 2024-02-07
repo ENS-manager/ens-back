@@ -33,6 +33,9 @@ public class Departement implements Serializable {
 
     @Column(name = "FRENCHDESCRIPTION")
     private String frenchDescription;
+
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
     
     @OneToMany(mappedBy = "departement")
     @JsonIgnore

@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Cours;
 import com.api.gestnotesapi.entities.Module;
 import com.api.gestnotesapi.repository.*;
@@ -114,8 +115,15 @@ public class ModuleService {
         return moduleRepo.save(mod);
     }
 
-    public void delete(Long id) {
-        moduleRepo.deleteById(id);
+    public String delete(Long id) {
+        Module module = getById(id);
+        if (module == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        module.setActive(false);
+        moduleRepo.save(module);
+
+        return "Operation reussi avec succes";
     }
 
     public Module getCode(String code) {

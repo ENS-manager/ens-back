@@ -81,9 +81,8 @@ public class ModuleController {
     }
 
     //    Supprimer un module
-    @DeleteMapping("/deleteModule/{id}")
+    @PutMapping("/deleteModule/{id}")
     public ResponseEntity<String> deleteModule(@PathVariable("id") Long id){
-        moduleService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(moduleService.delete(id), HttpStatus.OK);
     }
 }

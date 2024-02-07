@@ -80,9 +80,8 @@ public class ParcoursController {
     }
 
     //    Supprimer un parcours
-    @DeleteMapping("/deleteParcours/{id}")
+    @PutMapping("/deleteParcours/{id}")
     public ResponseEntity<String> deleteParcours(@PathVariable("id") Long id){
-        parcoursService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(parcoursService.delete(id), HttpStatus.OK);
     }
 }

@@ -36,6 +36,9 @@ public class Cours implements Serializable {
     @Column(name = "INTITULE")
     private String intitule;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;

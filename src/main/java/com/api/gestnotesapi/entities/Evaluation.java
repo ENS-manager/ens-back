@@ -36,6 +36,9 @@ public class Evaluation implements Serializable {
     @Column(name = "ISEXAM")
     private Boolean isExam = false;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
 //    @Column(name = "POURCENTAGE")
 //    private Integer pourcentage;
 

@@ -63,9 +63,8 @@ public class CycleController {
         return new ResponseEntity<>(cycleFromDb, HttpStatus.OK);
     }
     
-    @DeleteMapping("/deleteCycle/{id}")
+    @PutMapping("/deleteCycle/{id}")
     public ResponseEntity<String> deleteCycle(@RequestBody @PathVariable Long id){
-        cycleService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(cycleService.delete(id), HttpStatus.OK);
     }
 }

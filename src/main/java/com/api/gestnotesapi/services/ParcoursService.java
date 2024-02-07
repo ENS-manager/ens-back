@@ -18,10 +18,11 @@ public class ParcoursService {
     private AnneeAcademiqueService anneeAcademiqueService;
     private InscriptionService inscriptionService;
     private DepartementService departementService;
+    private CoursService coursService;
 
 
     @Autowired
-    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantService etudiantService, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService) {
+    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantService etudiantService, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService, CoursService coursService) {
         this.optionService = optionService;
         this.etudiantService = etudiantService;
         this.anneeAcademiqueService = anneeAcademiqueService;
@@ -29,6 +30,7 @@ public class ParcoursService {
         this.niveauServicee = niveauServicee;
         this.parcoursRepo = parcoursRepo;
         this.departementService = departementService;
+        this.coursService = coursService;
     }
 
     public Parcours getParcoursByOptionAndNiveau(int level, String code){
@@ -76,6 +78,23 @@ public class ParcoursService {
         return parcoursRepo.save(parcours);
     }
 
+    public List<Parcours> getParcoursCours(String code){
+        Cours cours = coursService.getByCode(code);
+        if (cours == null){
+            return null;
+        }
+        Departement departement = departementService.getByCode(cours.getDepartement().getCode());
+        if (departement == null){
+            return null;
+        }
+        Option option = departement.getOptions().get(0);
+        List<Parcours> parcours = parcoursRepo.findByOption(option);
+        if (parcours == null){
+            return null;
+        }
+        return parcours;
+    }
+
     public List<Parcours> getAll() {
         List<Parcours> list = parcoursRepo.findAll();
         if (list == null){
@@ -111,7 +130,14 @@ public class ParcoursService {
         return parcoursList;
     }
 
-    public void delete(Long id) {
-        parcoursRepo.deleteById(id);
+    public String delete(Long id) {
+        Parcours parcours = getById(id);
+        if (parcours == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        parcours.setActive(false);
+        parcoursRepo.save(parcours);
+
+        return "Operation reussi avec succes";
     }
 }

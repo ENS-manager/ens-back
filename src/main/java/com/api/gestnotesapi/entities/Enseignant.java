@@ -26,6 +26,9 @@ public class Enseignant implements Serializable {
     @Column(name = "NOM")
     private String nom;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
 //    cours dispense
 
     @ManyToMany(mappedBy = "enseignant")

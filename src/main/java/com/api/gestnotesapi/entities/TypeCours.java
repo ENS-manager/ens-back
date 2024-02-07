@@ -37,6 +37,9 @@ public class TypeCours implements Serializable {
 
     @Column(name = "NOM", unique = true)
     private TYPECOURSENUM nom;
+
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
     
     @OneToMany(mappedBy = "typecours")
     @JsonIgnore

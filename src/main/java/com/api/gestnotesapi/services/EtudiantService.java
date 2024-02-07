@@ -126,7 +126,14 @@ public class EtudiantService {
         return etudiantRepo.save(update);
     }
 
-    public void delete(Long id) {
-        etudiantRepo.deleteById(id);
+    public String delete(Long id) {
+        Etudiant etudiant = getById(id);
+        if (etudiant == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        etudiant.setActive(false);
+        etudiantRepo.save(etudiant);
+
+        return "Operation reussi avec succes";
     }
 }

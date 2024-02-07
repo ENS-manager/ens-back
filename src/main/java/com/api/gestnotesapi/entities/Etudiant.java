@@ -52,6 +52,9 @@ public class Etudiant implements Serializable{
     @Column(name = "NUMEROTELEPHONE")
     private String numeroTelephone;
 
+    @Column(name = "NATIONALITE")
+    private String nationalite;
+
     @Column(name = "TYPE")
     private TYPE type;
 
@@ -62,6 +65,9 @@ public class Etudiant implements Serializable{
     @Column(name = "VALIDEALL")
     @JsonIgnore
     private Boolean valideAll = false;
+
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
     
     @OneToMany(mappedBy = "etudiant")
     @JsonIgnore

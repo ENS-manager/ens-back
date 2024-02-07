@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Cours;
 import com.api.gestnotesapi.entities.Enseignant;
 import com.api.gestnotesapi.repository.*;
@@ -71,7 +72,14 @@ public class EnseignantService {
         return enseignantRepo.save(update);
     }
 
-    public void delete(Long id) {
-        enseignantRepo.deleteById(id);
+    public String delete(Long id) {
+        Enseignant enseignant = getById(id);
+        if (enseignant == null){
+            return "Aucun objet trouve pour l'id specifie";
+        }
+        enseignant.setActive(false);
+        enseignantRepo.save(enseignant);
+
+        return "Operation reussi avec succes";
     }
 }

@@ -37,6 +37,9 @@ public class Credit implements Serializable{
     @Column(name = "VALEUR", unique = true)
     private Integer valeur;
 
+    @Column(name = "ACTIVE")
+    private Boolean active = true;
+
 //    @ManyToOne
 //    @JoinColumn(name = "ANNEEACADEMIQUE_ID")
 //    private AnneeAcademique anneeAcademique;

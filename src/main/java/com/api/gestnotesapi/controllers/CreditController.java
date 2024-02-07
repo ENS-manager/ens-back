@@ -66,9 +66,8 @@ public class CreditController {
     }
 
     //    Supprimer un credit
-    @DeleteMapping("/deleteCredit/{id}")
+    @PutMapping("/deleteCredit/{id}")
     public ResponseEntity<String> deleteCredit(@PathVariable("id") Long id){
-        creditService.delete(id);
-        return new ResponseEntity<>("Deleted with Successfully from database", HttpStatus.OK);
+        return new ResponseEntity<>(creditService.delete(id), HttpStatus.OK);
     }
 }
