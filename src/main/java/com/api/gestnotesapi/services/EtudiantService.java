@@ -15,16 +15,16 @@ public class EtudiantService {
 
     private EtudiantRepo etudiantRepo;
     private InscriptionRepo inscriptionRepo;
-    private ParcoursRepo parcoursRepo;
+    private ParcoursService parcoursService;
     private AnneeAcademiqueRepo anneeAcademiqueRepo;
     private DepartementRepo departementRepo;
     private OptionRepo optionRepo;
 
     @Autowired
-    public EtudiantService(EtudiantRepo etudiantRepo, InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, DepartementRepo departementRepo, OptionRepo optionRepo) {
+    public EtudiantService(EtudiantRepo etudiantRepo, InscriptionRepo inscriptionRepo, ParcoursService parcoursService, AnneeAcademiqueRepo anneeAcademiqueRepo, DepartementRepo departementRepo, OptionRepo optionRepo) {
         this.etudiantRepo = etudiantRepo;
         this.inscriptionRepo = inscriptionRepo;
-        this.parcoursRepo = parcoursRepo;
+        this.parcoursService = parcoursService;
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
         this.departementRepo = departementRepo;
         this.optionRepo = optionRepo;
@@ -33,16 +33,17 @@ public class EtudiantService {
     public List<Etudiant> getListEtudiantByParcours(String label, int year){
 
         List<Etudiant> etudiantList = new ArrayList<>();
-        Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
+        Parcours parcours = parcoursService.getByLabel(label);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
 
         if (parcours == null || anneeAcademique == null){
             return null;
         }
-        List<Inscription> inscriptions = inscriptionRepo.findAllByParcoursAndAnneeAcademique(parcours, anneeAcademique);
+        List<Inscription> inscriptions = inscriptionRepo.findAllByParcoursAndAnneeAcademiqueAndActive(parcours, anneeAcademique, true);
         for (Inscription inscription : inscriptions){
-            Etudiant etudiant = etudiantRepo.findById(inscription.getEtudiant().getId()).get();
-            etudiantList.add(etudiant);
+            if (inscription.getEtudiant().getActive().equals(true)){
+                etudiantList.add(inscription.getEtudiant());
+            }
         }
 
         if (etudiantList.isEmpty()){
@@ -58,7 +59,7 @@ public class EtudiantService {
             return null;
         }
         for (Inscription inscription: inscriptionRepo.findAll()){
-            Parcours parcours = parcoursRepo.findById(inscription.getParcours().getId()).get();
+            Parcours parcours = parcoursService.getById(inscription.getParcours().getId());
             Option option = optionRepo.findById(parcours.getOption().getId()).get();
             Departement depart = departementRepo.findById(option.getDepartement().getId()).get();
 
@@ -136,4 +137,55 @@ public class EtudiantService {
 
         return "Operation reussi avec succes";
     }
+
+    public List<Etudiant> getEtudiantByDepartementAndAnnee(String code, int year) {
+        Departement departement = departementRepo.findByCode(code).orElse(null);
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
+        if (departement == null || anneeAcademique == null){
+            return null;
+        }
+
+        List<Parcours> parcoursList = parcoursService.getAllByDepartement(departement.getCode());
+        List<Etudiant> etudiantList = new ArrayList<>();
+        for (Parcours parcours : parcoursList){
+            etudiantList.addAll(getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut()));
+        }
+
+        return etudiantList;
+    }
+
+    public List<Etudiant> getAllByAnnee(int year) {
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
+        List<Inscription> inscriptions = inscriptionRepo.findAllByAnneeAcademique(anneeAcademique);
+        if (inscriptions == null){
+            return null;
+        }
+        List<Etudiant> etudiantList = new ArrayList<>();
+        for (Inscription inscription : inscriptions){
+            etudiantList.add(inscription.getEtudiant());
+        }
+        return etudiantList;
+    }
+
+    public List<Etudiant> getListEtudiantByParcoursAndActive(String label, Integer numeroDebut) {
+        List<Etudiant> etudiantList = new ArrayList<>();
+        Parcours parcours = parcoursService.getByLabel(label);
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(numeroDebut);
+
+        if (parcours == null || anneeAcademique == null){
+            return null;
+        }
+        List<Inscription> inscriptions = inscriptionRepo.findAllByParcoursAndAnneeAcademiqueAndActive(parcours, anneeAcademique, true);
+        for (Inscription inscription : inscriptions){
+            if (inscription.getEtudiant().getActive().equals(true)){
+                etudiantList.add(inscription.getEtudiant());
+            }
+        }
+
+        if (etudiantList.isEmpty()){
+            return null;
+        }
+        return etudiantList;
+    }
+
 }

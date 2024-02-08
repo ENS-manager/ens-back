@@ -10,5 +10,7 @@ import java.util.Optional;
 
 public interface DepartementRepo extends JpaRepository<Departement, Long>{
 
-    public Optional<Departement> findByCode(String code);
+    Optional<Departement> findByCode(String code);
+
+    Departement findByCodeAndActive(String code, boolean b);
 }

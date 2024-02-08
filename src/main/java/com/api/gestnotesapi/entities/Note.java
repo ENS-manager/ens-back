@@ -31,7 +31,7 @@ public class Note implements Serializable{
     private Long id;
 
     @Column(name = "SESSIONS")
-    private Integer sessions = 1;
+    private Integer sessions = 0;
 
     @Column(name = "VALEUR")
     private Double valeur;

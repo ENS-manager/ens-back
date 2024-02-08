@@ -1,6 +1,5 @@
 package com.api.gestnotesapi.services;
 
-import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.TypeCours;
 import com.api.gestnotesapi.repository.TypeCoursRepo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -242,8 +242,6 @@ public class NoteService {
         return Math.round(result*100.0)/100.0;
     }
 
-
-//    A revoir
     public String caculMoyennePondere(int year, String code){
 
         Cours cours = coursService.getByCode(code);
@@ -742,7 +740,7 @@ public class NoteService {
         Double semestre2 = moyenneSemestre(id, annee, 2);
         Double result = -1.0;
         if (semestre1 == -1.0 && semestre2 == -1.0){
-            return result;
+            return null;
         }else if (semestre1 != -1.0 && semestre2 != -1.0){
             result = (semestre1 + semestre2)/2;
         }else if ((semestre1 != -1.0 && semestre2 == -1.0) || (semestre1 == -1.0 && semestre2 != -1.0)){
@@ -791,13 +789,11 @@ public class NoteService {
         if (anneeAcademique == null || parcours == null || niveau == null || option == null || option == null){
             return null;
         }
-        Departement departement = departementService.getById(option.getDepartement().getId());
-        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
-        if (etudiantList == null || departement == null){
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcoursAndActive(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+        if (etudiantList == null){
             return null;
         }
 
-        String code = departement.getCode();
         for (Etudiant etudiant : etudiantList){
             int creditSem1 = creditSemestre(etudiant.getId(), year, 1), creditSem2 = creditSemestre(etudiant.getId(), year, 2);
             int creditTotal = creditAnnuelle(etudiant.getId(), year);
@@ -805,37 +801,37 @@ public class NoteService {
 //            En attente
             int min = creditSem1 - 6;
             if ((niveau.getValeur().equals(2)) || (niveau.getValeur().equals(4))){
-                if ((creditSem1 >= min) && (creditSem2 == 6) && (etudiant.getValideAll().equals(true)) && (etudiant.getValide().equals(true))){
+                if ((creditSem1 >= min) && (creditSem2 == 30) && (etudiant.getValideAll().equals(true)) && (etudiant.getValide().equals(true))){
                     passageList.add(etudiant);
 
-                    if (creditTotal < 12){
+                    if (creditTotal < 60){
                         etudiant.setValide(true);
                         etudiant.setValideAll(false);
                         etudiantService.addEtudiant(etudiant);
-                    }else if (creditTotal == 12){
+                    }else if (creditTotal == 60){
                         etudiant.setValide(true);
                         etudiant.setValideAll(true);
                         etudiantService.addEtudiant(etudiant);
                     }
                 }
-            }else if ((creditTotal >= 9) && (niveau.getValeur().equals(1))){
+            }else if ((creditTotal >= 45) && (niveau.getValeur().equals(1))){
                 passageList.add(etudiant);
 
-                if (creditTotal < 12){
+                if (creditTotal < 60){
                     etudiant.setValide(true);
                     etudiant.setValideAll(false);
                     etudiantService.addEtudiant(etudiant);
-                }else if (creditTotal == 12){
+                }else if (creditTotal == 60){
                     etudiant.setValide(true);
                     etudiant.setValideAll(true);
                     etudiantService.addEtudiant(etudiant);
                 }
             }else {
-                if (creditTotal < 12){
+                if (creditTotal < 60){
                     etudiant.setValide(false);
                     etudiant.setValideAll(false);
                     etudiantService.addEtudiant(etudiant);
-                }else if (creditTotal == 12){
+                }else if (creditTotal == 60){
                     etudiant.setValide(true);
                     etudiant.setValideAll(true);
                     Etudiant etud = etudiantService.addEtudiant(etudiant);
@@ -957,6 +953,28 @@ public class NoteService {
         }
 
         return valeur;
+    }
+
+    public Integer rank(Long id, String year){
+        Parcours parcours = parcoursService.getParcoursEtudiant(id, year);
+        if (parcours == null){
+            return null;
+        }
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByCode(year);
+        Etudiant etud = etudiantService.getById(id);
+        if (anneeAcademique == null || etud == null){
+            return null;
+        }
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+        int rank = etudiantList.size();
+        double moy = moyenneAnnuelle(id, anneeAcademique.getNumeroDebut());
+
+        for (Etudiant etudiant : etudiantList){
+            if ((!etud.getMatricule().equals(etudiant.getMatricule())) && (moy > moyenneAnnuelle(etudiant.getId(), anneeAcademique.getNumeroDebut()))){
+                rank--;
+            }
+        }
+        return rank;
     }
 
 //    public Double getNoteStageFromEtudiant(Long id, List<Note> noteList){

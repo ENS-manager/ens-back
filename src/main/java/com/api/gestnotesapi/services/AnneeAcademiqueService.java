@@ -5,6 +5,7 @@ import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -78,5 +79,24 @@ public class AnneeAcademiqueService {
             return null;
         }
         return anneeAcademique;
+    }
+
+    public AnneeAcademique getByYear(int year) {
+        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
+        if (anneeAcademique == null){
+            return null;
+        }
+        return anneeAcademique;
+    }
+
+    public List<AnneeAcademique> getAllActif() {
+        List<AnneeAcademique> anneeAcademiqueList = getAll();
+        List<AnneeAcademique> anneeAcademiques = new ArrayList<>();
+        for (AnneeAcademique anneeAcademique : anneeAcademiqueList){
+            if (anneeAcademique.getActive().equals(true)){
+                anneeAcademiques.add(anneeAcademique);
+            }
+        }
+        return anneeAcademiques;
     }
 }

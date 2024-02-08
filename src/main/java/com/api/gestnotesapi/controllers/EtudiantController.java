@@ -19,6 +19,7 @@ import java.util.Optional;
 public class EtudiantController {
 
     private EtudiantService etudiantService;
+
     @Autowired
     public EtudiantController(EtudiantService etudiantService) {
         this.etudiantService = etudiantService;

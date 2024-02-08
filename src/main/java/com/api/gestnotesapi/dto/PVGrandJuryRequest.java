@@ -12,5 +12,4 @@ public class PVGrandJuryRequest {
 
     String anneeAca;
     String parcours;
-    TYPE type;
 }

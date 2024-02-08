@@ -16,16 +16,34 @@ import java.util.List;
 public class PVModuleResponse {
 
     private Double ccSurTrente;
-    private Parcours parcours;
-    private Module module;
-    private AnneeAcademique anneeAcademique;
-    private List<Note> notes;
 
-    public PVModuleResponse(Module module, AnneeAcademique anneeAcademique, Parcours parcours, List<Note> noteList, Double ccSurTrente) {
-        this.module = module;
+//    Etudiant
+    private String matricule;
+    private String nom;
+
+//    Parcours
+    private String label;
+
+//    Module
+    private String code;
+    private String intitule;
+    int credit;
+
+//    Annee academique
+    private String anneeAcademique;
+
+//    Note
+    private List<NoteDto> notes;
+
+    public PVModuleResponse(String code, String intitule, String matricule, int credit, String nom, String anneeAcademique, String label, List<NoteDto> notes, Double ccSurTrente) {
         this.anneeAcademique = anneeAcademique;
-        this.parcours = parcours;
-        this.notes = noteList;
+        this.notes = notes;
         this.ccSurTrente = ccSurTrente;
+        this.code = code;
+        this.intitule = intitule;
+        this.label = label;
+        this.matricule = matricule;
+        this.nom = nom;
+        this.credit = credit;
     }
 }

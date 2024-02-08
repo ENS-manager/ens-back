@@ -13,5 +13,7 @@ public interface ParcoursRepo extends JpaRepository<Parcours, Long> {
     Optional<Parcours> findByLabel(String label);
     Parcours findByOptionAndNiveau(Option option, Niveau niveau);
 
-    List<Parcours> findByOption(Option option);
+    List<Parcours> findAllByOption(Option option);
+
+    Parcours findByLabelAndActive(String label, boolean b);
 }

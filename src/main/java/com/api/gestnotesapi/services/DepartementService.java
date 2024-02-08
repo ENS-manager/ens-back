@@ -6,6 +6,7 @@ import com.api.gestnotesapi.repository.DepartementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,5 +67,24 @@ public class DepartementService {
         departementRepo.save(departement);
 
         return "Operation reussi avec succes";
+    }
+
+    public Departement getByCodeAndActive(String code, boolean b) {
+        Departement departement = departementRepo.findByCodeAndActive(code, b);
+        if (departement == null){
+            return null;
+        }
+        return departement;
+    }
+
+    public List<Departement> getAllActif() {
+        List<Departement> departementList = getAll();
+        List<Departement> departements = new ArrayList<>();
+        for (Departement departement : departementList){
+            if (departement.getActive().equals(true)){
+                departements.add(departement);
+            }
+        }
+        return departements;
     }
 }

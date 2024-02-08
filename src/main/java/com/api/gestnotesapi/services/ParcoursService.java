@@ -14,7 +14,7 @@ public class ParcoursService {
     private ParcoursRepo parcoursRepo;
     private NiveauService niveauServicee;
     private OptionService optionService;
-    private EtudiantService etudiantService;
+    private EtudiantRepo etudiantRepo;
     private AnneeAcademiqueService anneeAcademiqueService;
     private InscriptionService inscriptionService;
     private DepartementService departementService;
@@ -22,9 +22,9 @@ public class ParcoursService {
 
 
     @Autowired
-    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantService etudiantService, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService, CoursService coursService) {
+    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantRepo etudiantRepo, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService, CoursService coursService) {
         this.optionService = optionService;
-        this.etudiantService = etudiantService;
+        this.etudiantRepo = etudiantRepo;
         this.anneeAcademiqueService = anneeAcademiqueService;
         this.inscriptionService = inscriptionService;
         this.niveauServicee = niveauServicee;
@@ -46,7 +46,7 @@ public class ParcoursService {
     }
 
     public Parcours getParcoursEtudiant(Long id, String anneeAca){
-        Etudiant etudiant = etudiantService.getById(id);
+        Etudiant etudiant = etudiantRepo.findById(id).orElse(null);
         AnneeAcademique anneeAcademique = anneeAcademiqueService.getByCode(anneeAca);
         if (etudiant == null || anneeAcademique == null){
             return null;
@@ -88,7 +88,7 @@ public class ParcoursService {
             return null;
         }
         Option option = departement.getOptions().get(0);
-        List<Parcours> parcours = parcoursRepo.findByOption(option);
+        List<Parcours> parcours = parcoursRepo.findAllByOption(option);
         if (parcours == null){
             return null;
         }
@@ -139,5 +139,13 @@ public class ParcoursService {
         parcoursRepo.save(parcours);
 
         return "Operation reussi avec succes";
+    }
+
+    public Parcours getByLabelAndActive(String label) {
+        Parcours parcours = parcoursRepo.findByLabelAndActive(label, true);
+        if (parcours == null){
+            return null;
+        }
+        return parcours;
     }
 }
