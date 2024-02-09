@@ -33,16 +33,22 @@ public class CoursService {
 
     public List<Cours> getListCoursByParcours(String label){
         List<Cours> coursList = new ArrayList<>();
-        Optional<Parcours> parcours = parcoursRepo.findByLabel(label);
-        if (!parcours.isPresent()){
+        Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
+        if (parcours == null){
             return null;
         }
         for (Cours cours : coursRepo.findAll()){
-            Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).get();
-            Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).get();
+            Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).orElse(null);
+            Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).orElse(null);
+            if (semestre == null || niveau == null){
+                return null;
+            }
             for (Option option : optionRepo.findAll()){
-                Parcours par = parcoursRepo.findByOptionAndNiveau(option, niveau);
-                if (par.getLabel().equals(parcours.get().getLabel())){
+                Parcours par = parcoursRepo.findByOptionAndNiveau(option, niveau).orElse(null);
+                if (par == null){
+                    return null;
+                }
+                if (par.getLabel().equals(parcours.getLabel())){
                     coursList.add(cours);
                 }
             }

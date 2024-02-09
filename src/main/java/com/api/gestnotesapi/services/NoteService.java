@@ -599,7 +599,7 @@ public class NoteService {
         List<Cours> coursList = coursService.getListCoursByParcours(parcours.getLabel());
         for (Cours cours : coursList) {
             Double moyenneCours = calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut());
-            if (moyenneCours != -1.0) {
+            if (moyenneCours != null) {
                 sum += moyenneCours * cours.getCredit().getValeur();
                 creditTotal += cours.getCredit().getValeur();
             }

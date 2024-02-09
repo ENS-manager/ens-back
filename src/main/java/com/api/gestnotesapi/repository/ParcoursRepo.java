@@ -11,7 +11,8 @@ import java.util.Optional;
 public interface ParcoursRepo extends JpaRepository<Parcours, Long> {
 
     Optional<Parcours> findByLabel(String label);
-    Parcours findByOptionAndNiveau(Option option, Niveau niveau);
+
+    Optional<Parcours> findByOptionAndNiveau(Option option, Niveau niveau);
 
     List<Parcours> findAllByOption(Option option);
 
