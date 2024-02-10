@@ -41,8 +41,11 @@ public class ParcoursService {
         if (option == null || niveau == null) {
             return null;
         }
-
-        return parcoursRepo.findByOptionAndNiveau(option, niveau);
+        Parcours parcours = parcoursRepo.findByOptionAndNiveau(option, niveau).orElse(null);
+        if (parcours == null){
+            return null;
+        }
+        return parcours;
     }
 
     public Parcours getParcoursEtudiant(Long id, String anneeAca){

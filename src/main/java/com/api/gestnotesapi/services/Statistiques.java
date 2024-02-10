@@ -51,7 +51,7 @@ public class Statistiques {
 
     public Integer statAllEtudiantActif(){
         List<Etudiant> etudiantList = new ArrayList<>();
-        int year = LocalDate.now().getYear();
+        int year = anneeAca();
         List<Etudiant> etudiants = etudiantService.getAllByAnnee(year);
         if (etudiants == null){
             return 0;
@@ -64,12 +64,23 @@ public class Statistiques {
         return etudiantList.size();
     }
 
+    public Integer anneeAca(){
+        List<AnneeAcademique> anneeAcademiqueList = anneeAcademiqueService.getAllActif();
+        int year = 0;
+        for (AnneeAcademique anneeAcademique : anneeAcademiqueList){
+            if (anneeAcademique.getNumeroDebut() > year){
+                year = anneeAcademique.getNumeroDebut();
+            }
+        }
+        return year;
+    }
+
     public Integer statEtudiantDepartementActif(String code){
         Departement departement = departementService.getByCodeAndActive(code, true);
         if (departement == null){
             return 0;
         }
-        int year = LocalDate.now().getYear();
+        int year = anneeAca();
         List<Etudiant> etudiantList = new ArrayList<>();
         List<Etudiant> etudiants = etudiantService.getEtudiantByDepartementAndAnnee(departement.getCode(), year);
         if (etudiants == null){
@@ -88,7 +99,7 @@ public class Statistiques {
         if (parcours == null){
             return 0;
         }
-        int year = LocalDate.now().getYear();
+        int year = anneeAca();
         List<Etudiant> etudiantList = new ArrayList<>();
         List<Etudiant> etudiants =  etudiantService.getListEtudiantByParcours(parcours.getLabel(), year);
         if (etudiants == null){

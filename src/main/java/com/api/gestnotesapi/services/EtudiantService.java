@@ -148,7 +148,9 @@ public class EtudiantService {
         List<Parcours> parcoursList = parcoursService.getAllByDepartement(departement.getCode());
         List<Etudiant> etudiantList = new ArrayList<>();
         for (Parcours parcours : parcoursList){
-            etudiantList.addAll(getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut()));
+            if (getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut()) != null){
+                etudiantList.addAll(getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut()));
+            }
         }
 
         return etudiantList;

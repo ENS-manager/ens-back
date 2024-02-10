@@ -45,5 +45,6 @@ public class Option implements Serializable{
     private Departement departement;
     
     @OneToMany(mappedBy = "option")
+    @JsonIgnore
     private List<Parcours> parcours = new ArrayList<>();
 }
