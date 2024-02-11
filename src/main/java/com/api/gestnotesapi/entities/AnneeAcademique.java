@@ -1,14 +1,8 @@
 package com.api.gestnotesapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,19 +39,19 @@ public class AnneeAcademique implements Serializable {
     @Column(name = "CODE", unique = true)
     private String code;
 
-    @OneToMany(mappedBy = "anneeAcademique")
+    @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Anonymat> anonymats = new ArrayList<>();
     
-    @OneToMany(mappedBy = "anneeAcademique")
+    @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Programme> programmes = new ArrayList<>();
     
-    @OneToMany(mappedBy = "anneeAcademique")
+    @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
     
-    @OneToMany(mappedBy = "anneeAcademique")
+    @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
 

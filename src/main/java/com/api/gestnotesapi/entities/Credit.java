@@ -48,7 +48,7 @@ public class Credit implements Serializable{
 //    @JoinColumn(name = "PARCOURS_ID")
 //    private Parcours parcours;
 
-    @OneToMany(mappedBy = "credit")
+    @OneToMany(mappedBy = "credit", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 }

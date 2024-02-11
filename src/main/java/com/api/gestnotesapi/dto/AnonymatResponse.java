@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnonymatResponse {
-    private String anonymat;
-    private String matricule;
+    private String anneeAca;
+    private String cours;
+    private String parcours;
+    private int session;
+    List<AnonymatDto> anonymatDtoList;
 }

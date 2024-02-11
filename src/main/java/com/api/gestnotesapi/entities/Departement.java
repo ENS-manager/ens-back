@@ -37,11 +37,11 @@ public class Departement implements Serializable {
     @Column(name = "ACTIVE")
     private Boolean active = true;
     
-    @OneToMany(mappedBy = "departement")
+    @OneToMany(mappedBy = "departement", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
     
-    @OneToMany(mappedBy = "departement")
+    @OneToMany(mappedBy = "departement", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Option> options = new ArrayList<>();
 }

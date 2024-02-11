@@ -173,13 +173,10 @@ public class Statistiques {
         return parcoursList.size();
     }
 
-    public Double statPassedByParcours(String label, int year){
-        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
-        if (anneeAcademique == null){
-            return 0.0;
-        }
-        List<Etudiant> passedList = noteService.getListPassageByParcours(label, anneeAcademique.getNumeroDebut());
-        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, anneeAcademique.getNumeroDebut());
+    public Double statPassedByParcours(String label){
+        int year = anneeAca();
+        List<Etudiant> passedList = noteService.getListPassageByParcours(label, year);
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, year);
         if (passedList == null){
             return 0.0;
         }
@@ -187,17 +184,16 @@ public class Statistiques {
         return Math.round(result*100.0)/100.0;
     }
 
-    public Double statPassedByDepartement(String code, int year){
+    public Double statPassedByDepartement(String code){
         Departement departement = departementService.getByCode(code);
-        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
-        if (departement == null || anneeAcademique == null){
+        if (departement == null){
             return 0.0;
         }
         List<Parcours> parcoursList = parcoursService.getAllByDepartement(departement.getCode());
         int m = parcoursList.size();
         double n = 0.0;
         for (Parcours parcours : parcoursList){
-            n += statPassedByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+            n += statPassedByParcours(parcours.getLabel());
         }
 
         double result = n/m;
@@ -216,11 +212,49 @@ public class Statistiques {
                 StatPassedDepart statPassedDepart = new StatPassedDepart(
                         departement.getCode(),
                         anneeAcademique.getCode(),
-                        statPassedByDepartement(departement.getCode(), anneeAcademique.getNumeroDebut())
+                        statPassedByDepartExcept(departement.getCode(), anneeAcademique.getNumeroDebut())
                 );
                 statPassedDepartList.add(statPassedDepart);
             }
         }
         return statPassedDepartList;
+    }
+
+    private Double statPassedByDepartExcept(String code, Integer numeroDebut) {
+        Departement departement = departementService.getByCode(code);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(numeroDebut);
+        if (departement == null){
+            return 0.0;
+        }
+        List<Parcours> parcoursList = parcoursService.getAllByDepartement(departement.getCode());
+        int m = parcoursList.size();
+        double n = 0.0;
+        for (Parcours parcours : parcoursList){
+            n += statPassedByParcoursExcept(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+        }
+
+        double result = n/m;
+        return Math.round(result*100.0)/100.0;
+    }
+
+    private Double statPassedByParcoursExcept(String label, Integer numeroDebut) {
+        List<Etudiant> passedList = noteService.getListPassageByParcours(label, numeroDebut);
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, numeroDebut);
+        if (passedList == null){
+            return 0.0;
+        }
+        double result = (passedList.size()* 100)/etudiantList.size();
+        return Math.round(result*100.0)/100.0;
+    }
+
+    public Double globalPassedDepartement(){
+        List<Departement> departementList = departementService.getAllActif();
+        int year = anneeAca();
+        double result = 0;
+        for (Departement departement : departementList){
+            result += statPassedByDepartExcept(departement.getCode(), year);
+        }
+        int n = departementList.size();
+        return Math.round((result/n)*100.0)/100.0;
     }
 }

@@ -56,11 +56,11 @@ public class Parcours implements Serializable{
 //    @JsonIgnore
 //    private List<Cours> cours = new ArrayList<>();
 //
-    @OneToMany(mappedBy = "parcours")
+    @OneToMany(mappedBy = "parcours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Programme> programmes = new ArrayList<>();
     
-    @OneToMany(mappedBy = "parcours")
+    @OneToMany(mappedBy = "parcours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
 

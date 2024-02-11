@@ -120,8 +120,8 @@ public class NoteController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //    Liste des passages de niveau par parcours et type d'etudiant
-    @GetMapping("/findListPassageByParcours/{type}/anneeAca/{year}/parcours")
+    //    Liste des passages de niveau d'un parcours
+    @GetMapping("/findListPassageByParcours/anneeAca/{year}/parcours")
     public ResponseEntity<List<Etudiant>> listPassageByParcours(@RequestParam String label, @PathVariable int year){
 
         List<Etudiant> etudiantList = noteService.getListPassageByParcours(label, year);
@@ -150,13 +150,13 @@ public class NoteController {
         return new ResponseEntity<>(statistiques.statAllEtudiantActif(), HttpStatus.OK);
     }
 
-    //    Le nombre d'etudiant actif par departement
+    //    Le nombre d'etudiant actif d'un departement
     @GetMapping("/findAllActifEtudiantDepartement")
     public ResponseEntity<Integer> getAllActifEtudiantDepartement(@RequestParam String code){
         return new ResponseEntity<>(statistiques.statEtudiantDepartementActif(code), HttpStatus.OK);
     }
 
-    //    Le nombre d'etudiant actif par parcours
+    //    Le nombre d'etudiant actif d'un parcours
     @GetMapping("/findAllActifEtudiantParcours")
     public ResponseEntity<Integer> getAllActifEtudiantParcours(@RequestParam String label){
         return new ResponseEntity<>(statistiques.statEtudiantParcoursActif(label), HttpStatus.OK);
@@ -168,7 +168,7 @@ public class NoteController {
         return new ResponseEntity<>(statistiques.statAllCoursActif(), HttpStatus.OK);
     }
 
-    //    Le nombre de cours actif par departement
+    //    Le nombre de cours actif d'un departement
     @GetMapping("/findAllActifCoursDepartement")
     public ResponseEntity<Integer> getAllActifCoursDepartement(@RequestParam String code){
         return new ResponseEntity<>(statistiques.statAllCoursDepartementActif(code), HttpStatus.OK);
@@ -180,10 +180,16 @@ public class NoteController {
         return new ResponseEntity<>(statistiques.statAllParcoursActif(), HttpStatus.OK);
     }
 
-    //    Le nombre de parcours actif par departement
+    //    Le nombre de parcours actif d'un departement
     @GetMapping("/findAllActifParcoursDepartement")
     public ResponseEntity<Integer> getAllActifParcoursDepartement(@RequestParam String code){
         return new ResponseEntity<>(statistiques.statAllParcoursDepartementActif(code), HttpStatus.OK);
+    }
+
+//    Le taux de reussite global au cours de l'annee en cours
+    @GetMapping("/findGloalStat")
+    public ResponseEntity<Double> globalStatDepartement(){
+        return new ResponseEntity<>(statistiques.globalPassedDepartement(), HttpStatus.OK);
     }
 
     //    Le taux de reussite de l'ecole pour chaque departement et par annee
@@ -196,16 +202,16 @@ public class NoteController {
         return new ResponseEntity<>(statPassedDepartList, HttpStatus.OK);
     }
 
-    //    Le taux de reussite par departement
-    @GetMapping("/findPassedStatsDepartement/annee/{year}/departement")
-    public ResponseEntity<Double> getPassedStatsDepartement(@PathVariable int year, @RequestParam String code){
-        return new ResponseEntity<>(statistiques.statPassedByDepartement(code, year), HttpStatus.OK);
+    //    Le taux de reussite d'un departement
+    @GetMapping("/findPassedStatsDepartement/departement")
+    public ResponseEntity<Double> getPassedStatsDepartement(@RequestParam String code){
+        return new ResponseEntity<>(statistiques.statPassedByDepartement(code), HttpStatus.OK);
     }
 
-    //    Le taux de reussite par parcours
-    @GetMapping("/findPassedStatsParcours/annee/{year}/parcours")
-    public ResponseEntity<Double> getPassedStatsParcours(@PathVariable int year, @RequestParam String label){
-        return new ResponseEntity<>(statistiques.statPassedByParcours(label, year), HttpStatus.OK);
+    //    Le taux de reussite d'un parcours
+    @GetMapping("/findPassedStatsParcours/parcours")
+    public ResponseEntity<Double> getPassedStatsParcours(@RequestParam String label){
+        return new ResponseEntity<>(statistiques.statPassedByParcours(label), HttpStatus.OK);
     }
 
     //    Modifier une Note

@@ -49,7 +49,7 @@ public class Evaluation implements Serializable {
 //    @OneToMany(mappedBy = "evaluation")
 //    private List<EvaluationDetails> eds = new ArrayList<>();
     
-    @OneToMany(mappedBy = "evaluation")
+    @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 }

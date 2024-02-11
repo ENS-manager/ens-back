@@ -31,7 +31,7 @@ public class Enseignant implements Serializable {
 
 //    cours dispense
 
-    @ManyToMany(mappedBy = "enseignant")
+    @ManyToMany(mappedBy = "enseignant", cascade = CascadeType.ALL)
 //    @JoinTable(
 //        name = "ENSEIGNANT_COURS",
 //        joinColumns = @JoinColumn(name = "enseignants_ID"),

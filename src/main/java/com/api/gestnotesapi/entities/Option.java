@@ -44,7 +44,7 @@ public class Option implements Serializable{
     @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;
     
-    @OneToMany(mappedBy = "option")
+    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Parcours> parcours = new ArrayList<>();
 }

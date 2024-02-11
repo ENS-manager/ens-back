@@ -36,9 +36,9 @@ public class AnonymatController {
 
 //    Liste des anonymats pour un cours, une session et une annee academique
     @GetMapping("/findListAnonymatByCours/session/{session}/anneeAca/{year}/cours")
-    public ResponseEntity<List<AnonymatResponse>> getListAnonymatByCours(@PathVariable int session, @PathVariable int year, @RequestParam("code") String code){
+    public ResponseEntity<AnonymatResponse> getListAnonymatByCours(@PathVariable int session, @PathVariable int year, @RequestParam("code") String code){
 
-        List<AnonymatResponse> anonymatList = anonymatService.getAnonymatCours(session, year, code);
+        AnonymatResponse anonymatList = anonymatService.getAnonymatCours(session, year, code);
         if (anonymatList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

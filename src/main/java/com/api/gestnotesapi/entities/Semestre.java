@@ -36,11 +36,11 @@ public class Semestre implements Serializable {
     @JoinColumn(name = "NIVEAU_ID")
     private Niveau niveau;
     
-    @OneToMany(mappedBy = "semestre")
+    @OneToMany(mappedBy = "semestre", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Programme> programmes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "semestre")
+    @OneToMany(mappedBy = "semestre", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 

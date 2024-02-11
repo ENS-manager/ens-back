@@ -1,9 +1,8 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.dto.AnonymatDto;
 import com.api.gestnotesapi.dto.AnonymatResponse;
-import com.api.gestnotesapi.entities.AnneeAcademique;
-import com.api.gestnotesapi.entities.Anonymat;
-import com.api.gestnotesapi.entities.Cours;
+import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
 import com.api.gestnotesapi.repository.AnonymatRepo;
 import com.api.gestnotesapi.repository.CoursRepo;
@@ -20,12 +19,16 @@ public class AnonymatService{
     private AnonymatRepo anonymatRepo;
     private CoursRepo coursRepo;
     private AnneeAcademiqueRepo anneeAcademiqueRepo;
+    private EtudiantService etudiantService;
+    private ParcoursService parcoursService;
 
     @Autowired
-    public AnonymatService(AnonymatRepo anonymatRepo, CoursRepo coursRepo, AnneeAcademiqueRepo anneeAcademiqueRepo) {
+    public AnonymatService(AnonymatRepo anonymatRepo, CoursRepo coursRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, EtudiantService etudiantService, ParcoursService parcoursService) {
         this.anonymatRepo = anonymatRepo;
         this.coursRepo = coursRepo;
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
+        this.etudiantService = etudiantService;
+        this.parcoursService = parcoursService;
     }
 
     public String anonymatGenerator(String codeUE, int session, int n) {
@@ -56,10 +59,10 @@ public class AnonymatService{
         return anonymatRepo.save(anonymat);
     }
 
-    public List<AnonymatResponse> getAnonymatCours(int session, int year, String code) {
+    public AnonymatResponse getAnonymatCours(int session, int year, String code) {
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
-        Cours cours = coursRepo.findByCode(code).get();
-        List<AnonymatResponse> list = new ArrayList<>();
+        Cours cours = coursRepo.findByCode(code).orElse(null);
+        AnonymatResponse anonymatResponse = new AnonymatResponse();
         if (anneeAcademique == null || cours == null){
             throw new RuntimeException("Aucune donnée trouvée pour les valeurs specifiées");
         }
@@ -67,14 +70,22 @@ public class AnonymatService{
         if (anonymatList == null){
             throw new RuntimeException("Aucune donnée trouvée pour les valeurs specifiées");
         }
+        Anonymat anonym = anonymatList.get(0);
+        Parcours parcours = parcoursService.getParcoursEtudiant(anonym.getEtudiant().getId(), anneeAcademique.getCode());
+        List<AnonymatDto> anonymatDtoList = new ArrayList<>();
         for (Anonymat anonymat : anonymatList){
-            AnonymatResponse anonymatResponse = new AnonymatResponse();
-            anonymatResponse.setAnonymat(anonymat.getValeur());
-            anonymatResponse.setMatricule(anonymat.getEtudiant().getMatricule());
+            AnonymatDto anonymatDto = new AnonymatDto();
+            anonymatDto.setAnonymat(anonymat.getValeur());
+            anonymatDto.setMatricule(anonymat.getEtudiant().getMatricule());
 
-            list.add(anonymatResponse);
+            anonymatDtoList.add(anonymatDto);
         }
-        return list;
+        anonymatResponse.setCours(cours.getCode());
+        anonymatResponse.setAnneeAca(anneeAcademique.getCode());
+        anonymatResponse.setParcours(parcours.getLabel());
+        anonymatResponse.setSession(session);
+        anonymatResponse.setAnonymatDtoList(anonymatDtoList);
+        return anonymatResponse;
     }
 
     public Anonymat getById(Long id) {

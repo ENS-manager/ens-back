@@ -69,15 +69,15 @@ public class Etudiant implements Serializable{
     @Column(name = "ACTIVE")
     private Boolean active = true;
     
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Anonymat> anonymats = new ArrayList<>();
     
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
     
-    @OneToMany(mappedBy = "etudiant")
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 

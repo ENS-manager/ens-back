@@ -59,19 +59,19 @@ public class Cours implements Serializable {
     @JoinColumn(name = "SEMESTRE_ID")
     private Semestre semestre;
     
-    @OneToMany(mappedBy = "cours")
+    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Anonymat> anonymats = new ArrayList<>();
     
-    @OneToMany(mappedBy = "cours")
+    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cours")
+    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Programme> prorammes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cours")
+    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Module> modules = new ArrayList<>();
 
