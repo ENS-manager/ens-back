@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.gestnotesapi.entities.Module;
+import com.api.gestnotesapi.services.SemestreService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,6 @@ public interface NoteRepo extends JpaRepository<Note, Long> {
     List<Note> findAllByModuleAndAnneeAcademiqueAndIsFinal(Module module, AnneeAcademique anneeAcademique, boolean b);
 
     List<Note> findAllByEtudiantAndAnneeAcademiqueAndModule(Etudiant etudiant, AnneeAcademique anneeAcademique, Module module);
+
+    Note findByEtudiantAndAnneeAcademiqueAndEvaluation(Etudiant etudiant, AnneeAcademique anneeAcademique, Evaluation evaluation);
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -189,5 +190,20 @@ public class EtudiantService {
         }
         return etudiantList;
     }
+
+//    pour le pv grand Jury
+//    public List<Etudiant> getListEtudiantByOption(String code){
+//        Option option = optionRepo.findByCode(code).orElse(null);
+//        if (option == null){
+//            return null;
+//        }
+//        List<Parcours> parcoursList = parcoursService.getListParcoursByOption(option.getCode());
+//        List<Etudiant> etudiantList = new ArrayList<>();
+//        for (Parcours parcours : parcoursList){
+//            etudiantList.addAll(getListEtudiantByParcoursSimple(parcours.getLabel()));
+//        }
+//        return etudiantList;
+//    }
+
 
 }

@@ -11,13 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PVGrandJuryResponse {
-    Etudiant etudiant;
-    Double noteStage;
-    Double moyenneEcrit;
-    String moyenneGene;
-    Double noteStagePra;
-    String decision;
-    String mention;
-    MoyenneByTypeCours moyenneByTypeCours;
-    List<MoyenneCours> moyenneCours;
+    String anneeAca;
+    Integer cycle;
+    String session;
+    String promotion;
+    List<PVGrandJuryDto> pvGrandJuryDtoList;
 }

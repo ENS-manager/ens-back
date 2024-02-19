@@ -68,11 +68,7 @@ public class Etudiant implements Serializable{
 
     @Column(name = "ACTIVE")
     private Boolean active = true;
-    
-    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Anonymat> anonymats = new ArrayList<>();
-    
+
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
@@ -81,5 +77,7 @@ public class Etudiant implements Serializable{
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
 
-    
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Moyenne> moyennes = new ArrayList<>();
 }

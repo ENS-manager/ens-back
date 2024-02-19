@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MoyenneCours {
-    Cours cours;
+    String code;
     Double moy;
 }

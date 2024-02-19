@@ -32,9 +32,9 @@ public class Semestre implements Serializable {
     @Column(name = "ACTIVE")
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "NIVEAU_ID")
-    private Niveau niveau;
+//    @ManyToOne
+//    @JoinColumn(name = "NIVEAU_ID")
+//    private Niveau niveau;
     
     @OneToMany(mappedBy = "semestre", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -44,8 +44,13 @@ public class Semestre implements Serializable {
     @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "semestre")
-//    @JsonIgnore
-//    private List<Module> modules = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "NIVEAU_SEMESTRE",
+            joinColumns = @JoinColumn(name = "SEMESTRE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "NIVEAU_ID")
+    )
+    @JsonIgnore
+    private List<Niveau> niveau = new ArrayList<>();
 
 }

@@ -39,9 +39,12 @@ public class Cours implements Serializable {
     @Column(name = "ACTIVE")
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "DEPARTEMENT_ID")
-    private Departement departement;
+    @Column(name = "ISSTAGE")
+    private Boolean isStage = false;
+
+//    @ManyToOne
+//    @JoinColumn(name = "DEPARTEMENT_ID")
+//    private Departement departement;
 
     @ManyToOne
     @JoinColumn(name = "CREDIT_ID")
@@ -58,11 +61,7 @@ public class Cours implements Serializable {
     @ManyToOne
     @JoinColumn(name = "SEMESTRE_ID")
     private Semestre semestre;
-    
-    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Anonymat> anonymats = new ArrayList<>();
-    
+
     @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Note> notes = new ArrayList<>();
@@ -75,11 +74,25 @@ public class Cours implements Serializable {
     @JsonIgnore
     private List<Module> modules = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Moyenne> moyennes = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "COURS_ENSEIGNANT",
             joinColumns = @JoinColumn(name = "cours_ID"),
             inverseJoinColumns = @JoinColumn(name = "enseignants_ID")
     )
+    @JsonIgnore
     private List<Enseignant> enseignant = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "COURS_PARCOURS",
+            joinColumns = @JoinColumn(name = "cours_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PARCOURS_ID")
+    )
+    @JsonIgnore
+    private List<Parcours> parcours = new ArrayList<>();
 }

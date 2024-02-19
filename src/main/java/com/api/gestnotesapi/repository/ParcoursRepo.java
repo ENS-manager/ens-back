@@ -17,4 +17,5 @@ public interface ParcoursRepo extends JpaRepository<Parcours, Long> {
     List<Parcours> findAllByOption(Option option);
 
     Parcours findByLabelAndActive(String label, boolean b);
+
 }

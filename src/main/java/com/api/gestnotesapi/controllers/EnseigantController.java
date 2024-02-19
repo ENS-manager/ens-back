@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.api.gestnotesapi.services.DepartementService;
 import com.api.gestnotesapi.services.EnseignantService;
+import com.api.gestnotesapi.services.ParcoursService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,13 @@ public class EnseigantController {
 
     private EnseignantService enseignantService;
     private DepartementService departementService;
+    private ParcoursService parcoursService;
 
     @Autowired
-    public EnseigantController(EnseignantService enseignantService, DepartementService departementService) {
+    public EnseigantController(EnseignantService enseignantService, DepartementService departementService, ParcoursService parcoursService) {
         this.enseignantService = enseignantService;
         this.departementService = departementService;
+        this.parcoursService = parcoursService;
     }
 
     //    Ajouter un enseignant avec la liste de ses cours
@@ -58,31 +61,11 @@ public class EnseigantController {
 //    Liste des enseignants d'un departement
     @GetMapping("/findListEnseignantByDepartement")
     public ResponseEntity<List<Enseignant>> getEnseignantListByDepart(@RequestParam String code){
-        Departement departement = departementService.getByCode(code);
-        List<Enseignant> enseignantList = new ArrayList<>();
-        if (departement == null){
+        List<Enseignant> enseignantList = enseignantService.getListEnseignantByDepart(code);
+        if (enseignantList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        for (Enseignant enseignant : enseignantService.getAll()){
-            for (Cours cours : enseignant.getCours()){
-                Departement depart = departementService.getById(cours.getDepartement().getId());
-                if (depart.getCode().equals(departement.getCode())){
-                    enseignantList.add(enseignant);
-                }
-                break;
-            }
         }
         return new ResponseEntity<>(enseignantList, HttpStatus.OK);
-    }
-
-//    Liste des cours enseigner par un enseignant
-    @GetMapping("/findCoursTeachByEnseignant/{id}")
-    public ResponseEntity<List<Cours>> getCoursTeachByEnseignant(@PathVariable("id") Long id){
-        Enseignant enseignant = enseignantService.getById(id);
-        if (enseignant == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(enseignant.getCours(), HttpStatus.OK);
     }
 
     @PutMapping("/uptadeEnseignant/{id}")

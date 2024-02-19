@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface AnneeAcademiqueRepo extends JpaRepository<AnneeAcademique, Long> {
 
-    public AnneeAcademique findByNumeroDebut(int numeroDebut);
-    public Optional<AnneeAcademique> findByCode(String code);
+    AnneeAcademique findByNumeroDebut(int numeroDebut);
+    Optional<AnneeAcademique> findByCode(String code);
 }
 

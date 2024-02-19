@@ -41,7 +41,7 @@ public class AnneeAcademique implements Serializable {
 
     @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Anonymat> anonymats = new ArrayList<>();
+    private List<Moyenne> moyennes = new ArrayList<>();
     
     @OneToMany(mappedBy = "anneeAcademique", cascade = CascadeType.ALL)
     @JsonIgnore

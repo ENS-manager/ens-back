@@ -1,9 +1,6 @@
 package com.api.gestnotesapi.controllers;
 
-import com.api.gestnotesapi.dto.PVCoursResponse;
-import com.api.gestnotesapi.dto.PVCoursSansEEResponse;
-import com.api.gestnotesapi.dto.PVModuleResponse;
-import com.api.gestnotesapi.dto.StatPassedDepart;
+import com.api.gestnotesapi.dto.*;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.services.NoteService;
 import com.api.gestnotesapi.services.PVService;
@@ -13,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -54,14 +52,11 @@ public class NoteController {
         return new ResponseEntity<>(noteSave, HttpStatus.OK);
     }
 
-//    Ajouter une note d'examen avec comme entrees: le numero d'anonymat et la note
-    @PostMapping("/addNoteExamen/anonymat/{valeur}/note")
-    public ResponseEntity<Note> saveNoteExamen(@PathVariable String valeur, @RequestParam(name = "note", required = false) Double noteUE){
+//    Ajouter une note d'examen
+    @PostMapping("/addNoteExamen")
+    public ResponseEntity<Note> saveNoteExamen(@RequestBody Note note){
 
-//        if (noteUE == null){
-//            noteUE = -1.0;
-//        }
-        Note noteSave = noteService.ajouterNoteExamen(valeur, noteUE);
+        Note noteSave = noteService.ajouterNoteExamen(note);
         if (noteSave == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -69,7 +64,7 @@ public class NoteController {
         return new ResponseEntity<>(noteSave, HttpStatus.OK);
     }
 
-    //    Moyenne ponderee des notes de cc, tpe et tp d'une session, pour une annee academique et un cours
+//        Moyenne ponderee des notes de cc, tpe et tp d'une session, pour une annee academique et un cours
     @GetMapping("/findMoyenneNotesModuleByAnneeAca/{year}/codeUE")
     public ResponseEntity<String> getNoteByCode(@PathVariable int year, @RequestParam("code") String code){
 
@@ -80,10 +75,10 @@ public class NoteController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{id}/{annee}/cours")
-    public Double getMoy(@PathVariable Long id, @PathVariable int annee, @RequestParam String code){
-        return noteService.calculMoyenneCours(id, code, annee);
-    }
+//    @GetMapping("/find/{id}/{annee}/cours")
+//    public Double getMoy(@PathVariable Long id, @PathVariable int annee, @RequestParam String code){
+//        return noteService.calculMoyenneCours(id, code, annee);
+//    }
 
     //    Proces verbal d'un cours
     @GetMapping("/findPVCours/session/{session}/annee/{annee}/cours")
@@ -131,6 +126,19 @@ public class NoteController {
 
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
     }
+
+    @GetMapping("/findPVGrandJury/cycle/{cycle}/option")
+    public ResponseEntity<List<PVGrandJuryResponse>> getPVGrandJury(@PathVariable int cycle, @RequestParam String code, @RequestBody LocalDate session){
+        List<PVGrandJuryResponse> pvGrandJuryResponseList = pvService.getPVGrandJury(code, cycle, session);
+        if (pvGrandJuryResponseList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(pvGrandJuryResponseList, HttpStatus.OK);
+    }
+
+
+//    ///////// Statistiques  ///////////
+
 
 //    Le nombre d'annee academique actif
     @GetMapping("/findAllActifAnneeAca")
@@ -186,7 +194,7 @@ public class NoteController {
         return new ResponseEntity<>(statistiques.statAllParcoursDepartementActif(code), HttpStatus.OK);
     }
 
-//    Le taux de reussite global au cours de l'annee en cours
+//    Le taux de reussite global de l'annee en cours
     @GetMapping("/findGloalStat")
     public ResponseEntity<Double> globalStatDepartement(){
         return new ResponseEntity<>(statistiques.globalPassedDepartement(), HttpStatus.OK);

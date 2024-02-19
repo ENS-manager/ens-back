@@ -89,7 +89,17 @@ public class CoursController {
         return new ResponseEntity<>(coursList, HttpStatus.OK);
     }
 
-//    Modifier un cours
+    //    Liste des cours enseigner par un enseignant
+    @GetMapping("/findCoursTeachByEnseignant/{id}")
+    public ResponseEntity<List<Cours>> getCoursTeachByEnseignant(@PathVariable("id") Long id){
+        List<Cours> coursList = coursService.getListCoursFromTeacher(id);
+        if (coursList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(coursList, HttpStatus.OK);
+    }
+
+    //    Modifier un cours
     @PutMapping("/updateCours/{id}")
     public ResponseEntity<Cours> updateCours(@PathVariable("id") Long id, @RequestBody Cours cours){
 

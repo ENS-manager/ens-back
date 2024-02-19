@@ -1,12 +1,11 @@
 package com.api.gestnotesapi.services;
 
-import com.api.gestnotesapi.entities.AnneeAcademique;
-import com.api.gestnotesapi.entities.Cours;
-import com.api.gestnotesapi.entities.Enseignant;
+import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +17,18 @@ public class EnseignantService {
     private DepartementRepo departementRepo;
     private ParcoursRepo parcoursRepo;
     private OptionRepo optionRepo;
+    private DepartementService departementService;
+    private ParcoursService parcoursService;
 
     @Autowired
-    public EnseignantService(EnseignantRepo enseignantRepo, CoursRepo coursRepo, DepartementRepo departementRepo, ParcoursRepo parcoursRepo, OptionRepo optionRepo) {
+    public EnseignantService(EnseignantRepo enseignantRepo, CoursRepo coursRepo, DepartementRepo departementRepo, ParcoursRepo parcoursRepo, OptionRepo optionRepo, DepartementService departementService, ParcoursService parcoursService) {
         this.enseignantRepo = enseignantRepo;
         this.coursRepo = coursRepo;
         this.departementRepo = departementRepo;
         this.parcoursRepo = parcoursRepo;
         this.optionRepo = optionRepo;
+        this.departementService = departementService;
+        this.parcoursService = parcoursService;
     }
 
     public Enseignant addEnseignant(Enseignant enseignant) {
@@ -81,5 +84,23 @@ public class EnseignantService {
         enseignantRepo.save(enseignant);
 
         return "Operation reussi avec succes";
+    }
+
+    public List<Enseignant> getListEnseignantByDepart(String code) {
+        Departement departement = departementService.getByCode(code);
+        List<Enseignant> enseignantList = new ArrayList<>();
+        if (departement == null){
+            return null;
+        }
+        for (Enseignant enseignant : enseignantRepo.findAll()){
+            for (Cours cours : enseignant.getCours()){
+                Parcours parcours = parcoursService.getOneParcoursOfCours(cours.getCode());
+                Departement depart = departementService.getByParcours(parcours.getLabel());
+                if (depart.getCode().equals(departement.getCode())){
+                    enseignantList.add(enseignant);
+                }
+            }
+        }
+        return enseignantList;
     }
 }

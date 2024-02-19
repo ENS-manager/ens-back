@@ -3,13 +3,10 @@ package com.api.gestnotesapi.services;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CoursService {
@@ -18,40 +15,47 @@ public class CoursService {
     private CoursRepo coursRepo;
     private NiveauRepo niveauRepo;
     private SemestreRepo semestreRepo;
-    private ParcoursRepo parcoursRepo;
     private DepartementRepo departementRepo;
+    private CycleRepo cycleRepo;
+    private ParcoursService parcoursService;
+    private EnseignantRepo enseignantRepo;
 
     @Autowired
-    public CoursService(OptionRepo optionRepo, CoursRepo coursRepo, NiveauRepo niveauRepo, SemestreRepo semestreRepo, ParcoursRepo parcoursRepo, DepartementRepo departementRepo) {
+    public CoursService(OptionRepo optionRepo, CoursRepo coursRepo, NiveauRepo niveauRepo, SemestreRepo semestreRepo, DepartementRepo departementRepo, CycleRepo cycleRepo, ParcoursService parcoursService, EnseignantRepo enseignantRepo) {
         this.optionRepo = optionRepo;
         this.coursRepo = coursRepo;
         this.niveauRepo = niveauRepo;
         this.semestreRepo = semestreRepo;
-        this.parcoursRepo = parcoursRepo;
         this.departementRepo = departementRepo;
+        this.cycleRepo = cycleRepo;
+        this.parcoursService = parcoursService;
+        this.enseignantRepo = enseignantRepo;
     }
 
     public List<Cours> getListCoursByParcours(String label){
         List<Cours> coursList = new ArrayList<>();
-        Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
+        Parcours parcours = parcoursService.getByLabel(label);
         if (parcours == null){
             return null;
         }
-        for (Cours cours : coursRepo.findAll()){
-            Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).orElse(null);
-            Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).orElse(null);
-            if (semestre == null || niveau == null){
-                return null;
-            }
-            for (Option option : optionRepo.findAll()){
-                Parcours par = parcoursRepo.findByOptionAndNiveau(option, niveau).orElse(null);
-                if (par == null){
-                    return null;
-                }
-                if (par.getLabel().equals(parcours.getLabel())){
-                    coursList.add(cours);
-                }
-            }
+        coursList.addAll(parcours.getCours());
+        return coursList;
+    }
+
+//    Liste des cours d'une option
+    public List<Cours> getListCoursByOptionAndCycle(String code, int value){
+        Option option = optionRepo.findByCode(code).orElse(null);
+        Cycle cycle = cycleRepo.findByValeur(value);
+        if (option == null || cycle == null){
+            return null;
+        }
+        List<Parcours> parcoursList = parcoursService.getListParcoursByOptionAndCycle(code, value);
+        if (parcoursList == null){
+            return null;
+        }
+        List<Cours> coursList = new ArrayList<>();
+        for (Parcours parcours : parcoursList){
+            coursList.addAll(getListCoursByParcours(parcours.getLabel()));
         }
         return coursList;
     }
@@ -60,23 +64,35 @@ public class CoursService {
         if (cours == null){
             return null;
         }
-        if (cours.getCode() != null){
+        if ((cours.getCode() != null && cours.getIsStage().equals(true)) || (cours.getCode() == null && cours.getIsStage().equals(true))){
+            cours.setCode("Stage");
             return coursRepo.save(cours);
         }
         Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).orElse(null);
-        Departement departement = departementRepo.findById(cours.getDepartement().getId()).orElse(null);
-        if (semestre == null || departement == null){
+        if (semestre == null){
             return null;
         }
-        Niveau niveau = niveauRepo.findById(semestre.getNiveau().getId()).orElse(null);
+        Parcours parcours = parcoursService.getParcoursCours(cours.getCode()).get(0);
+        if (parcours == null){
+            return null;
+        }
+        Option option = optionRepo.findById(parcours.getOption().getId()).orElse(null);
+        if (option == null){
+            return null;
+        }
+        Departement departement = departementRepo.findById(option.getDepartement().getId()).orElse(null);
+        if (departement == null){
+            return null;
+        }
+        Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).orElse(null);
         String codeDepart = departement.getCode();
         int valeurNiveau = niveau.getValeur();
         int valeurSemestre = semestre.getValeur();
         Cours updateCours = coursRepo.save(cours);
         String code = codeDepart+valeurNiveau+updateCours.getCoursId()+valeurSemestre;
-        cours.setCode(code);
+        updateCours.setCode(code);
 
-        return coursRepo.save(cours);
+        return coursRepo.save(updateCours);
     }
 
     public List<Cours> getAll() {
@@ -109,9 +125,13 @@ public class CoursService {
         if (departement == null){
             return null;
         }
-        List<Cours> coursList = coursRepo.findAllByDepartement(departement);
-        if (coursList == null){
+        List<Cours> coursList = new ArrayList<>();
+        List<Parcours> parcoursList = parcoursService.getAllByDepartement(departement.getCode());
+        if (parcoursList == null){
             return null;
+        }
+        for (Parcours parcours : parcoursList){
+            coursList.addAll(getListCoursByParcours(parcours.getLabel()));
         }
         return coursList;
     }
@@ -123,10 +143,10 @@ public class CoursService {
         }
         update.setCode(cours.getCode());
         update.setCredit(cours.getCredit());
-        update.setDepartement(cours.getDepartement());
         update.setIntitule(cours.getIntitule());
         update.setNatureUE(cours.getNatureUE());
         update.setTypecours(cours.getTypecours());
+        update.setSemestre(cours.getSemestre());
 
         return coursRepo.save(update);
     }
@@ -141,4 +161,26 @@ public class CoursService {
 
         return "Operation reussi avec succes";
     }
+
+    public String generateCode(NatureUE natureUE, int semestre, int niveau){
+        String nature = "";
+        if (natureUE.equals(NatureUE.Complementaire)){
+            nature = "C";
+        }else if (natureUE.equals(NatureUE.Fondamentale)){
+            nature = "F";
+        }else {
+            nature = "P";
+        }
+        String code = "UE"+nature+niveau+"0"+semestre;
+        return code;
+    }
+
+    public List<Cours> getListCoursFromTeacher(Long id){
+        Enseignant enseignant = enseignantRepo.findById(id).orElse(null);
+        if (enseignant == null){
+            return null;
+        }
+        return enseignant.getCours();
+    }
+
 }

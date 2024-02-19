@@ -5,5 +5,6 @@ public enum CodeEva {
     TPE,
     TP,
     EE,
-    STAGE
+    Stage,
+    StagePrat
 }

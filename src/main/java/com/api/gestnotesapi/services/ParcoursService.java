@@ -7,36 +7,39 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ParcoursService {
 
     private ParcoursRepo parcoursRepo;
-    private NiveauService niveauServicee;
     private OptionService optionService;
     private EtudiantRepo etudiantRepo;
     private AnneeAcademiqueService anneeAcademiqueService;
     private InscriptionService inscriptionService;
     private DepartementService departementService;
-    private CoursService coursService;
+    private CoursRepo coursRepo;
+    private CycleRepo cycleRepo;
+    private NiveauRepo niveauRepo;
 
 
     @Autowired
-    public ParcoursService(ParcoursRepo parcoursRepo, NiveauService niveauServicee, DepartementService departementService, OptionService optionService, EtudiantRepo etudiantRepo, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService, CoursService coursService) {
+    public ParcoursService(ParcoursRepo parcoursRepo, DepartementService departementService, OptionService optionService, EtudiantRepo etudiantRepo, AnneeAcademiqueService anneeAcademiqueService, InscriptionService inscriptionService,  CoursRepo coursRepo, CycleRepo cycleRepo, NiveauRepo niveauRepo) {
         this.optionService = optionService;
         this.etudiantRepo = etudiantRepo;
         this.anneeAcademiqueService = anneeAcademiqueService;
         this.inscriptionService = inscriptionService;
-        this.niveauServicee = niveauServicee;
         this.parcoursRepo = parcoursRepo;
         this.departementService = departementService;
-        this.coursService = coursService;
+        this.coursRepo = coursRepo;
+        this.cycleRepo = cycleRepo;
+        this.niveauRepo = niveauRepo;
     }
 
     public Parcours getParcoursByOptionAndNiveau(int level, String code){
 
         Option option = optionService.getByCode(code);
-        Niveau niveau = niveauServicee.getByValeur(level);
+        Niveau niveau = niveauRepo.findByValeur(level).orElse(null);
 
         if (option == null || niveau == null) {
             return null;
@@ -69,31 +72,44 @@ public class ParcoursService {
         if (parcours == null){
             return null;
         }
+        Parcours newParcours = new Parcours();
+        newParcours.setLabel(parcours.getLabel());
+        newParcours.setNiveau(parcours.getNiveau());
+        newParcours.setOption(parcours.getOption());
+        newParcours.getCours()
+                .addAll(parcours
+                        .getCours()
+                        .stream()
+                        .map(cours -> {
+                            Cours newCours = coursRepo.findByCoursId(cours.getCoursId());
+                            newCours.getParcours().add(newParcours);
+                            return newCours;
+                        }).collect(Collectors.toList()));
         if (parcours.getLabel() != null){
-            return parcoursRepo.save(parcours);
+            return parcoursRepo.save(newParcours);
         }
-        Niveau niveau = niveauServicee.getById(parcours.getNiveau().getId());
+        Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).orElse(null);
+        if (niveau == null){
+            return null;
+        }
         Option option = optionService.getById( parcours.getOption().getId());
         String code = option.getCode();
         int valeur = niveau.getValeur();
         String label = code+" "+valeur;
-        parcours.setLabel(label);
-        return parcoursRepo.save(parcours);
+        newParcours.setLabel(label);
+        return parcoursRepo.save(newParcours);
     }
 
     public List<Parcours> getParcoursCours(String code){
-        Cours cours = coursService.getByCode(code);
+        Cours cours = coursRepo.findByCode(code).orElse(null);
         if (cours == null){
             return null;
         }
-        Departement departement = departementService.getByCode(cours.getDepartement().getCode());
-        if (departement == null){
-            return null;
-        }
-        Option option = departement.getOptions().get(0);
-        List<Parcours> parcours = parcoursRepo.findAllByOption(option);
-        if (parcours == null){
-            return null;
+        List<Parcours> parcours = new ArrayList<>();
+        for (Parcours par : parcoursRepo.findAll()){
+            if (par.getCours().contains(cours)){
+                parcours.add(par);
+            }
         }
         return parcours;
     }
@@ -151,4 +167,48 @@ public class ParcoursService {
         }
         return parcours;
     }
+
+    public Parcours getOneParcoursOfCours(String code){
+        Cours cours = coursRepo.findByCode(code).orElse(null);
+        if (cours == null){
+            return null;
+        }
+        List<Parcours> parcoursList = getAll();
+        if (parcoursList == null){
+            return null;
+        }
+        Parcours parcours = new Parcours();
+        for (Parcours par : parcoursList){
+            if (par.getCours().contains(cours)){
+                parcours = par;
+            }
+        }
+        return parcours;
+    }
+
+    //    pour le pv grand Jury
+    public List<Parcours> getListParcoursByOptionAndCycle(String code, int value){
+        Option option = optionService.getByCode(code);
+        Cycle cycle = cycleRepo.findByValeur(value);
+        if (option == null || cycle == null){
+            return null;
+        }
+        List<Parcours> parcoursList = new ArrayList<>();
+        List<Niveau> niveauList = niveauRepo.findAllByCycle(cycle);
+        for (Niveau niveau : niveauList){
+            parcoursList.add(getParcoursByOptionAndNiveau(niveau.getValeur(), option.getCode()));
+        }
+
+        return parcoursList;
+    }
+
+//    //    pour le pv grand Jury
+//    public List<Parcours> getListParcoursByOption(String code){
+//        Option option = optionService.getByCode(code);
+//        if (option == null){
+//            return null;
+//        }
+//        List<Parcours> parcoursList = parcoursRepo.findAllByOption(option);
+//        return parcoursList;
+//    }
 }

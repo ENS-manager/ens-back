@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface SemestreRepo extends JpaRepository<Semestre, Long> {
-    public Semestre findByValeur(Integer valeur);
+    Semestre findByValeur(Integer valeur);
 }

@@ -39,12 +39,15 @@ public class Niveau implements Serializable {
     @JoinColumn(name = "CYCLE_ID")
     private Cycle cycle;
     
-    @OneToMany(mappedBy = "niveau", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Semestre> semestres = new ArrayList<>();
+//    @OneToMany(mappedBy = "niveau", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Semestre> semestres = new ArrayList<>();
 
     @OneToMany(mappedBy = "niveau", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Parcours> parcours = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "niveau", cascade = CascadeType.ALL)
+    private List<Semestre> semestres = new ArrayList<>();
 
 }

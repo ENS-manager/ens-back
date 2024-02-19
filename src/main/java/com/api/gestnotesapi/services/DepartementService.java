@@ -1,8 +1,11 @@
 package com.api.gestnotesapi.services;
 
-import com.api.gestnotesapi.entities.AnneeAcademique;
 import com.api.gestnotesapi.entities.Departement;
+import com.api.gestnotesapi.entities.Option;
+import com.api.gestnotesapi.entities.Parcours;
 import com.api.gestnotesapi.repository.DepartementRepo;
+import com.api.gestnotesapi.repository.OptionRepo;
+import com.api.gestnotesapi.repository.ParcoursRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,14 @@ import java.util.List;
 public class DepartementService {
 
     private DepartementRepo departementRepo;
+    private ParcoursRepo parcoursRepo;
+    private OptionRepo optionRepo;
 
     @Autowired
-    public DepartementService(DepartementRepo departementRepo) {
+    public DepartementService(DepartementRepo departementRepo, ParcoursRepo parcoursRepo, OptionRepo optionRepo) {
         this.departementRepo = departementRepo;
+        this.parcoursRepo = parcoursRepo;
+        this.optionRepo = optionRepo;
     }
 
     public Departement addDepartement(Departement departement) {
@@ -51,11 +58,16 @@ public class DepartementService {
     }
 
     public Departement updateById(Long id, Departement departement) {
-        Departement upate = getById(id);
-        if (upate == null){
+        Departement update = getById(id);
+        if (update == null){
             return null;
         }
-        return upate;
+        update.setActive(departement.getActive());
+        update.setCode(departement.getCode());
+        update.setEnglishDescription(departement.getEnglishDescription());
+        update.setFrenchDescription(departement.getFrenchDescription());
+
+        return departementRepo.save(update);
     }
 
     public String delete(Long id) {
@@ -86,5 +98,17 @@ public class DepartementService {
             }
         }
         return departements;
+    }
+
+    public Departement getByParcours(String label) {
+        Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
+        if (parcours == null){
+            return null;
+        }
+        Option option = optionRepo.findById(parcours.getOption().getId()).orElse(null);
+        if (option == null){
+            return null;
+        }
+        return option.getDepartement();
     }
 }
