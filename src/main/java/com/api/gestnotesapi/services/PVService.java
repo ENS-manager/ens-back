@@ -54,7 +54,9 @@ public class PVService {
         if (cours == null || anneeAcademique == null || parcours == null) {
             return null;
         }
+
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+
         if (etudiantList == null){
             return null;
         }
@@ -66,6 +68,11 @@ public class PVService {
             String grade = noteService.grade(mgp);
             Double moyenneSurVingt = 0.0;
             String decision = "";
+            Moyenne moyenne = new Moyenne();
+            moyenne.setCours(cours);
+            moyenne.setAnneeAcademique(anneeAcademique);
+            moyenne.setSession(session);
+            moyenne.setEtudiant(etudiant);
 
             List<Note> noteList = noteService.getNotesEtudiantByCours(
             etudiant.getId(),
@@ -82,6 +89,8 @@ public class PVService {
                 decision = noteService.decision(-1.0);
             }else {
                 moyenneSurVingt = noteService.convertirSurVingt(moyenneSurCent);
+                moyenne.setValeur(moyenneSurVingt);
+                moyenneService.addMoyenne(moyenne);
                 decision = noteService.decision(moyenneSurVingt);
             }
 
@@ -240,11 +249,12 @@ public class PVService {
             double moyp31 = 0.0;
             double moyc31 = 0.0;
 
-            String label = code+" "+3;
+            String label = code+" "+1;
             int val = year - 1;
+            System.out.println("parcours: " + label);
             AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(val);
             List<Cours> coursList = coursService.getListCoursByOptionAndCycle(code, cycle);
-            List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, val);
+            List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, anneeAcademique.getNumeroDebut());
             if (coursList == null || etudiantList == null || anneeAcademique == null){
                 return null;
             }
@@ -281,152 +291,197 @@ public class PVService {
                     if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf11 += 10;
-                            nbFond11++;
-                        }else {
-                            moyf11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond11++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf11 += 10;
+                                nbFond11++;
+                            }else {
+                                moyf11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond11++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf12 += 10;
-                            nbFond12++;
-                        }else{
-                            moyf12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond12++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf12 += 10;
+                                nbFond12++;
+                            }else{
+                                moyf12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond12++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc11 += 10;
-                            nbComp11++;
-                        }else {
-                            moyc11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp11++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc11 += 10;
+                                nbComp11++;
+                            }else {
+                                moyc11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp11++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc12 += 10;
-                            nbComp12++;
-                        }else {
-                            moyc12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp12++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc12 += 10;
+                                nbComp12++;
+                            }else {
+                                moyc12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp12++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp11 += 10;
-                            nbProf11++;
-                        }else {
-                            moyp11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf11++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp11 += 10;
+                                nbProf11++;
+                            }else {
+                                moyp11 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf11++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(1))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp12 += 10;
-                            nbComp12++;
-                        }else {
-                            moyp12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp12++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp12 += 10;
+                                nbComp12++;
+                            }else {
+                                moyp12 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp12++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf21 += 10;
-                            nbFond21++;
-                        }else {
-                            moyf21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond21++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf21 += 10;
+                                nbFond21++;
+                            }else {
+                                moyf21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond21++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf22 += 10;
-                            nbFond22++;
-                        }else {
-                            moyf22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond22++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf22 += 10;
+                                nbFond22++;
+                            }else {
+                                moyf22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond22++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc21 += 10;
-                            nbComp21++;
-                        }else {
-                            moyc21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp21++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc21 += 10;
+                                nbComp21++;
+                            }else {
+                                moyc21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp21++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc22 += 10;
-                            nbComp22++;
-                        }else {
-                            moyc22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp22++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc22 += 10;
+                                nbComp22++;
+                            }else {
+                                moyc22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp22++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp21 += 10;
-                            nbProf21++;
-                        }else {
-                            moyp21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf21++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp21 += 10;
+                                nbProf21++;
+                            }else {
+                                moyp21 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf21++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(2))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp22 += 10;
-                            nbProf22++;
-                        }else {
-                            moyp22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf22++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp22 += 10;
+                                nbProf22++;
+                            }else {
+                                moyp22 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf22++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(3))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf31 += 10;
-                            nbFond31++;
-                        }else {
-                            moyf31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond31++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf31 += 10;
+                                nbFond31++;
+                            }else {
+                                moyf31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond31++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(3))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc31 += 10;
-                            nbComp31++;
-                        }else {
-                            moyc31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp31++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc31 += 10;
+                                nbComp31++;
+                            }else {
+                                moyc31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp31++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(3))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp31 += 10;
-                            nbProf31++;
-                        }else {
-                            moyp31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf31++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp31 += 10;
+                                nbProf31++;
+                            }else {
+                                moyp31 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf31++;
+                            }
                         }
                     }
                 }
@@ -501,12 +556,12 @@ public class PVService {
                 Double complementaire = (moyc11+moyc12+moyc21+moyc22+moyc31)/5;
                 Double professionnelle = (moyp11+moyp12+moyp21+moyp22+moyp31)/5;
 
-                Double stagePra = noteService.getNoteStagePrat(etudiant.getId(), anneeAcademique.getNumeroDebut());
-                Double stage = noteService.getNoteStage(etudiant.getId(), anneeAcademique.getNumeroDebut());
+                Double stagePra = noteService.getNoteStage(etudiant.getId(), anneeAcademique.getNumeroDebut(), CodeEva.StagePrat);
+                Double stage = noteService.getNoteStage(etudiant.getId(), anneeAcademique.getNumeroDebut(), CodeEva.Stage);
 
-                Double moyEcrite = fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + stagePra*0.3;
+                Double moyEcrite = fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + (stage == null? 0.0 : stage*0.3);
 //                A revoir
-                Double moyGene = moyEcrite*0.8 + stagePra*0.2;
+                Double moyGene = moyEcrite*0.8 + (stagePra == null? 0.0 : stagePra*0.2);
 
                 String decision = noteService.decider(moyGene);
                 String mention = noteService.mention(moyGene);
@@ -545,11 +600,11 @@ public class PVService {
             double moyc51 = 0.0;
             double moyp51 = 0.0;
 
-            String label = code+" "+3;
+            String label = code+" "+5;
             int val = year - 1;
             AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(val);
             List<Cours> coursList = coursService.getListCoursByOptionAndCycle(code, cycle);
-            List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, val);
+            List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, anneeAcademique.getNumeroDebut());
             if (coursList == null || etudiantList == null || anneeAcademique == null){
                 return null;
             }
@@ -580,92 +635,119 @@ public class PVService {
                     if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf41 += 10;
-                            nbFond41++;
-                        }else {
-                            moyf41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond41++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf41 += 10;
+                                nbFond41++;
+                            }else {
+                                moyf41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond41++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf42 += 10;
-                            nbFond42++;
-                        }else{
-                            moyf42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond42++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf42 += 10;
+                                nbFond42++;
+                            }else{
+                                moyf42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond42++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc41 += 10;
-                            nbComp41++;
-                        }else {
-                            moyc41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp41++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc41 += 10;
+                                nbComp41++;
+                            }else {
+                                moyc41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp41++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc42 += 10;
-                            nbComp42++;
-                        }else {
-                            moyc42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp42++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc42 += 10;
+                                nbComp42++;
+                            }else {
+                                moyc42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp42++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp41 += 10;
-                            nbProf41++;
-                        }else {
-                            moyp41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf41++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp41 += 10;
+                                nbProf41++;
+                            }else {
+                                moyp41 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf41++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(2))
                             && (niveau.getValeur().equals(4))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp42 += 10;
-                            nbComp42++;
-                        }else {
-                            moyp42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp42++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp42 += 10;
+                                nbComp42++;
+                            }else {
+                                moyp42 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp42++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(5))
                             && (cours.getNatureUE().equals(NatureUE.Fondamentale))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyf51 += 10;
-                            nbFond51++;
-                        }else {
-                            moyf51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbFond51++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyf51 += 10;
+                                nbFond51++;
+                            }else {
+                                moyf51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbFond51++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(5))
                             && (cours.getNatureUE().equals(NatureUE.Complementaire))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyc51 += 10;
-                            nbComp51++;
-                        }else {
-                            moyc51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbComp51++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyc51 += 10;
+                                nbComp51++;
+                            }else {
+                                moyc51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbComp51++;
+                            }
                         }
                     }else if ((cours.getSemestre().getValeur().equals(1))
                             && (niveau.getValeur().equals(5))
                             && (cours.getNatureUE().equals(NatureUE.Professionnelle))){
-                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
-                            moyp51 += 10;
-                            nbProf51++;
-                        }else {
-                            moyp51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
-                            nbProf51++;
+                        if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                                && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
+                            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() < 10){
+                                moyp51 += 10;
+                                nbProf51++;
+                            }else {
+                                moyp51 += moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                                nbProf51++;
+                            }
                         }
                     }
                 }
@@ -786,12 +868,16 @@ public class PVService {
             for (Cours cours : coursList){
                 if (cours.getSemestre().getValeur().equals(1)){
                     MoyenneCours moyenneCours = new MoyenneCours();
-                    moyenneCours.setMoy(noteService.calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut()));
+                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                        moyenneCours.setMoy(moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur());
+                    }
                     moyenneCours.setCode(cours.getCode());
                     coursSem1.add(moyenneCours);
                 }else {
                     MoyenneCours moyenneCours = new MoyenneCours();
-                    moyenneCours.setMoy(noteService.calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut()));
+                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                        moyenneCours.setMoy(moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur());
+                    }
                     moyenneCours.setCode(cours.getCode());
                     coursSem2.add(moyenneCours);
                 }

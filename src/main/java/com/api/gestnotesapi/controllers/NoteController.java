@@ -6,6 +6,7 @@ import com.api.gestnotesapi.services.NoteService;
 import com.api.gestnotesapi.services.PVService;
 import com.api.gestnotesapi.services.Statistiques;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -127,8 +128,19 @@ public class NoteController {
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
     }
 
+//    Proces verbal annuel
+    @GetMapping("/findPVAnnuel/anneeAca/{anneeAca}/parcours")
+    public ResponseEntity<List<PVAnnuel>> getPVAnnuel(@RequestParam String label, @PathVariable String anneeAca){
+        List<PVAnnuel> pvAnnuelList = pvService.getPVAnnuel(anneeAca, label);
+        if (pvAnnuelList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(pvAnnuelList, HttpStatus.OK);
+    }
+
     @GetMapping("/findPVGrandJury/cycle/{cycle}/option")
-    public ResponseEntity<List<PVGrandJuryResponse>> getPVGrandJury(@PathVariable int cycle, @RequestParam String code, @RequestBody LocalDate session){
+    public ResponseEntity<List<PVGrandJuryResponse>> getPVGrandJury(@PathVariable int cycle, @RequestParam String code,
+                                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate session){
         List<PVGrandJuryResponse> pvGrandJuryResponseList = pvService.getPVGrandJury(code, cycle, session);
         if (pvGrandJuryResponseList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

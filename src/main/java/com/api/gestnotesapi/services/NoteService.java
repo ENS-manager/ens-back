@@ -577,15 +577,21 @@ public class NoteService {
         Parcours parcours = parcoursService.getParcoursEtudiant(etudiant.getId(), anneeAcademique.getCode());
         List<Cours> coursList = coursService.getListCoursByParcours(parcours.getLabel());
         for (Cours cours : coursList) {
-            Double moyenneCours = calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut());
-            if (moyenneCours != null) {
-                sum += moyenneCours * cours.getCredit().getValeur();
-                creditTotal += cours.getCredit().getValeur();
+            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                Double moyenneCours = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                if (moyenneCours != null) {
+                    sum += moyenneCours * cours.getCredit().getValeur();
+                    creditTotal += cours.getCredit().getValeur();
+                }
             }
         }
 
         if (creditTotal == 0) {
             return 0.0;
+        }
+
+        if (sum == null){
+            return null;
         }
 
         Double moyenneSemestre = sum / creditTotal;
@@ -609,108 +615,108 @@ public class NoteService {
         return false;
     }
 
-    public Double calculMoyenneCours(Long id, String code, int annee) {
-//        Double result = (moyenneCoursSurCent(id, annee, code)* 20)/100.0;
-        Etudiant etudiant = etudiantService.getById(id);
-        Cours cours = coursService.getByCode(code);
-        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(annee);
-        if (etudiant == null || cours == null || anneeAcademique == null){
-            return null;
-        }
-        Moyenne moyenne = new Moyenne();
-        moyenne.setCours(cours);
-        moyenne.setEtudiant(etudiant);
-        moyenne.setAnneeAcademique(anneeAcademique);
-        Double result = null, noteExamen = null, noteCC = null, noteTPE = null, noteTP = null;
-        List<Note> noteEE = new ArrayList<>();
-        List<Note> noteList = noteRepo.findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(cours, etudiant, anneeAcademique, true);
-        for (Note note : noteList) {
-            Evaluation evaluation = note.getEvaluation();
-            if (evaluation.getCode() == CodeEva.EE) {
-                if (note.getValeur() != null){
-                    noteEE.add(note);
-                }
-            } else if (evaluation.getCode() == CodeEva.CC) {
-                if (note.getValeur() != null){
-                    noteCC = note.getValeur();
-                }
-            } else if (evaluation.getCode() == CodeEva.TPE) {
-                if (note.getValeur() != null){
-                    noteTPE = note.getValeur();
-                }
-            } else if (evaluation.getCode() == CodeEva.TP) {
-                if (note.getValeur() != null){
-                    noteTP = note.getValeur();
-                }
-            }
-
-        }
-
-        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
-
-        if (typeCours == null) {
-            return null;
-        }
-        if (noteEE == null){
-            return null;
-        }else {
-            if (noteEE.size() == 2){
-                moyenne.setSession(2);
-                for (Note note : noteEE){
-                    if (note.getSessions() == 2){
-                        noteExamen = note.getValeur();
-                    }
-                }
-            }else{
-                moyenne.setSession(1);
-                for (Note note : noteEE){
-                    noteExamen = note.getValeur();
-                }
-            }
-
-        }
-        if (typeCours.getNom().equals(CC_TPE_TP_EE)) {
-            if (noteExamen == null) {
-                result = null;
-            }else {
-                if (noteCC == null && noteTPE == null && noteTP == null){
-                    result = null;
-                }else {
-                    result = 0.7 * noteExamen
-                            + (noteCC > 0 ? 0.1 * noteCC : 0.0)
-                            + (noteTPE > 0 ? 0.1 * noteTPE : 0.0)
-                            + (noteTP > 0 ? 0.1 * noteTP : 0.0);
-                }
-            }
-        } else if (typeCours.getNom().equals(CC_TPE_EE)) {
-            if (noteExamen == null) {
-                result = null;
-            }else {
-                if (noteCC == null && noteTPE == null){
-                    result = null;
-                }else{
-                    result = 0.7 * noteExamen
-                            + (noteCC > 0 ? 0.2 * noteCC : 0.0)
-                            + (noteTPE > 0 ? 0.1 * noteTPE : 0.0);
-                }
-            }
-        } else if (typeCours.getNom().equals(CC_EE)) {
-            if (noteExamen == null || noteCC == null) {
-                result = null;
-            }else {
-                Double temp = examenSurVingt(noteExamen);
-                result = 0.7 * temp + 0.3 * noteCC;
-            }
-        }
-        if (result == null){
-            moyenne.setValeur(null);
-            moyenneService.addMoyenne(moyenne);
-            return null;
-        }
-        moyenne.setValeur(Math.round(result*100.0)/100.0);
-        moyenneService.addMoyenne(moyenne);
-        return Math.round(result*100.0)/100.0;
-    }
+//    public Double calculMoyenneCours(Long id, String code, int annee) {
+////        Double result = (moyenneCoursSurCent(id, annee, code)* 20)/100.0;
+//        Etudiant etudiant = etudiantService.getById(id);
+//        Cours cours = coursService.getByCode(code);
+//        AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(annee);
+//        if (etudiant == null || cours == null || anneeAcademique == null){
+//            return null;
+//        }
+//        Moyenne moyenne = new Moyenne();
+//        moyenne.setCours(cours);
+//        moyenne.setEtudiant(etudiant);
+//        moyenne.setAnneeAcademique(anneeAcademique);
+//        Double result = null, noteExamen = null, noteCC = null, noteTPE = null, noteTP = null;
+//        List<Note> noteEE = new ArrayList<>();
+//        List<Note> noteList = noteRepo.findByCoursAndEtudiantAndAnneeAcademiqueAndIsFinal(cours, etudiant, anneeAcademique, true);
+//        for (Note note : noteList) {
+//            Evaluation evaluation = note.getEvaluation();
+//            if (evaluation.getCode() == CodeEva.EE) {
+//                if (note.getValeur() != null){
+//                    noteEE.add(note);
+//                }
+//            } else if (evaluation.getCode() == CodeEva.CC) {
+//                if (note.getValeur() != null){
+//                    noteCC = note.getValeur();
+//                }
+//            } else if (evaluation.getCode() == CodeEva.TPE) {
+//                if (note.getValeur() != null){
+//                    noteTPE = note.getValeur();
+//                }
+//            } else if (evaluation.getCode() == CodeEva.TP) {
+//                if (note.getValeur() != null){
+//                    noteTP = note.getValeur();
+//                }
+//            }
+//
+//        }
+//
+//        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
+//
+//        if (typeCours == null) {
+//            return null;
+//        }
+//        if (noteEE == null){
+//            return null;
+//        }else {
+//            if (noteEE.size() == 2){
+//                moyenne.setSession(2);
+//                for (Note note : noteEE){
+//                    if (note.getSessions() == 2){
+//                        noteExamen = note.getValeur();
+//                    }
+//                }
+//            }else{
+//                moyenne.setSession(1);
+//                for (Note note : noteEE){
+//                    noteExamen = note.getValeur();
+//                }
+//            }
+//
+//        }
+//        if (typeCours.getNom().equals(CC_TPE_TP_EE)) {
+//            if (noteExamen == null) {
+//                result = null;
+//            }else {
+//                if (noteCC == null && noteTPE == null && noteTP == null){
+//                    result = null;
+//                }else {
+//                    result = 0.7 * noteExamen
+//                            + (noteCC != null ? 0.1 * noteCC : 0.0)
+//                            + (noteTPE != null ? 0.1 * noteTPE : 0.0)
+//                            + (noteTP != null ? 0.1 * noteTP : 0.0);
+//                }
+//            }
+//        } else if (typeCours.getNom().equals(CC_TPE_EE)) {
+//            if (noteExamen == null) {
+//                result = null;
+//            }else {
+//                if (noteCC == null && noteTPE == null){
+//                    result = null;
+//                }else{
+//                    result = 0.7 * noteExamen
+//                            + (noteCC != null ? 0.2 * noteCC : 0.0)
+//                            + (noteTPE != null ? 0.1 * noteTPE : 0.0);
+//                }
+//            }
+//        } else if (typeCours.getNom().equals(CC_EE)) {
+//            if (noteExamen == null || noteCC == null) {
+//                result = null;
+//            }else {
+//                Double temp = examenSurVingt(noteExamen);
+//                result = 0.7 * temp + 0.3 * noteCC;
+//            }
+//        }
+//        if (result == null){
+//            moyenne.setValeur(null);
+//            moyenneService.addMoyenne(moyenne);
+//            return null;
+//        }
+//        moyenne.setValeur(Math.round(result*100.0)/100.0);
+//        moyenneService.addMoyenne(moyenne);
+//        return Math.round(result*100.0)/100.0;
+//    }
 
     public Double examenSurVingt(Double note){
         return (note * 20)/70;
@@ -744,9 +750,11 @@ public class NoteService {
             return 0;
         }
         for (Cours cours : coursService.getListCoursByParcours(parcours.getLabel())) {
-            Double moyenneCours = calculMoyenneCours(etudiant.getId(), cours.getCode(), anneeAcademique.getNumeroDebut());
-            if ((moyenneCours != -1.0) && (moyenneCours >= 10.0)) {
-                creditTotal += cours.getCredit().getValeur();
+            if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                Double moyenneCours = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur();
+                if ((moyenneCours != null) && (moyenneCours >= 10.0)) {
+                    creditTotal += cours.getCredit().getValeur();
+                }
             }
         }
         return creditTotal;
@@ -992,25 +1000,29 @@ public class NoteService {
         return filteredNotes;
     }
 
-    public Double getNoteStagePrat(Long id, int year){
+    public Double getNoteStage(Long id, int year, CodeEva codeEva){
         Etudiant etudiant = etudiantService.getById(id);
         AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
-        Evaluation evaluation = evaluationService.getByCode(CodeEva.StagePrat);
+        Evaluation evaluation = evaluationService.getByCode(codeEva);
         if (etudiant == null || anneeAcademique == null || evaluation == null){
+            return null;
+        }
+        if (noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation) == null
+        || noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation).getValeur() == null){
             return null;
         }
         return noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation).getValeur();
     }
 
-    public Double getNoteStage(Long id, int year){
-        Etudiant etudiant = etudiantService.getById(id);
-        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
-        Evaluation evaluation = evaluationService.getByCode(CodeEva.Stage);
-        if (etudiant == null || anneeAcademique == null || evaluation == null){
-            return null;
-        }
-        return noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation).getValeur();
-    }
+//    public Double getNoteStage(Long id, int year){
+//        Etudiant etudiant = etudiantService.getById(id);
+//        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+//        Evaluation evaluation = evaluationService.getByCode(CodeEva.Stage);
+//        if (etudiant == null || anneeAcademique == null || evaluation == null){
+//            return null;
+//        }
+//        return noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation).getValeur();
+//    }
 
     public Note update(Long id, Note note) {
         Note no = noteRepo.findById(id).orElse(null);

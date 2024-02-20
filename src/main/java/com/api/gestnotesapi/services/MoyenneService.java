@@ -80,8 +80,10 @@ public class MoyenneService {
                     result = moyenne;
                 }
             }
-        }else {
+        }else if (moyennes.size() == 1){
             result = moyennes.get(0);
+        }else {
+            result = null;
         }
         return result;
     }

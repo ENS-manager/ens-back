@@ -55,7 +55,9 @@ public class CoursService {
         }
         List<Cours> coursList = new ArrayList<>();
         for (Parcours parcours : parcoursList){
-            coursList.addAll(getListCoursByParcours(parcours.getLabel()));
+            if (parcours != null){
+                coursList.addAll(getListCoursByParcours(parcours.getLabel()));
+            }
         }
         return coursList;
     }
