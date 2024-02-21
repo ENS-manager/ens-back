@@ -83,10 +83,10 @@ public class NoteController {
 
     //    Proces verbal d'un cours
     @GetMapping("/findPVCours/session/{session}/annee/{annee}/cours")
-    public ResponseEntity<List<PVCoursResponse>> getPVCours(@PathVariable int session, @PathVariable int annee,
+    public ResponseEntity<PVCoursResponse> getPVCours(@PathVariable int session, @PathVariable int annee,
                                                             @RequestParam String code, @RequestParam String label){
 
-        List<PVCoursResponse> response = pvService.getPVCoursByEtudiant(session, annee, code, label);
+        PVCoursResponse response = pvService.getPVCoursByParcours(session, annee, code, label);
         if (response == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
@@ -139,13 +139,13 @@ public class NoteController {
     }
 
     @GetMapping("/findPVGrandJury/cycle/{cycle}/option")
-    public ResponseEntity<List<PVGrandJuryResponse>> getPVGrandJury(@PathVariable int cycle, @RequestParam String code,
+    public ResponseEntity<PVGrandJuryResponse> getPVGrandJury(@PathVariable int cycle, @RequestParam String code,
                                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate session){
-        List<PVGrandJuryResponse> pvGrandJuryResponseList = pvService.getPVGrandJury(code, cycle, session);
-        if (pvGrandJuryResponseList == null){
+        PVGrandJuryResponse pvGrandJuryResponse = pvService.getPVGrandJury(code, cycle, session);
+        if (pvGrandJuryResponse == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(pvGrandJuryResponseList, HttpStatus.OK);
+        return new ResponseEntity<>(pvGrandJuryResponse, HttpStatus.OK);
     }
 
 

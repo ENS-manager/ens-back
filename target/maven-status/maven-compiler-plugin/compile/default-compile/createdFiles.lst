@@ -80,6 +80,7 @@ com\api\gestnotesapi\services\DepartementService.class
 com\api\gestnotesapi\repository\DepartementRepo.class
 com\api\gestnotesapi\dto\PVGrandJuryDto.class
 com\api\gestnotesapi\services\MatriculeService.class
+com\api\gestnotesapi\dto\PVCoursResponseDto.class
 com\api\gestnotesapi\controllers\EtudiantController.class
 com\api\gestnotesapi\dto\StatPassedDepart.class
 com\api\gestnotesapi\entities\Module.class

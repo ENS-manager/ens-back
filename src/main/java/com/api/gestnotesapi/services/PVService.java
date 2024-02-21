@@ -43,10 +43,10 @@ public class PVService {
         this.moyenneService = moyenneService;
     }
 
-    public List<PVCoursResponse> getPVCoursByEtudiant(int session, int year, String code, String label)
+    public PVCoursResponse getPVCoursByParcours(int session, int year, String code, String label)
     {
 
-        List<PVCoursResponse> pvCoursResponseList = new ArrayList<>();
+        PVCoursResponse pvCoursResponse = new PVCoursResponse();
         Cours cours = coursRepo.findByCode(code).orElse(null);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
@@ -61,6 +61,13 @@ public class PVService {
             return null;
         }
 
+        pvCoursResponse.setCode(cours.getCode());
+        pvCoursResponse.setCredit(cours.getCredit().getValeur());
+        pvCoursResponse.setIntitule(cours.getIntitule());
+        pvCoursResponse.setLabel(parcours.getLabel());
+        pvCoursResponse.setSession(session);
+        pvCoursResponse.setAnneeAcademique(anneeAcademique.getCode());
+        List<PVCoursResponseDto> pvCoursResponseDtoList = new ArrayList<>();
         for (Etudiant etudiant : etudiantList){
             Double ccSurTrente = noteService.ccCoursSurTrente(etudiant.getId(), anneeAcademique.getNumeroDebut(), cours.getCode());
             Double moyenneSurCent = noteService.moyenneCoursSurCent(etudiant.getId(), session, anneeAcademique.getNumeroDebut(), cours.getCode());
@@ -99,22 +106,22 @@ public class PVService {
                 NoteDto noteDto = new NoteDto(note.getValeur(), note.getEvaluation().getCode());
                 noteDtoList.add(noteDto);
             }
-            PVCoursResponse pvCoursResponse= new PVCoursResponse(cours.getCredit().getValeur(),
-                    session, etudiant.getMatricule(), etudiant.getNom(), parcours.getLabel(),
-                    code, cours.getIntitule(),
-                    anneeAcademique.getCode(),
-                    noteDtoList,
-                    ccSurTrente,
-                    moyenneSurCent,
-                    moyenneSurVingt,
-                    decision,
-                    mgp,
-                    grade
-            );
-            pvCoursResponseList.add(pvCoursResponse);
-        }
+            PVCoursResponseDto pvCoursResponseDto = new PVCoursResponseDto();
+            pvCoursResponseDto.setCcSurTrente(ccSurTrente);
+            pvCoursResponseDto.setMatricule(etudiant.getMatricule());
+            pvCoursResponseDto.setMoyenneSurCent(moyenneSurCent);
+            pvCoursResponseDto.setNom(etudiant.getNom());
+            pvCoursResponseDto.setGrade(grade);
+            pvCoursResponseDto.setMgp(mgp);
+            pvCoursResponseDto.setMoyenneSurVingt(moyenneSurVingt);
+            pvCoursResponseDto.setDecision(decision);
+            pvCoursResponseDto.setNotes(noteDtoList);
 
-        return pvCoursResponseList;
+            pvCoursResponseDtoList.add(pvCoursResponseDto);
+        }
+        pvCoursResponse.setPvCoursResponseDtoList(pvCoursResponseDtoList);
+
+        return pvCoursResponse;
 
     }
 
@@ -223,44 +230,47 @@ public class PVService {
     }
 
 //        pour le pv grand Jury
-    public List<PVGrandJuryResponse> getPVGrandJury(String code, int cycle, LocalDate session){
-        List <PVGrandJuryResponse> pvGrandJuryResponseList = new ArrayList<>();
+    public PVGrandJuryResponse getPVGrandJury(String code, int cycle, LocalDate session){
+        PVGrandJuryResponse pvGrandJuryResponse = new PVGrandJuryResponse();
         int year = session.getYear();
         int temp = year - 3;
         String promo = temp+"-"+year;
         String sessions = session.getMonth().name()+" "+session.getYear();
         if ( cycle == 1){
-//            niveau 1
-            double moyf11 = 0.0;
-            double moyf12 = 0.0;
-            double moyc11 = 0.0;
-            double moyc12 = 0.0;
-            double moyp11 = 0.0;
-            double moyp12 = 0.0;
-//            niveau 2
-            double moyf21 = 0.0;
-            double moyf22 = 0.0;
-            double moyc21 = 0.0;
-            double moyc22 = 0.0;
-            double moyp21 = 0.0;
-            double moyp22 = 0.0;
-//            niveau 3
-            double moyf31 = 0.0;
-            double moyp31 = 0.0;
-            double moyc31 = 0.0;
 
             String label = code+" "+1;
             int val = year - 1;
-            System.out.println("parcours: " + label);
             AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(val);
             List<Cours> coursList = coursService.getListCoursByOptionAndCycle(code, cycle);
             List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(label, anneeAcademique.getNumeroDebut());
             if (coursList == null || etudiantList == null || anneeAcademique == null){
                 return null;
             }
+            pvGrandJuryResponse.setSession(sessions);
+            pvGrandJuryResponse.setPromotion(promo);
+            pvGrandJuryResponse.setCycle(cycle);
+            pvGrandJuryResponse.setAnneeAca(anneeAcademique.getCode());
+            List<PVGrandJuryDto> pvGrandJuryDtoList = new ArrayList<>();
             for (Etudiant etudiant : etudiantList){
-                PVGrandJuryResponse pvGrandJuryResponse = new PVGrandJuryResponse();
-                List<PVGrandJuryDto> pvGrandJuryDtoList = new ArrayList<>();
+                //            niveau 1
+                double moyf11 = 0.0;
+                double moyf12 = 0.0;
+                double moyc11 = 0.0;
+                double moyc12 = 0.0;
+                double moyp11 = 0.0;
+                double moyp12 = 0.0;
+//            niveau 2
+                double moyf21 = 0.0;
+                double moyf22 = 0.0;
+                double moyc21 = 0.0;
+                double moyc22 = 0.0;
+                double moyp21 = 0.0;
+                double moyp22 = 0.0;
+//            niveau 3
+                double moyf31 = 0.0;
+                double moyp31 = 0.0;
+                double moyc31 = 0.0;
+
                 PVGrandJuryDto pvGrandJuryDto = new PVGrandJuryDto();
                 pvGrandJuryDto.setDateDeNaissance(etudiant.getDateDeNaissance());
                 pvGrandJuryDto.setLieuDeNaissance(etudiant.getLieuDeNaissance());
@@ -559,9 +569,8 @@ public class PVService {
                 Double stagePra = noteService.getNoteStage(etudiant.getId(), anneeAcademique.getNumeroDebut(), CodeEva.StagePrat);
                 Double stage = noteService.getNoteStage(etudiant.getId(), anneeAcademique.getNumeroDebut(), CodeEva.Stage);
 
-                Double moyEcrite = fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + (stage == null? 0.0 : stage*0.3);
-//                A revoir
-                Double moyGene = moyEcrite*0.8 + (stagePra == null? 0.0 : stagePra*0.2);
+                Double moyEcrite = Math.round((fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + (stage == null? 0.0 : stage*0.3))*100.0)/100.0;
+                Double moyGene = Math.round((moyEcrite*0.8 + (stagePra == null? 0.0 : stagePra*0.2))*100.0)/100.0;
 
                 String decision = noteService.decider(moyGene);
                 String mention = noteService.mention(moyGene);
@@ -580,25 +589,8 @@ public class PVService {
                 pvGrandJuryDtoList.add(pvGrandJuryDto);
 
                 pvGrandJuryResponse.setPvGrandJuryDtoList(pvGrandJuryDtoList);
-                pvGrandJuryResponse.setCycle(cycle);
-                pvGrandJuryResponse.setAnneeAca(anneeAcademique.getCode());
-                pvGrandJuryResponse.setPromotion(promo);
-                pvGrandJuryResponse.setSession(sessions);
-
-                pvGrandJuryResponseList.add(pvGrandJuryResponse);
             }
         }else {
-//            niveau 4
-            double moyf41 = 0.0;
-            double moyf42 = 0.0;
-            double moyc41 = 0.0;
-            double moyc42 = 0.0;
-            double moyp41 = 0.0;
-            double moyp42 = 0.0;
-//            niveau 5
-            double moyf51 = 0.0;
-            double moyc51 = 0.0;
-            double moyp51 = 0.0;
 
             String label = code+" "+5;
             int val = year - 1;
@@ -608,9 +600,24 @@ public class PVService {
             if (coursList == null || etudiantList == null || anneeAcademique == null){
                 return null;
             }
+            pvGrandJuryResponse.setSession(sessions);
+            pvGrandJuryResponse.setPromotion(promo);
+            pvGrandJuryResponse.setCycle(cycle);
+            pvGrandJuryResponse.setAnneeAca(anneeAcademique.getCode());
+            List<PVGrandJuryDto> pvGrandJuryDtoList = new ArrayList<>();
             for (Etudiant etudiant : etudiantList){
-                PVGrandJuryResponse pvGrandJuryResponse = new PVGrandJuryResponse();
-                List<PVGrandJuryDto> pvGrandJuryDtoList = new ArrayList<>();
+                //            niveau 4
+                double moyf41 = 0.0;
+                double moyf42 = 0.0;
+                double moyc41 = 0.0;
+                double moyc42 = 0.0;
+                double moyp41 = 0.0;
+                double moyp42 = 0.0;
+//            niveau 5
+                double moyf51 = 0.0;
+                double moyc51 = 0.0;
+                double moyp51 = 0.0;
+
                 PVGrandJuryDto pvGrandJuryDto = new PVGrandJuryDto();
                 pvGrandJuryDto.setDateDeNaissance(etudiant.getDateDeNaissance());
                 pvGrandJuryDto.setLieuDeNaissance(etudiant.getLieuDeNaissance());
@@ -799,9 +806,8 @@ public class PVService {
                 Double stagePra = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), "StagePrat").getValeur();
                 Double stage = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), "Stage").getValeur();
 
-                Double moyEcrite = fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + stagePra*0.3;
-//                A revoir
-                Double moyGene = moyEcrite*0.8 + stagePra*0.2;
+                Double moyEcrite = Math.round((fondamentale*0.4 + complementaire*0.1 + professionnelle*0.2 + (stage == null? 0.0 : stage*0.3))*100.0)/100.0;
+                Double moyGene = Math.round((moyEcrite*0.8 + (stagePra == null? 0.0 : stagePra*0.2))*100.0)/100.0;
 
                 String decision = noteService.decision(moyGene);
                 Double mgp = noteService.mgpPourMoyenneSurVingt(moyGene);
@@ -821,15 +827,9 @@ public class PVService {
                 pvGrandJuryDtoList.add(pvGrandJuryDto);
 
                 pvGrandJuryResponse.setPvGrandJuryDtoList(pvGrandJuryDtoList);
-                pvGrandJuryResponse.setCycle(cycle);
-                pvGrandJuryResponse.setAnneeAca(anneeAcademique.getCode());
-                pvGrandJuryResponse.setPromotion(promo);
-                pvGrandJuryResponse.setSession(sessions);
-
-                pvGrandJuryResponseList.add(pvGrandJuryResponse);
-            }
+                }
         }
-        return pvGrandJuryResponseList;
+        return pvGrandJuryResponse;
     }
 
     public List<PVAnnuel> getPVAnnuel(String code, String label){
