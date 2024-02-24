@@ -64,7 +64,13 @@ public class Parcours implements Serializable{
     @JsonIgnore
     private List<Inscription> inscriptions = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "parcours", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "COURS_PARCOURS",
+            joinColumns = @JoinColumn(name = "PARCOURS_ID"),
+            inverseJoinColumns = @JoinColumn(name = "COURS_ID")
+    )
+    @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 
 }

@@ -128,6 +128,17 @@ public class NoteController {
         return new ResponseEntity<>(etudiantList, HttpStatus.OK);
     }
 
+//    Proces verbal semestriel
+    @GetMapping("/findPVSemestriel/anneeAca/{anneeAca}/cycle/{cycle}/parcours")
+    public ResponseEntity<PVSemestre> getPVSemestriel(@PathVariable String anneeAca,
+                                      @PathVariable int cycle, @RequestParam String label){
+        PVSemestre pvSemestre = pvService.getPVSemestriel(anneeAca, cycle, label);
+        if (pvSemestre == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(pvSemestre, HttpStatus.OK);
+    }
+
 //    Proces verbal annuel
     @GetMapping("/findPVAnnuel/anneeAca/{anneeAca}/parcours")
     public ResponseEntity<List<PVAnnuel>> getPVAnnuel(@RequestParam String label, @PathVariable String anneeAca){

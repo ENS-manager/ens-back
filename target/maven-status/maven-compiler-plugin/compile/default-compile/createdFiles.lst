@@ -1,8 +1,10 @@
 com\api\gestnotesapi\repository\SemestreRepo.class
+com\api\gestnotesapi\dto\PVEtudiant.class
 com\api\gestnotesapi\controllers\EvaluationController.class
 com\api\gestnotesapi\controllers\EnseigantController.class
 com\api\gestnotesapi\entities\NatureUE.class
 com\api\gestnotesapi\services\OptionService.class
+com\api\gestnotesapi\dto\CoursDto.class
 com\api\gestnotesapi\controllers\CreditController.class
 com\api\gestnotesapi\controllers\ParcoursController.class
 com\api\gestnotesapi\controllers\DepartementController.class
@@ -21,6 +23,7 @@ com\api\gestnotesapi\repository\InscriptionRepo.class
 com\api\gestnotesapi\dto\PVModuleResponse.class
 com\api\gestnotesapi\entities\Cycle.class
 com\api\gestnotesapi\controllers\ModuleController.class
+com\api\gestnotesapi\dto\CoursMoyClasse.class
 com\api\gestnotesapi\entities\TYPE.class
 com\api\gestnotesapi\services\ParcoursService.class
 com\api\gestnotesapi\entities\Note.class
@@ -38,6 +41,7 @@ com\api\gestnotesapi\services\ModuleService.class
 com\api\gestnotesapi\controllers\CoursController.class
 com\api\gestnotesapi\services\TypeCoursService.class
 com\api\gestnotesapi\repository\ModuleRepo.class
+com\api\gestnotesapi\dto\Stats.class
 com\api\gestnotesapi\entities\Semestre.class
 com\api\gestnotesapi\services\PVService.class
 com\api\gestnotesapi\services\Statistiques.class
@@ -74,6 +78,7 @@ com\api\gestnotesapi\entities\Etudiant.class
 com\api\gestnotesapi\dto\PVCoursResponse.class
 com\api\gestnotesapi\repository\EnseignantRepo.class
 com\api\gestnotesapi\services\EtudiantService.class
+com\api\gestnotesapi\dto\PVSemestre.class
 com\api\gestnotesapi\repository\CreditRepo.class
 com\api\gestnotesapi\repository\MoyenneRepo.class
 com\api\gestnotesapi\services\DepartementService.class

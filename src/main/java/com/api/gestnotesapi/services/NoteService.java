@@ -855,7 +855,7 @@ public class NoteService {
     public Double mgpPourMoyenneSurVingt(Double note){
         Double valeur = 0.0;
         if (note == -1.0){
-            valeur = -1.0;
+            valeur = null;
         }else if ((note >= 0.0) && (note <= 6.0)){
             valeur = 0.0;
         }else if ((note >= 6.0) && (note <= 8.0)){

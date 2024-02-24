@@ -87,12 +87,6 @@ public class Cours implements Serializable {
     @JsonIgnore
     private List<Enseignant> enseignant = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "COURS_PARCOURS",
-            joinColumns = @JoinColumn(name = "cours_ID"),
-            inverseJoinColumns = @JoinColumn(name = "PARCOURS_ID")
-    )
-    @JsonIgnore
+    @ManyToMany(mappedBy = "cours", cascade = CascadeType.ALL)
     private List<Parcours> parcours = new ArrayList<>();
 }

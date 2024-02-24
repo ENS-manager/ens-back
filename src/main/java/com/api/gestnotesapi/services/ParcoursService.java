@@ -45,9 +45,6 @@ public class ParcoursService {
             return null;
         }
         Parcours parcours = parcoursRepo.findByOptionAndNiveau(option, niveau).orElse(null);
-        if (parcours == null){
-            return null;
-        }
         return parcours;
     }
 
@@ -72,21 +69,9 @@ public class ParcoursService {
         if (parcours == null){
             return null;
         }
-        Parcours newParcours = new Parcours();
-        newParcours.setLabel(parcours.getLabel());
-        newParcours.setNiveau(parcours.getNiveau());
-        newParcours.setOption(parcours.getOption());
-        newParcours.getCours()
-                .addAll(parcours
-                        .getCours()
-                        .stream()
-                        .map(cours -> {
-                            Cours newCours = coursRepo.findByCoursId(cours.getCoursId());
-                            newCours.getParcours().add(newParcours);
-                            return newCours;
-                        }).collect(Collectors.toList()));
+
         if (parcours.getLabel() != null){
-            return parcoursRepo.save(newParcours);
+            return parcoursRepo.save(parcours);
         }
         Niveau niveau = niveauRepo.findById(parcours.getNiveau().getId()).orElse(null);
         if (niveau == null){
@@ -96,8 +81,8 @@ public class ParcoursService {
         String code = option.getCode();
         int valeur = niveau.getValeur();
         String label = code+" "+valeur;
-        newParcours.setLabel(label);
-        return parcoursRepo.save(newParcours);
+        parcours.setLabel(label);
+        return parcoursRepo.save(parcours);
     }
 
     public List<Parcours> getParcoursCours(String code){
@@ -105,12 +90,8 @@ public class ParcoursService {
         if (cours == null){
             return null;
         }
-        List<Parcours> parcours = new ArrayList<>();
-        for (Parcours par : parcoursRepo.findAll()){
-            if (par.getCours().contains(cours)){
-                parcours.add(par);
-            }
-        }
+        List<Parcours> parcours = cours.getParcours();
+
         return parcours;
     }
 
@@ -178,10 +159,8 @@ public class ParcoursService {
             return null;
         }
         Parcours parcours = new Parcours();
-        for (Parcours par : parcoursList){
-            if (par.getCours().contains(cours)){
-                parcours = par;
-            }
+        for (Parcours par : cours.getParcours()){
+            parcours = par;
         }
         return parcours;
     }

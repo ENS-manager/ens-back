@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CoursService {
@@ -38,7 +39,11 @@ public class CoursService {
         if (parcours == null){
             return null;
         }
-        coursList.addAll(parcours.getCours());
+        for (Cours cours : getAll()){
+            if (cours.getParcours().contains(parcours)){
+                coursList.add(cours);
+            }
+        }
         return coursList;
     }
 
@@ -66,15 +71,55 @@ public class CoursService {
         if (cours == null){
             return null;
         }
-        if ((cours.getCode() != null && cours.getIsStage().equals(true)) || (cours.getCode() == null && cours.getIsStage().equals(true))){
-            cours.setCode("Stage");
+        if (cours.getIsStage().equals(true)){
+            Cours newCours = new Cours();
+            newCours.setCode("Stage");
+            newCours.setTypecours(cours.getTypecours());
+            newCours.setSemestre(cours.getSemestre());
+            newCours.setIntitule(cours.getIntitule());
+            newCours.setCredit(cours.getCredit());
+            newCours.setNatureUE(cours.getNatureUE());
+            newCours.setIsStage(cours.getIsStage());
+            newCours.getParcours()
+                    .addAll(cours
+                            .getParcours()
+                            .stream()
+                            .map(parcours -> {
+                                Parcours newParcours = parcoursService.getById(parcours.getId());
+                                newParcours.getCours().add(newCours);
+                                return newParcours;
+                            }).collect(Collectors.toList()));
             return coursRepo.save(cours);
+        }
+        Cours newCours = new Cours();
+        newCours.setTypecours(cours.getTypecours());
+        newCours.setSemestre(cours.getSemestre());
+        newCours.setIntitule(cours.getIntitule());
+        newCours.setCredit(cours.getCredit());
+        newCours.setNatureUE(cours.getNatureUE());
+        newCours.setIsStage(cours.getIsStage());
+        newCours.getParcours()
+                .addAll(cours
+                        .getParcours()
+                        .stream()
+                        .map(parcours -> {
+                            Parcours newParcours = parcoursService.getById(parcours.getId());
+                            newParcours.getCours().add(newCours);
+                            return newParcours;
+                        }).collect(Collectors.toList()));
+        if (cours.getCode() != null){
+            newCours.setCode(cours.getCode());
+            return coursRepo.save(newCours);
         }
         Semestre semestre = semestreRepo.findById(cours.getSemestre().getId()).orElse(null);
         if (semestre == null){
             return null;
         }
-        Parcours parcours = parcoursService.getParcoursCours(cours.getCode()).get(0);
+
+        Parcours parcours = new Parcours();
+        for (Parcours par : cours.getParcours()){
+            parcours = par;
+        }
         if (parcours == null){
             return null;
         }
@@ -90,7 +135,7 @@ public class CoursService {
         String codeDepart = departement.getCode();
         int valeurNiveau = niveau.getValeur();
         int valeurSemestre = semestre.getValeur();
-        Cours updateCours = coursRepo.save(cours);
+        Cours updateCours = coursRepo.save(newCours);
         String code = codeDepart+valeurNiveau+updateCours.getCoursId()+valeurSemestre;
         updateCours.setCode(code);
 
