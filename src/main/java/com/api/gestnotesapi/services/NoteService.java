@@ -1,5 +1,6 @@
 package com.api.gestnotesapi.services;
 
+import com.api.gestnotesapi.dto.Diplome;
 import com.api.gestnotesapi.dto.PVGrandJuryResponse;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.entities.Module;
@@ -96,9 +97,8 @@ public class NoteService {
                         (etudiant.getMatricule().equals(note.getEtudiant().getMatricule()) &&
                                 anneeAcademique.getNumeroDebut().equals(note.getAnneeAcademique().getNumeroDebut()) &&
                                 module.getCode().equals(note.getModule().getCode()) &&
-                                !note.getIsFinal().equals(false) &&
-                                ((note.getEvaluation().getCode().equals(CodeEva.CC) || note.getEvaluation().getCode().equals(CodeEva.TPE) || note.getEvaluation().getCode().equals(CodeEva.TP)) ||
-                                        (note.getEvaluation().getCode().equals(CodeEva.EE) && !note.getIsFinal().equals(false)))
+                                note.getIsFinal().equals(false) && ((note.getEvaluation().getCode().equals(CodeEva.CC) || note.getEvaluation().getCode().equals(CodeEva.TPE) || note.getEvaluation().getCode().equals(CodeEva.TP)) ||
+                                (note.getEvaluation().getCode().equals(CodeEva.EE)))
                         )
                 )
                 .collect(Collectors.toList());
@@ -995,8 +995,8 @@ public class NoteService {
         }
 
         List<Note> noteList = noteRepo.findAllByEtudiantAndAnneeAcademiqueAndModule(etudiant, anneeAcademique, module);
-        List<Note> filteredNotes = filterNotesModule(noteList, etudiant, anneeAcademique, module);
 
+        List<Note> filteredNotes = filterNotesModule(noteList, etudiant, anneeAcademique, module);
         return filteredNotes;
     }
 
@@ -1063,4 +1063,190 @@ public class NoteService {
         }
         return "Echoue";
     }
+
+    public Boolean isOkModule(String code, int year){
+        Module module = moduleService.getCode(code);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        if (module == null || anneeAcademique == null){
+            return false;
+        }
+        Cours cours = coursService.getById(module.getCours().getCoursId());
+        if (cours == null){
+            return false;
+        }
+        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
+        if (typeCours == null){
+            return false;
+        }
+        List<Note> noteList = noteRepo.findAllByModuleAndAnneeAcademiqueAndIsFinal(module, anneeAcademique, false);
+        if (noteList == null){
+            return false;
+        }
+        if (typeCours.getNom().equals(CC_EE)){
+            for (Note note : noteList){
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    return true;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_EE)){
+            int cc = 0, tpe = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_TP_EE)){
+            int cc = 0, tpe = 0, tp = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0 && tp > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }else if (evaluation.getCode().equals(CodeEva.TP)){
+                    tp++;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean isOkCoursSansEE(String code, int year){
+        Cours cours = coursService.getByCode(code);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        if (cours == null || anneeAcademique == null){
+            return false;
+        }
+        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
+        if (typeCours == null){
+            return false;
+        }
+        List<Note> noteList = noteRepo.findAllByCoursAndAnneeAcademiqueAndIsFinal(cours, anneeAcademique, true);
+        if (noteList == null){
+            return false;
+        }
+        if (typeCours.getNom().equals(CC_EE)){
+            for (Note note : noteList){
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    return true;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_EE)){
+            int cc = 0, tpe = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_TP_EE)){
+            int cc = 0, tpe = 0, tp = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0 && tp > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }else if (evaluation.getCode().equals(CodeEva.TP)){
+                    tp++;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean isOkCoursAvecEE(String code, int year){
+        Cours cours = coursService.getByCode(code);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        if (cours == null || anneeAcademique == null){
+            return false;
+        }
+        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
+        if (typeCours == null){
+            return false;
+        }
+        List<Note> noteList = noteRepo.findAllByCoursAndAnneeAcademiqueAndIsFinal(cours, anneeAcademique, true);
+        if (noteList == null){
+            return false;
+        }
+        if (typeCours.getNom().equals(CC_EE)){
+            int cc = 0, ee = 0;
+            for (Note note : noteList){
+                if (cc > 0 && ee > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.EE)){
+                    ee++;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_EE)){
+            int cc = 0, tpe = 0, ee = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0 && ee > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }else if (evaluation.getCode().equals(CodeEva.EE)){
+                    ee++;
+                }
+            }
+        }else if (typeCours.getNom().equals(CC_TPE_TP_EE)){
+            int cc = 0, tpe = 0, tp = 0, ee = 0;
+            for (Note note : noteList){
+                if (cc > 0 && tpe > 0 && tp > 0 && ee > 0){
+                    return true;
+                }
+                Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+                if (evaluation.getCode().equals(CodeEva.CC)){
+                    cc++;
+                }else if (evaluation.getCode().equals(CodeEva.TPE)){
+                    tpe++;
+                }else if (evaluation.getCode().equals(CodeEva.TP)){
+                    tp++;
+                }else if (evaluation.getCode().equals(CodeEva.EE)){
+                    ee++;
+                }
+            }
+        }
+        return false;
+    }
+
+//    public Diplome getDiplome(Long id, String code){
+//        Etudiant etudiant = etudiantService.getById(id);
+//        Option option = optionService.getByCode(code);
+//        if (etudiant == null || option == null){
+//            return null;
+//        }
+//        Departement departement = departementService.getById(option.getDepartement().getId());
+//        if (departement == null){
+//            return null;
+//        }
+//
+//    }
 }

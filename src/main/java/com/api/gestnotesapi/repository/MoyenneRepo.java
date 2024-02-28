@@ -14,4 +14,7 @@ public interface MoyenneRepo extends JpaRepository<Moyenne, Long> {
     List<Moyenne> findAllByEtudiantAndCours(Etudiant etudiant, Cours cours);
 
     List<Moyenne> findAllByEtudiantAndCoursAndAnneeAcademique(Etudiant etudiant, Cours cours, AnneeAcademique anneeAcademique);
+
+    Moyenne findAllByEtudiantAndCoursAndAnneeAcademiqueAndSessionAndValeur(Etudiant etudiant, Cours cours, AnneeAcademique anneeAcademique, int session, Double valeur);
+
 }

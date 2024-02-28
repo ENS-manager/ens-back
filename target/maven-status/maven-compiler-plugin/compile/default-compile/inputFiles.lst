@@ -76,6 +76,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\AnneeAcademiqueService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\SemestreRepo.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\ModuleRepo.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVEtudiantModule.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Option.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\auth\AuthenticationResponse.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\User.java
@@ -93,6 +94,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\CreditRepo.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVCoursResponseDto.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\EtudiantRepo.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\Diplome.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\CycleController.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Note.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\EvaluationRepo.java
@@ -102,6 +104,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Parcours.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\StatPassedDepart.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\CycleService.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVEtudiantAnnuel.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\NiveauService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\PVSemestre.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\token\Token.java

@@ -55,6 +55,10 @@ public class PVService {
             return null;
         }
 
+        if (noteService.isOkCoursAvecEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false){
+            return null;
+        }
+
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
 
         if (etudiantList == null){
@@ -80,7 +84,6 @@ public class PVService {
             moyenne.setAnneeAcademique(anneeAcademique);
             moyenne.setSession(session);
             moyenne.setEtudiant(etudiant);
-
             List<Note> noteList = noteService.getNotesEtudiantByCours(
             etudiant.getId(),
             session,
@@ -97,7 +100,10 @@ public class PVService {
             }else {
                 moyenneSurVingt = noteService.convertirSurVingt(moyenneSurCent);
                 moyenne.setValeur(moyenneSurVingt);
-                moyenneService.addMoyenne(moyenne);
+                if(moyenneService.getMoyenneByEtudiantAndAnneeAndCoursAndSessionAndValeur(etudiant.getId(), anneeAcademique.getNumeroDebut(),
+                        cours.getCode(), session, moyenneSurVingt) == null){
+                    moyenneService.addMoyenne(moyenne);
+                }
                 decision = noteService.decision(moyenneSurVingt);
             }
 
@@ -125,7 +131,7 @@ public class PVService {
 
     }
 
-    public PVModuleResponse getPVModuleByEtudiant(int year, String code, String label)
+    public PVModuleResponse getPVModule(int year, String code, String label)
     {
         PVModuleResponse pvModuleResponse = new PVModuleResponse();
         Module module = moduleRepo.findByCode(code).orElse(null);
@@ -136,8 +142,12 @@ public class PVService {
             return null;
         }
 
+        if (noteService.isOkModule(module.getCode(), anneeAcademique.getNumeroDebut()) == false){
+            return null;
+        }
+
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
-        if (etudiantList == null){
+        if (etudiantList.isEmpty()){
             return null;
         }
         pvModuleResponse.setAnneeAcademique(anneeAcademique.getCode());
@@ -181,6 +191,9 @@ public class PVService {
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
 
         if (cours == null || anneeAcademique == null || parcours == null) {
+            return null;
+        }
+        if (noteService.isOkCoursSansEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false){
             return null;
         }
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());

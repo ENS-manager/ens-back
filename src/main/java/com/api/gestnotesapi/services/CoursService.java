@@ -229,5 +229,4 @@ public class CoursService {
         }
         return enseignant.getCours();
     }
-
 }

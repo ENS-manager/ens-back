@@ -97,4 +97,20 @@ public class MoyenneService {
         Moyenne moyenne = getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode());
         return moyenne;
     }
+
+//    public Boolean isExist(Moyenne moyenne){
+//        if (moyenneRepo.existsById(moyenne.getId())){
+//            return true;
+//        }
+//        return false;
+//    }
+    public Moyenne getMoyenneByEtudiantAndAnneeAndCoursAndSessionAndValeur(Long id, int year, String code, int session, Double valeur){
+        Etudiant etudiant = etudiantService.getById(id);
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        Cours cours = coursService.getByCode(code);
+        if (etudiant == null || anneeAcademique == null || cours == null){
+            return null;
+        }
+        return moyenneRepo.findAllByEtudiantAndCoursAndAnneeAcademiqueAndSessionAndValeur(etudiant, cours, anneeAcademique, session, valeur);
+    }
 }

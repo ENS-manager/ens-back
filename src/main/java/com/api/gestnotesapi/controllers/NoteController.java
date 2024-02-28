@@ -108,9 +108,9 @@ public class NoteController {
     @GetMapping("/findPVModule/annee/{annee}/module")
     public ResponseEntity<PVModuleResponse> getPVModule(@PathVariable int annee,
                                                               @RequestParam String code, @RequestParam String label){
-        PVModuleResponse response = pvService.getPVModuleByEtudiant(annee, code, label);
+        PVModuleResponse response = pvService.getPVModule(annee, code, label);
         if (response == null){
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
