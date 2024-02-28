@@ -95,10 +95,9 @@ public class NoteController {
 
     //    Proces verbal d'un cours sans Examen
     @GetMapping("/findPVCours/annee/{annee}/cours")
-    public ResponseEntity<List<PVCoursSansEEResponse>> getPVCoursSansEE(@PathVariable int annee, @RequestParam String code,
+    public ResponseEntity<PVCoursSansEEResponse> getPVCoursSansEE(@PathVariable int annee, @RequestParam String code,
                                                                         @RequestParam String label){
-
-        List<PVCoursSansEEResponse> response = pvService.getPVCoursSansEEResponse(annee, code, label);
+        PVCoursSansEEResponse response = pvService.getPVCoursSansEEResponse(annee, code, label);
         if (response == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
@@ -107,9 +106,9 @@ public class NoteController {
 
     //    Proces verbal d'un module
     @GetMapping("/findPVModule/annee/{annee}/module")
-    public ResponseEntity<List<PVModuleResponse>> getPVModule(@PathVariable int annee,
+    public ResponseEntity<PVModuleResponse> getPVModule(@PathVariable int annee,
                                                               @RequestParam String code, @RequestParam String label){
-        List<PVModuleResponse> response = pvService.getPVModuleByEtudiant(annee, code, label);
+        PVModuleResponse response = pvService.getPVModuleByEtudiant(annee, code, label);
         if (response == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
@@ -141,8 +140,8 @@ public class NoteController {
 
 //    Proces verbal annuel
     @GetMapping("/findPVAnnuel/anneeAca/{anneeAca}/parcours")
-    public ResponseEntity<List<PVAnnuel>> getPVAnnuel(@RequestParam String label, @PathVariable String anneeAca){
-        List<PVAnnuel> pvAnnuelList = pvService.getPVAnnuel(anneeAca, label);
+    public ResponseEntity<PVAnnuel> getPVAnnuel(@RequestParam String label, @PathVariable String anneeAca){
+        PVAnnuel pvAnnuelList = pvService.getPVAnnuel(anneeAca, label);
         if (pvAnnuelList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

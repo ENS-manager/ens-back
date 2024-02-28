@@ -23,6 +23,7 @@ public class PVGrandJuryDto {
     Double fondamentale;
     Double professionnelle;
     String decision;
+    String admissibilite;
     String mention;
     List<MoyenneCours> moyenneCours;
 }

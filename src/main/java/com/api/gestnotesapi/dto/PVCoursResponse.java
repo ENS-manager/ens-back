@@ -21,13 +21,4 @@ public class PVCoursResponse {
 
     private List<PVCoursResponseDto> pvCoursResponseDtoList;
 
-//    public PVCoursResponse(int credit, int session, String label, String code, String intitule, String anneeAcademique, List<PVCoursResponseDto> pvCoursResponseDtoList) {
-//        this.anneeAcademique = anneeAcademique;
-//        this.session = session;
-//        this.code = code;
-//        this.intitule = intitule;
-//        this.label = label;
-//        this.credit = credit;
-//        this.pvCoursResponseDtoList = pvCoursResponseDtoList;
-//    }
 }

@@ -1056,4 +1056,11 @@ public class NoteService {
         }
         return "Echec";
     }
+
+    public String admissible(Double moyGene){
+        if (moyGene >= 10){
+            return "Admissible";
+        }
+        return "Echoue";
+    }
 }

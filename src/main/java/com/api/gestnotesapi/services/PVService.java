@@ -125,9 +125,9 @@ public class PVService {
 
     }
 
-    public List<PVModuleResponse> getPVModuleByEtudiant(int year, String code, String label)
+    public PVModuleResponse getPVModuleByEtudiant(int year, String code, String label)
     {
-        List<PVModuleResponse> pvModuleResponseList = new ArrayList<>();
+        PVModuleResponse pvModuleResponse = new PVModuleResponse();
         Module module = moduleRepo.findByCode(code).orElse(null);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
@@ -140,10 +140,17 @@ public class PVService {
         if (etudiantList == null){
             return null;
         }
-
+        pvModuleResponse.setAnneeAcademique(anneeAcademique.getCode());
+        pvModuleResponse.setCode(module.getCode());
+        pvModuleResponse.setCredit(module.getCredit().getValeur());
+        pvModuleResponse.setIntitule(module.getIntitule());
+        pvModuleResponse.setLabel(parcours.getLabel());
+        List<PVEtudiantModule> pvEtudiantModuleList = new ArrayList<>();
         for (Etudiant etudiant : etudiantList){
+            PVEtudiantModule pvEtudiantModule = new PVEtudiantModule();
             Double ccSurTrente = noteService.ccModuleSurTrente(etudiant.getId(), anneeAcademique.getNumeroDebut(), module.getCode());
-
+            pvEtudiantModule.setNom(etudiant.getNom());
+            pvEtudiantModule.setMatricule(etudiant.getMatricule());
             List<Note> noteList = noteService.getNotesEtudiantByModule(
                     etudiant.getId(),
                     year,
@@ -152,32 +159,23 @@ public class PVService {
             if (ccSurTrente == -1.0){
                 ccSurTrente = null;
             }
-
+            pvEtudiantModule.setCcSurTrente(ccSurTrente);
             List<NoteDto> noteDtoList = new ArrayList<>();
             for (Note note : noteList){
                 NoteDto noteDto = new NoteDto(note.getValeur(), note.getEvaluation().getCode());
                 noteDtoList.add(noteDto);
             }
-            PVModuleResponse pvModuleResponse= new PVModuleResponse(
-                    module.getCode(),
-                    module.getIntitule(),
-                    etudiant.getMatricule(),
-                    module.getCredit().getValeur(),
-                    etudiant.getNom(),
-                    anneeAcademique.getCode(),
-                    parcours.getLabel(),
-                    noteDtoList,
-                    ccSurTrente
-            );
-            pvModuleResponseList.add(pvModuleResponse);
+            pvEtudiantModule.setNotes(noteDtoList);
+            pvEtudiantModuleList.add(pvEtudiantModule);
         }
-        return pvModuleResponseList;
+        pvModuleResponse.setPvEtudiantModuleList(pvEtudiantModuleList);
+        return pvModuleResponse;
     }
 
-    public List<PVCoursSansEEResponse> getPVCoursSansEEResponse(int year, String code, String label)
+    public PVCoursSansEEResponse getPVCoursSansEEResponse(int year, String code, String label)
     {
 
-        List<PVCoursSansEEResponse> pvCoursSansEEResponseList = new ArrayList<>();
+        PVCoursSansEEResponse pvCoursSansEEResponseList = new PVCoursSansEEResponse();
         Cours cours = coursRepo.findByCode(code).orElse(null);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByNumeroDebut(year);
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
@@ -192,39 +190,37 @@ public class PVService {
         if (haveAmodule(cours.getCode()) == true){
             noteService.caculMoyennePondere(year, code);
         }
-
+        pvCoursSansEEResponseList.setCode(cours.getCode());
+        pvCoursSansEEResponseList.setCredit(cours.getCredit().getValeur());
+        pvCoursSansEEResponseList.setIntitule(cours.getIntitule());
+        pvCoursSansEEResponseList.setLabel(parcours.getLabel());
+        pvCoursSansEEResponseList.setAnneeAcademique(anneeAcademique.getCode());
+        List<PVEtudiantModule> pvEtudiantModuleList = new ArrayList<>();
         for (Etudiant etudiant : etudiantList){
+            PVEtudiantModule pvEtudiantModule = new PVEtudiantModule();
+            pvEtudiantModule.setMatricule(etudiant.getMatricule());
+            pvEtudiantModule.setNom(etudiant.getNom());
             Double ccSurTrente = noteService.ccCoursSurTrente(etudiant.getId(), anneeAcademique.getNumeroDebut(), cours.getCode());
-
+            if (ccSurTrente == -1.0){
+                ccSurTrente = null;
+            }
+            pvEtudiantModule.setCcSurTrente(ccSurTrente);
             List<Note> noteList = noteService.getNotesEtudiantByCours(
                     etudiant.getId(),
                     0,
                     year,
                     cours.getCode()
             );
-            if (ccSurTrente == -1.0){
-                ccSurTrente = null;
-            }
 
             List<NoteDto> noteDtoList = new ArrayList<>();
             for (Note note : noteList){
                 NoteDto noteDto = new NoteDto(note.getValeur(), note.getEvaluation().getCode());
                 noteDtoList.add(noteDto);
             }
-            PVCoursSansEEResponse pvCoursSansEEResponse= new PVCoursSansEEResponse(
-                    ccSurTrente,
-                    etudiant.getMatricule(),
-                    etudiant.getNom(),
-                    parcours.getLabel(),
-                    cours.getCode(),
-                    cours.getIntitule(),
-                    cours.getCredit().getValeur(),
-                    anneeAcademique.getCode(),
-                    noteDtoList
-            );
-            pvCoursSansEEResponseList.add(pvCoursSansEEResponse);
+            pvEtudiantModule.setNotes(noteDtoList);
+            pvEtudiantModuleList.add(pvEtudiantModule);
         }
-
+        pvCoursSansEEResponseList.setPvEtudiantModuleList(pvEtudiantModuleList);
         return pvCoursSansEEResponseList;
 
     }
@@ -574,6 +570,7 @@ public class PVService {
 
                 String decision = noteService.decider(moyGene);
                 String mention = noteService.mention(moyGene);
+                String admissible = noteService.admissible(moyEcrite);
 
                 pvGrandJuryDto.setComplementaire(complementaire);
                 pvGrandJuryDto.setFondamentale(fondamentale);
@@ -582,6 +579,7 @@ public class PVService {
                 pvGrandJuryDto.setMention(mention);
                 pvGrandJuryDto.setMoyenneCours(moyenneCoursList);
                 pvGrandJuryDto.setMoyenneEcrite(moyEcrite);
+                pvGrandJuryDto.setAdmissibilite(admissible);
                 pvGrandJuryDto.setMoyenneGene(moyGene);
                 pvGrandJuryDto.setNoteStage(stage);
                 pvGrandJuryDto.setNoteStagePra(stagePra);
@@ -832,7 +830,7 @@ public class PVService {
         return pvGrandJuryResponse;
     }
 
-    public List<PVAnnuel> getPVAnnuel(String code, String label){
+    public PVAnnuel getPVAnnuel(String code, String label){
         Parcours parcours = parcoursRepo.findByLabel(label).orElse(null);
         AnneeAcademique anneeAcademique = anneeAcademiqueRepo.findByCode(code).orElse(null);
         if (parcours == null || anneeAcademique == null){
@@ -843,47 +841,59 @@ public class PVService {
         if (coursList == null || etudiantList == null){
             return null;
         }
-        List<PVAnnuel> pvAnnuelList = new ArrayList<>();
-        List<MoyenneCours> coursSem1 = new ArrayList<>();
-        List<MoyenneCours> coursSem2 = new ArrayList<>();
+        PVAnnuel pvAnnuelList = new PVAnnuel();
+        pvAnnuelList.setParcours(parcours.getLabel());
+        pvAnnuelList.setAnneeAca(anneeAcademique.getCode());
+        List<PVEtudiantAnnuel> pvEtudiantAnnuelList = new ArrayList<>();
+
         for (Etudiant etudiant : etudiantList){
-            PVAnnuel pvAnnuel = new PVAnnuel();
+            PVEtudiantAnnuel pvEtudiantAnnuel = new PVEtudiantAnnuel();
+            pvEtudiantAnnuel.setMatricule(etudiant.getMatricule());
+            pvEtudiantAnnuel.setNom(etudiant.getNom());
+            pvEtudiantAnnuel.setType(etudiant.getType());
+            List<MoyenneCours> coursSem1 = new ArrayList<>();
+            List<MoyenneCours> coursSem2 = new ArrayList<>();
             Double moySem1 = noteService.moyenneSemestre(etudiant.getId(), anneeAcademique.getNumeroDebut(), 1);
             Double moySem2 = noteService.moyenneSemestre(etudiant.getId(), anneeAcademique.getNumeroDebut(), 2);
             Integer creditSem1 = noteService.creditSemestre(etudiant.getId(), anneeAcademique.getNumeroDebut(), 1);
             Integer creditSem2 = noteService.creditSemestre(etudiant.getId(), anneeAcademique.getNumeroDebut(), 2);
             Double moyAnnuel = noteService.moyenneAnnuelle(etudiant.getId(), anneeAcademique.getNumeroDebut());
-            pvAnnuel.setAnneeAca(code);
-            pvAnnuel.setMatricule(etudiant.getMatricule());
-            pvAnnuel.setNom(etudiant.getNom());
-            pvAnnuel.setParcours(label);
-            pvAnnuel.setType(etudiant.getType());
-            pvAnnuel.setMoyAnnuelle(moyAnnuel);
-            pvAnnuel.setMoySem1(moySem1);
-            pvAnnuel.setMoySem2(moySem2);
-            pvAnnuel.setCreditSem1(creditSem1);
-            pvAnnuel.setCreditSem2(creditSem2);
-            pvAnnuel.setDecision(noteService.decision(moyAnnuel));
-            pvAnnuel.setMgp(noteService.mgpPourMoyenneSurVingt(moyAnnuel));
+            pvEtudiantAnnuel.setCreditSem1(creditSem1);
+            pvEtudiantAnnuel.setCreditSem2(creditSem2);
+            pvEtudiantAnnuel.setMoyAnnuelle(moyAnnuel);
+            pvEtudiantAnnuel.setMoySem1(moySem1);
+            pvEtudiantAnnuel.setMoySem2(moySem2);
             for (Cours cours : coursList){
                 if (cours.getSemestre().getValeur().equals(1)){
                     MoyenneCours moyenneCours = new MoyenneCours();
-                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                    && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
                         moyenneCours.setMoy(moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur());
+                    }else {
+                        moyenneCours.setMoy(null);
                     }
                     moyenneCours.setCode(cours.getCode());
                     coursSem1.add(moyenneCours);
                 }else {
                     MoyenneCours moyenneCours = new MoyenneCours();
-                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null){
+                    if (moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()) != null
+                            && moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur() != null){
                         moyenneCours.setMoy(moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode()).getValeur());
+                    }else {
+                        moyenneCours.setMoy(null);
                     }
                     moyenneCours.setCode(cours.getCode());
                     coursSem2.add(moyenneCours);
                 }
             }
-            pvAnnuelList.add(pvAnnuel);
+            pvEtudiantAnnuel.setMoyenneCoursSem1(coursSem1);
+            pvEtudiantAnnuel.setMoyenneCoursSem2(coursSem2);
+            pvEtudiantAnnuel.setDecision(noteService.decision(moyAnnuel));
+            pvEtudiantAnnuel.setMgp(noteService.mgpPourMoyenneSurVingt(moyAnnuel));
+            pvEtudiantAnnuelList.add(pvEtudiantAnnuel);
         }
+        pvAnnuelList.setPvEtudiantAnnuelList(pvEtudiantAnnuelList);
+
         return pvAnnuelList;
     }
 
