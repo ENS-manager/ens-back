@@ -1,13 +1,7 @@
 package com.api.gestnotesapi.services;
 
-import com.api.gestnotesapi.entities.AnneeAcademique;
-import com.api.gestnotesapi.entities.Etudiant;
-import com.api.gestnotesapi.entities.Inscription;
-import com.api.gestnotesapi.entities.Parcours;
-import com.api.gestnotesapi.repository.AnneeAcademiqueRepo;
-import com.api.gestnotesapi.repository.EtudiantRepo;
-import com.api.gestnotesapi.repository.InscriptionRepo;
-import com.api.gestnotesapi.repository.ParcoursRepo;
+import com.api.gestnotesapi.entities.*;
+import com.api.gestnotesapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +12,17 @@ public class InscriptionService {
     private EtudiantRepo etudiantRepo;
     private AnneeAcademiqueRepo anneeAcademiqueRepo;
     private ParcoursRepo parcoursRepo;
-
+    private OptionRepo optionRepo;
+    private NiveauRepo niveauRepo;
 
     @Autowired
-    public InscriptionService(InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo) {
+    public InscriptionService(InscriptionRepo inscriptionRepo, ParcoursRepo parcoursRepo, EtudiantRepo etudiantRepo, AnneeAcademiqueRepo anneeAcademiqueRepo, OptionRepo optionRepo, NiveauRepo niveauRepo) {
         this.inscriptionRepo = inscriptionRepo;
         this.parcoursRepo = parcoursRepo;
         this.etudiantRepo = etudiantRepo;
         this.anneeAcademiqueRepo = anneeAcademiqueRepo;
+        this.optionRepo = optionRepo;
+        this.niveauRepo = niveauRepo;
     }
 
 
@@ -74,4 +71,5 @@ public class InscriptionService {
         }
         return inscription;
     }
+
 }

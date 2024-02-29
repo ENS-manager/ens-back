@@ -65,6 +65,28 @@ public class NoteController {
         return new ResponseEntity<>(noteSave, HttpStatus.OK);
     }
 
+//    Liste des notes des etudiants d'un parcours pour un cours (pour une evaluation) et une anneeAcademique
+    @GetMapping("/findListeNoteEtudiantFromParcours/annee/{year}/evaluation/{eva}/codeUE")
+    public ResponseEntity<List<NoteCoursDto>> getListNotesCours(@PathVariable int year, @PathVariable CodeEva eva,
+                                                @RequestParam String code,@RequestParam String label){
+        List<NoteCoursDto> noteList = noteService.getListNoteEtudiantFromParcours(year, eva, code, label);
+        if (noteList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(noteList, HttpStatus.OK);
+    }
+
+    //    Liste des notes des etudiants d'un parcours pour un module (pour une evaluation) et une anneeAcademique
+    @GetMapping("/findListeNoteEtudiantFromParcours/annee/{year}/evaluation/{code}/codeEC")
+    public ResponseEntity<List<NoteCoursDto>> getListNoteModule(@PathVariable int year, @PathVariable CodeEva eva,
+                                                @RequestParam String code,@RequestParam String label) {
+        List<NoteCoursDto> noteList = noteService.getListNoteEtudiantFromParcoursOnModule(year, eva, code, label);
+        if (noteList == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(noteList, HttpStatus.OK);
+    }
+
 //        Moyenne ponderee des notes de cc, tpe et tp d'une session, pour une annee academique et un cours
     @GetMapping("/findMoyenneNotesModuleByAnneeAca/{year}/codeUE")
     public ResponseEntity<String> getNoteByCode(@PathVariable int year, @RequestParam("code") String code){
@@ -76,10 +98,15 @@ public class NoteController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-//    @GetMapping("/find/{id}/{annee}/cours")
-//    public Double getMoy(@PathVariable Long id, @PathVariable int annee, @RequestParam String code){
-//        return noteService.calculMoyenneCours(id, code, annee);
-//    }
+//    Diplome
+    @GetMapping("/findDiplome/etudiant/{id}/parcours")
+    public ResponseEntity<Diplome> getDiplome(@PathVariable Long id, @RequestParam String label){
+        Diplome diplome = noteService.getDiplome(id, label);
+        if (diplome == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(diplome, HttpStatus.OK);
+    }
 
     //    Proces verbal d'un cours
     @GetMapping("/findPVCours/session/{session}/annee/{annee}/cours")

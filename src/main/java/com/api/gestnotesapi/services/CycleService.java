@@ -61,4 +61,8 @@ public class CycleService {
 
         return "Operation reussi avec succes";
     }
+
+    public Cycle getByValeur(int value){
+        return cycleRepo.findByValeur(value);
+    }
 }

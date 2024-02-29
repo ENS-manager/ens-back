@@ -71,6 +71,7 @@ com\api\gestnotesapi\entities\TYPECOURSENUM.class
 com\api\gestnotesapi\services\PVService.class
 com\api\gestnotesapi\services\Statistiques.class
 com\api\gestnotesapi\controllers\CycleController.class
+com\api\gestnotesapi\dto\NoteCoursDto.class
 com\api\gestnotesapi\services\NoteService.class
 com\api\gestnotesapi\repository\EvaluationRepo.class
 com\api\gestnotesapi\controllers\InscriptionController.class

@@ -1,6 +1,8 @@
 package com.api.gestnotesapi.services;
 
 import com.api.gestnotesapi.dto.Diplome;
+import com.api.gestnotesapi.dto.NoteCoursDto;
+import com.api.gestnotesapi.dto.NoteDto;
 import com.api.gestnotesapi.dto.PVGrandJuryResponse;
 import com.api.gestnotesapi.entities.*;
 import com.api.gestnotesapi.entities.Module;
@@ -484,7 +486,7 @@ public class NoteService {
             return null;
         }
         note.setIsFinal(true);
-
+        note.setSessions(1);
         Cours cours = coursService.getById(note.getCours().getCoursId());
         Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
 
@@ -854,9 +856,11 @@ public class NoteService {
     public Double convertirSurTrente(Double note){
         return (30*note)/20;
     }
+
     public Double convertirSurVingt(Double note){
         return Math.round(((20*note)/100)*100.0)/100.0;
     }
+
     public String decision(Double note){
         String decision = "";
         if (note == -1.0){
@@ -870,6 +874,7 @@ public class NoteService {
         }
         return decision;
     }
+
     public Double mgpPourMoyenneSurVingt(Double note){
         Double valeur = 0.0;
         if (note == -1.0){
@@ -1255,16 +1260,124 @@ public class NoteService {
         return false;
     }
 
-//    public Diplome getDiplome(Long id, String code){
-//        Etudiant etudiant = etudiantService.getById(id);
-//        Option option = optionService.getByCode(code);
-//        if (etudiant == null || option == null){
-//            return null;
-//        }
-//        Departement departement = departementService.getById(option.getDepartement().getId());
-//        if (departement == null){
-//            return null;
-//        }
-//
-//    }
+    public Diplome getDiplome(Long id, String label){
+        Etudiant etudiant = etudiantService.getById(id);
+        Parcours parcours = parcoursService.getByLabel(label);
+
+        if (etudiant == null || parcours == null){
+            return null;
+        }
+        int level = 0;
+        Niveau niveau = niveauService.getById(parcours.getNiveau().getId());
+        Option option = optionService.getById(parcours.getOption().getId());
+        if (niveau == null || option == null){
+            return null;
+        }
+        Departement departement = departementService.getById(option.getDepartement().getId());
+        if (departement == null){
+            return null;
+        }
+        level = niveau.getValeur();
+        Cycle cycle = new Cycle();
+        if (level == 3){
+            cycle = cycleService.getByValeur(1);
+        }else if (level == 5){
+            cycle = cycleService.getByValeur(2);
+        }
+        if (isValid(etudiant.getId(), option.getCode(), cycle.getValeur()) == false){
+            return null;
+        }
+        Diplome diplome = new Diplome();
+        diplome.setDateDeNaissance(etudiant.getDateDeNaissance());
+        diplome.setDepartementEnglish(departement.getEnglishDescription());
+        diplome.setDepartementFrench(departement.getFrenchDescription());
+        diplome.setNom(etudiant.getNom());
+        diplome.setMatricule(etudiant.getMatricule());
+        diplome.setLieuDeNaissance(etudiant.getLieuDeNaissance());
+        diplome.setOptionFrench(option.getDescriptionFrench());
+
+        return diplome;
+    }
+
+    public Boolean isValid(Long id, String code, int cycle){
+        Etudiant etudiant = etudiantService.getById(id);
+        Option option = optionService.getByCode(code);
+        Cycle cy = cycleService.getByValeur(cycle);
+        if (etudiant == null || option == null || cy == null){
+            return null;
+        }
+
+        List<Cours> coursList = coursService.getListCoursByOptionAndCycle(option.getCode(), cy.getValeur());
+        if (coursList.isEmpty()){
+            return null;
+        }
+        for (Cours cours : coursList){
+            Moyenne moyenne = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode());
+            if (moyenne == null || moyenne.getValeur() == null || moyenne.getValeur() < 10){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<NoteCoursDto> getListNoteEtudiantFromParcours(int year, CodeEva eva, String code, String label) {
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        Evaluation evaluation = evaluationService.getByCode(eva);
+        Cours cours = coursService.getByCode(code);
+        Parcours parcours = parcoursService.getByLabel(label);
+        if (anneeAcademique == null || evaluation == null || cours == null || parcours == null){
+            return null;
+        }
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+        if (etudiantList.isEmpty()){
+            return null;
+        }
+        List<NoteCoursDto> noteList = new ArrayList<>();
+        for (Etudiant etudiant : etudiantList){
+            Note note = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndActive(
+                    etudiant, anneeAcademique, evaluation, cours, true, 1, true
+            );
+            NoteCoursDto noteCoursDto = new NoteCoursDto();
+            noteCoursDto.setNom(etudiant.getNom());
+            noteCoursDto.setMatricule(etudiant.getMatricule());
+            if (note == null || note.getValeur() == null){
+                noteCoursDto.setValeur(null);
+            }else {
+                noteCoursDto.setValeur(note.getValeur());
+            }
+            noteList.add(noteCoursDto);
+        }
+        return noteList;
+    }
+
+    public List<NoteCoursDto> getListNoteEtudiantFromParcoursOnModule(int year, CodeEva eva, String code, String label) {
+        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+        Evaluation evaluation = evaluationService.getByCode(eva);
+        Module module = moduleService.getCode(code);
+        Parcours parcours = parcoursService.getByLabel(label);
+        if (anneeAcademique == null || evaluation == null || module == null || parcours == null){
+            return null;
+        }
+        Cours cours = coursService.getById(module.getCours().getCoursId());
+        List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
+        if (etudiantList.isEmpty() || cours == null){
+            return null;
+        }
+        List<NoteCoursDto> noteList = new ArrayList<>();
+        for (Etudiant etudiant : etudiantList){
+            Note note = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndModuleAndIsFinalAndSessionsAndActive(
+                    etudiant, anneeAcademique, evaluation, cours, module, false, 0, true
+            );
+            NoteCoursDto noteCoursDto = new NoteCoursDto();
+            noteCoursDto.setNom(etudiant.getNom());
+            noteCoursDto.setMatricule(etudiant.getMatricule());
+            if (note == null || note.getValeur() == null){
+                noteCoursDto.setValeur(null);
+            }else {
+                noteCoursDto.setValeur(note.getValeur());
+            }
+            noteList.add(noteCoursDto);
+        }
+        return noteList;
+    }
 }
