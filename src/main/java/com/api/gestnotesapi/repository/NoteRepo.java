@@ -35,4 +35,9 @@ public interface NoteRepo extends JpaRepository<Note, Long> {
     List<Note> findAllByEtudiantAndAnneeAcademiqueAndModule(Etudiant etudiant, AnneeAcademique anneeAcademique, Module module);
 
     Note findByEtudiantAndAnneeAcademiqueAndEvaluation(Etudiant etudiant, AnneeAcademique anneeAcademique, Evaluation evaluation);
+
+    Note findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndValeurAndActive(Etudiant etudiant, AnneeAcademique anneeAcademique, Evaluation evaluation, Cours cours, boolean b, Integer sessions, Double valeur, boolean b1);
+
+    Note findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndModuleAndIsFinalAndSessionsAndValeurAndActive(Etudiant etudiant, AnneeAcademique anneeAcademique, Evaluation evaluation, Cours cours, Module module, boolean b, Integer sessions, Double valeur, boolean b1);
+
 }
