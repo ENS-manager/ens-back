@@ -512,8 +512,8 @@ public class NoteService {
 //            note.setValeur(null);
 //        }
 
-        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndValeurAndActive(
-                etudiant, anneeAcademique, evaluation, cours, true, note.getSessions(), note.getValeur(), true
+        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndActive(
+                etudiant, anneeAcademique, evaluation, cours, true, note.getSessions(), true
         );
         if (exist == null){
             return noteRepo.save(note);
@@ -556,8 +556,8 @@ public class NoteService {
 //        if (note.getValeur() == null){
 //            note.setValeur(null);
 //        }
-        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndModuleAndIsFinalAndSessionsAndValeurAndActive(
-                etudiant, anneeAcademique, evaluation, cours, note.getModule(), true, note.getSessions(), note.getValeur(), true
+        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndModuleAndIsFinalAndSessionsAndActive(
+                etudiant, anneeAcademique, evaluation, cours, note.getModule(), true, note.getSessions(), true
         );
         if (exist == null){
             return noteRepo.save(note);
@@ -568,8 +568,8 @@ public class NoteService {
     public Note ajouterNoteExamen(Note note) {
         Evaluation evaluation = evaluationService.getByCode(CodeEva.EE);
         note.setEvaluation(evaluation);
-        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndValeurAndActive(
-                note.getEtudiant(), note.getAnneeAcademique(), evaluation, note.getCours(), true, note.getSessions(), note.getValeur(), true
+        Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndActive(
+                note.getEtudiant(), note.getAnneeAcademique(), evaluation, note.getCours(), true, note.getSessions(), true
         );
         if (exist == null){
             return noteRepo.save(note);
@@ -1259,6 +1259,29 @@ public class NoteService {
         }
         return false;
     }
+
+//    public Boolean isOk(String code, int year){
+//        Cours cours = coursService.getByCode(code);
+//        AnneeAcademique anneeAcademique = anneeAcademiqueService.getByYear(year);
+//        if (cours == null || anneeAcademique == null){
+//            return false;
+//        }
+////        TypeCours typeCours = typeCoursService.getById(cours.getTypecours().getId());
+////        if (typeCours == null){
+////            return false;
+////        }
+//        List<Note> noteList = noteRepo.findAllByCoursAndAnneeAcademiqueAndIsFinal(cours, anneeAcademique, true);
+//        if (noteList == null){
+//            return false;
+//        }
+//        for (Note note : noteList){
+//            Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+//            if (evaluation.getCode().equals(CodeEva.TPE) || evaluation.getCode().equals(CodeEva.CC) || evaluation.getCode().equals(CodeEva.TP)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public Diplome getDiplome(Long id, String label){
         Etudiant etudiant = etudiantService.getById(id);

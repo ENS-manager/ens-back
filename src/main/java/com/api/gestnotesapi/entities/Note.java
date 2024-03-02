@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "NOTE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "MODULE_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS", "VALEUR", "ACTIVE"}, name = "UNQ_NOTE_0"),
-        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS", "VALEUR", "ACTIVE"}, name = "UNQ_NOTE_0"),
+        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "MODULE_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS", "ACTIVE"}, name = "UNQ_NOTE_0"),
+        @UniqueConstraint(columnNames = {"ETUDIANT_ID", "ANNEEACADEMIQUE_ID", "COURS_ID", "EVALUATION_ID", "ISFINAL", "SESSIONS", "ACTIVE"}, name = "UNQ_NOTE_0"),
 })
 public class Note implements Serializable{
     @Id

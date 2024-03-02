@@ -55,7 +55,9 @@ public class PVService {
             return null;
         }
 
-        if (noteService.isOkCoursAvecEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false){
+        if (noteService.isOkCoursAvecEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false && haveAmodule(cours.getCode()) == true){
+            noteService.caculMoyennePondere(year, code);
+        }else if (noteService.isOkCoursAvecEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false && haveAmodule(cours.getCode()) == false){
             return null;
         }
 
@@ -193,16 +195,16 @@ public class PVService {
         if (cours == null || anneeAcademique == null || parcours == null) {
             return null;
         }
-        if (noteService.isOkCoursSansEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false){
+        if (noteService.isOkCoursSansEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false && haveAmodule(cours.getCode()) == true){
+            noteService.caculMoyennePondere(year, code);
+        }else if (noteService.isOkCoursSansEE(cours.getCode(), anneeAcademique.getNumeroDebut()) == false && haveAmodule(cours.getCode()) == true){
             return null;
         }
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
         if (etudiantList == null){
             return null;
         }
-        if (haveAmodule(cours.getCode()) == true){
-            noteService.caculMoyennePondere(year, code);
-        }
+//
         pvCoursSansEEResponseList.setCode(cours.getCode());
         pvCoursSansEEResponseList.setCredit(cours.getCredit().getValeur());
         pvCoursSansEEResponseList.setIntitule(cours.getIntitule());
