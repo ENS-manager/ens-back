@@ -526,14 +526,14 @@ public class NoteService {
         if (note == null) {
             return null;
         }
-        Cours cours = coursService.getById(note.getCours().getCoursId());
-        Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
+        Module module = moduleService.getById(note.getModule().getId());
         Etudiant etudiant = etudiantService.getById(note.getEtudiant().getId());
         AnneeAcademique anneeAcademique = anneeAcademiqueService.getById(note.getAnneeAcademique().getId());
-        if (etudiant == null || anneeAcademique == null) {
+        if (etudiant == null || anneeAcademique == null || module == null) {
             return null;
         }
-
+        Cours cours = coursService.getById(note.getModule().getCours().getCoursId());
+        Evaluation evaluation = evaluationService.getById(note.getEvaluation().getId());
         if (cours == null || evaluation == null) {
             return null;
         }
