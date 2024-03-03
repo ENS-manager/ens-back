@@ -77,7 +77,7 @@ public class NoteController {
     }
 
     //    Liste des notes des etudiants d'un parcours pour un module (pour une evaluation) et une anneeAcademique
-    @GetMapping("/findListeNoteEtudiantFromParcours/annee/{year}/evaluation/{code}/codeEC")
+    @GetMapping("/findListeNoteEtudiantFromParcours/annee/{year}/evaluation/{eva}/codeEC")
     public ResponseEntity<List<NoteCoursDto>> getListNoteModule(@PathVariable int year, @PathVariable CodeEva eva,
                                                 @RequestParam String code,@RequestParam String label) {
         List<NoteCoursDto> noteList = noteService.getListNoteEtudiantFromParcoursOnModule(year, eva, code, label);
