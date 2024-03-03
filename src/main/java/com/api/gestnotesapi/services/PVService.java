@@ -968,7 +968,7 @@ public class PVService {
                 coursDto.setIntitule(cours.getIntitule());
                 Moyenne moyenne = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode());
                 if (moyenne != null && moyenne.getValeur() != null){
-                    coursDto.setMoy(moyenne.getValeur());
+                    coursDto.setMoy((moyenne.getValeur()*100)/20);
                     if (cours.getNatureUE().equals(NatureUE.Fondamentale)){
                         if (moyenne.getValeur() >= 10){
                             moyCoursFond += moyenne.getValeur();
@@ -1012,17 +1012,17 @@ public class PVService {
                 c = moyCoursPro/nbPro;
             }
 
-            pvEtudiant.setMoyCoursComp(a);
-            pvEtudiant.setMoyCoursFond(b);
-            pvEtudiant.setMoyCoursPro(c);
+            pvEtudiant.setMoyCoursComp((a*100)/20);
+            pvEtudiant.setMoyCoursFond((b*100)/20);
+            pvEtudiant.setMoyCoursPro((c*100)/20);
 
             moyGen = (nbComp != 0 && nbFond != 0 && nbPro != 0) ? (a + b + c)/3 :
                     ((nbComp != 0 && nbFond != 0 && nbPro == 0) || (nbComp != 0 && nbFond == 0 && nbPro != 0)
                     || (nbComp == 0 && nbFond != 0 && nbPro != 0)) ? (a + b + c)/2 :
                             (nbComp == 0 || nbFond == 0 || nbPro == 0) ? (a + b + c) : null;
-            pvEtudiant.setMoyGene(moyGen);
+            pvEtudiant.setMoyGene((moyGen*100)/20);
             pvEtudiant.setDecision(noteService.decider(moyGen));
-            pvEtudiant.setMgp(noteService.mgpPourMoyenneSurCent(moyGen));
+            pvEtudiant.setMgp(noteService.mgpPourMoyenneSurVingt(moyGen));
 
 
             pvEtudiant.setCoursDtoList(coursDtoList);
@@ -1058,7 +1058,7 @@ public class PVService {
                     total += moyenne.getValeur();
                 }
             }
-            coursMoyClasse.setMoyClasse(Math.round((total/etudiantList.size())*100.0)/100.0);
+            coursMoyClasse.setMoyClasse(Math.round((((total*100)/20)/etudiantList.size())*100.0)/100.0);
             coursMoyClasse.setCode(cours.getCode());
             coursMoyClasseList.add(coursMoyClasse);
         }

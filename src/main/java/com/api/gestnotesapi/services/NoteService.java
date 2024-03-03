@@ -1384,7 +1384,6 @@ public class NoteService {
         Cours cours = coursService.getById(module.getCours().getCoursId());
         List<Etudiant> etudiantList = etudiantService.getListEtudiantByParcours(parcours.getLabel(), anneeAcademique.getNumeroDebut());
         if (etudiantList.isEmpty() || cours == null){
-            System.out.println("1");
             return null;
         }
         List<NoteCoursDto> noteList = new ArrayList<>();
