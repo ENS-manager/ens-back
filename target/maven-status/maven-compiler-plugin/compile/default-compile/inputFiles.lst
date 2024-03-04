@@ -20,6 +20,7 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\GENRE.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\CoursService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\ParcoursController.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\CoursFond.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\DepartementRepo.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\auth\AuthenticationRequest.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\InscriptionController.java
@@ -36,9 +37,11 @@ C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\m
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\controllers\SemestreController.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Module.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Cycle.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\CoursComp.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\SemestreService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\repository\TypeCoursRepo.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\entities\Etudiant.java
+C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\CoursPro.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\services\EvaluationService.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\auth\RegisterRequest.java
 C:\Users\koire-dev\Desktop\Projects\Gestion des notes\gestnotesapi-manager\src\main\java\com\api\gestnotesapi\dto\MoyenneCours.java

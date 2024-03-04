@@ -949,72 +949,103 @@ public class PVService {
             pvEtudiant.setLieuDeNaissance(etudiant.getLieuDeNaissance());
             pvEtudiant.setMatricule(etudiant.getMatricule());
             pvEtudiant.setNom(etudiant.getNom());
+            List<CoursFond> coursFondList = new ArrayList<>();
+            List<CoursComp> coursCompList = new ArrayList<>();
+            List<CoursPro> coursProList = new ArrayList<>();
+            Double moyGeneFond = 0.0;
+            Double mgpFond = 0.0;
+            Double moyGeneComp = 0.0;
+            Double mgpComp = 0.0;
+            Double moyGenePro = 0.0;
+            Double mgpPro = 0.0;
+
             Double moyGen = 0.0;
             int credit = 0;
-            Double moyCoursFond = 0.0;
+//            Double moyCoursFond = 0.0;
             int nbFond = 0;
             int creditCoursFond = 0;
-            Double moyCoursComp = 0.0;
+//            Double moyCoursComp = 0.0;
             int nbComp = 0;
             int creditCoursComp = 0;
-            Double moyCoursPro = 0.0;
+//            Double moyCoursPro = 0.0;
             int nbPro = 0;
             int creditCoursPro = 0;
-            List<CoursDto> coursDtoList = new ArrayList<>();
+//            List<CoursDto> coursDtoList = new ArrayList<>();
             for (Cours cours : coursList){
-                CoursDto coursDto = new CoursDto();
-                coursDto.setCode(cours.getCode());
-                coursDto.setCredit(cours.getCredit().getValeur());
-                coursDto.setIntitule(cours.getIntitule());
+//                CoursDto coursDto = new CoursDto();
+//                coursDto.setCode(cours.getCode());
+//                coursDto.setCredit(cours.getCredit().getValeur());
+//                coursDto.setIntitule(cours.getIntitule());
                 Moyenne moyenne = moyenneService.getLastMoyenneCoursFromEtudiant(etudiant.getId(), cours.getCode());
                 if (moyenne != null && moyenne.getValeur() != null){
-                    coursDto.setMoy((moyenne.getValeur()*100)/20);
+//                    coursDto.setMoy((moyenne.getValeur()*100)/20);
                     if (cours.getNatureUE().equals(NatureUE.Fondamentale)){
+                        CoursFond coursFond = new CoursFond();
+                        coursFond.setCode(cours.getCode());
+                        coursFond.setCredit(cours.getCredit().getValeur());
+                        coursFond.setMoyenne((moyenne.getValeur()*100)/20);
                         if (moyenne.getValeur() >= 10){
-                            moyCoursFond += moyenne.getValeur();
+                            moyGeneFond += moyenne.getValeur();
                             nbFond++;
                             creditCoursFond += cours.getCredit().getValeur();
                             moyGen += moyenne.getValeur();
                             credit++;
                         }
+                        coursFondList.add(coursFond);
                     }else if (cours.getNatureUE().equals(NatureUE.Complementaire)){
+                        CoursComp coursComp = new CoursComp();
+                        coursComp.setCode(cours.getCode());
+                        coursComp.setCredit(cours.getCredit().getValeur());
+                        coursComp.setMoyenne((moyenne.getValeur()*100)/20);
                         if (moyenne.getValeur() >= 10){
-                            moyCoursComp += moyenne.getValeur();
+                            moyGeneComp += moyenne.getValeur();
                             nbComp++;
                             creditCoursComp += cours.getCredit().getValeur();
                             moyGen += moyenne.getValeur();
                             credit++;
                         }
+                        coursCompList.add(coursComp);
                     }else if (cours.getNatureUE().equals(NatureUE.Professionnelle)){
+                        CoursPro coursPro = new CoursPro();
+                        coursPro.setCode(cours.getCode());
+                        coursPro.setCredit(cours.getCredit().getValeur());
+                        coursPro.setMoyenne((moyenne.getValeur()*100)/20);
                         if (moyenne.getValeur() >= 10){
-                            moyCoursPro += moyenne.getValeur();
+                            moyGenePro += moyenne.getValeur();
                             nbPro++;
                             creditCoursPro += cours.getCredit().getValeur();
                             moyGen += moyenne.getValeur();
                             credit++;
                         }
+                        coursProList.add(coursPro);
                     }
                 }
-                coursDtoList.add(coursDto);
+//                coursDtoList.add(coursDto);
             }
+            pvEtudiant.setCoursFondList(coursFondList);
+            pvEtudiant.setCoursCompList(coursCompList);
+            pvEtudiant.setCoursProList(coursProList);
             pvEtudiant.setCredit(credit);
-            pvEtudiant.setCreditCoursComp(creditCoursComp);
-            pvEtudiant.setCreditCoursFond(creditCoursFond);
-            pvEtudiant.setCreditCoursPro(creditCoursPro);
+            pvEtudiant.setCreditComp(creditCoursComp);
+            pvEtudiant.setCreditFond(creditCoursFond);
+            pvEtudiant.setCreditPro(creditCoursPro);
             Double a = 0.0;
             Double b = 0.0;
             Double c = 0.0;
             if (nbComp != 0){
-                a = moyCoursComp/nbComp;
+                a = moyGeneComp/nbComp;
             }if (nbFond != 0){
-                b = moyCoursFond/nbFond;
+                b = moyGeneFond/nbFond;
             }if (nbPro != 0){
-                c = moyCoursPro/nbPro;
+                c = moyGenePro/nbPro;
             }
 
-            pvEtudiant.setMoyCoursComp((a*100)/20);
-            pvEtudiant.setMoyCoursFond((b*100)/20);
-            pvEtudiant.setMoyCoursPro((c*100)/20);
+            pvEtudiant.setMoyGeneComp((a*100)/20);
+            pvEtudiant.setMgpComp(noteService.mgpPourMoyenneSurVingt(a));
+            pvEtudiant.setMoyGeneFond((b*100)/20);
+            pvEtudiant.setMgpFond(noteService.mgpPourMoyenneSurVingt(b));
+            pvEtudiant.setMoyGenePro((c*100)/20);
+            pvEtudiant.setMgpPro(noteService.mgpPourMoyenneSurVingt(c));
 
             moyGen = (nbComp != 0 && nbFond != 0 && nbPro != 0) ? (a + b + c)/3 :
                     ((nbComp != 0 && nbFond != 0 && nbPro == 0) || (nbComp != 0 && nbFond == 0 && nbPro != 0)
@@ -1024,8 +1055,6 @@ public class PVService {
             pvEtudiant.setDecision(noteService.decider(moyGen));
             pvEtudiant.setMgp(noteService.mgpPourMoyenneSurVingt(moyGen));
 
-
-            pvEtudiant.setCoursDtoList(coursDtoList);
             pvEtudiantList.add(pvEtudiant);
         }
         Stats statsList = new Stats();

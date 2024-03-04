@@ -31,6 +31,7 @@ com\api\gestnotesapi\services\EvaluationService.class
 com\api\gestnotesapi\services\CoursService.class
 com\api\gestnotesapi\repository\CycleRepo.class
 com\api\gestnotesapi\controllers\AnneeAcademiqueController.class
+com\api\gestnotesapi\dto\CoursFond.class
 com\api\gestnotesapi\entities\TypeCours.class
 com\api\gestnotesapi\services\CycleService.class
 com\api\gestnotesapi\controllers\SemestreController.class
@@ -56,6 +57,7 @@ com\api\gestnotesapi\dto\CoursDto.class
 com\api\gestnotesapi\controllers\ParcoursController.class
 com\api\gestnotesapi\controllers\DepartementController.class
 com\api\gestnotesapi\entities\Cours.class
+com\api\gestnotesapi\dto\CoursComp.class
 com\api\gestnotesapi\repository\TypeCoursRepo.class
 com\api\gestnotesapi\controllers\NiveauController.class
 com\api\gestnotesapi\dto\NoteDto.class
@@ -63,6 +65,7 @@ com\api\gestnotesapi\entities\Cycle.class
 com\api\gestnotesapi\controllers\ModuleController.class
 com\api\gestnotesapi\services\ParcoursService.class
 com\api\gestnotesapi\entities\Programme.class
+com\api\gestnotesapi\dto\CoursPro.class
 com\api\gestnotesapi\repository\AnneeAcademiqueRepo.class
 com\api\gestnotesapi\entities\Inscription.class
 com\api\gestnotesapi\controllers\TypeCoursController.class

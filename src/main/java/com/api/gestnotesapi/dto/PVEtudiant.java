@@ -16,17 +16,24 @@ public class PVEtudiant {
     private String nom;
     private String lieuDeNaissance;
     private LocalDate dateDeNaissance;
-    private Double moyGene;
-    private Double moyCoursFond;
-    private int creditCoursFond;
-    private Double moyCoursComp;
-    private int creditCoursComp;
-    private Double moyCoursPro;
-    private int creditCoursPro;
 
+    List<CoursFond> coursFondList;
+    private Double moyGeneFond;
+    private int creditFond;
+    private Double mgpFond;
+
+    List<CoursComp> coursCompList;
+    private Double moyGeneComp;
+    private int creditComp;
+    private Double mgpComp;
+
+    List<CoursPro> coursProList;
+    private Double moyGenePro;
+    private int creditPro;
+    private Double mgpPro;
+
+    private Double moyGene;
     private Double mgp;
     private int credit;
     private String decision;
-
-    private List<CoursDto> coursDtoList;
 }

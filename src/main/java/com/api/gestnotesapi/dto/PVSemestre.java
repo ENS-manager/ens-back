@@ -14,7 +14,8 @@ public class PVSemestre {
     private String anneeAca;
     private String option;
     private int niveau;
-    private Stats statsList;
     List<CoursMoyClasse> coursMoyClasseList;
     List<PVEtudiant> pvEtudiantList;
+    private Stats statsList;
+    private int effectif;
 }
