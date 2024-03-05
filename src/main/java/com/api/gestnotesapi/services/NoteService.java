@@ -1047,17 +1047,12 @@ public class NoteService {
 //        return noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluation(etudiant, anneeAcademique, evaluation).getValeur();
 //    }
 
-    public Note update(Long id, Note note) {
+    public Note update(Long id, Double value) {
         Note no = noteRepo.findById(id).orElse(null);
         if (no == null){
             return null;
         }
-        no.setValeur(note.getValeur());
-        no.setModule(note.getModule());
-        no.setCours(note.getCours());
-        no.setAnneeAcademique(note.getAnneeAcademique());
-        no.setEtudiant(note.getEtudiant());
-        no.setEvaluation(note.getEvaluation());
+        no.setValeur(value);
 
         return noteRepo.save(no);
     }
@@ -1364,8 +1359,10 @@ public class NoteService {
             noteCoursDto.setNom(etudiant.getNom());
             noteCoursDto.setMatricule(etudiant.getMatricule());
             if (note == null || note.getValeur() == null){
+                noteCoursDto.setId(note.getId());
                 noteCoursDto.setValeur(null);
             }else {
+                noteCoursDto.setId(note.getId());
                 noteCoursDto.setValeur(note.getValeur());
             }
             noteList.add(noteCoursDto);
@@ -1396,7 +1393,9 @@ public class NoteService {
             noteCoursDto.setMatricule(etudiant.getMatricule());
             if (note == null || note.getValeur() == null){
                 noteCoursDto.setValeur(null);
+                noteCoursDto.setId(note.getId());
             }else {
+                noteCoursDto.setId(note.getId());
                 noteCoursDto.setValeur(note.getValeur());
             }
             noteList.add(noteCoursDto);

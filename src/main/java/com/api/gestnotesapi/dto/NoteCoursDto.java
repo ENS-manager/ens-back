@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NoteCoursDto {
+    private Long id;
     private String nom;
     private String matricule;
     private Double valeur;

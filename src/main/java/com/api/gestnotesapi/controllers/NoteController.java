@@ -272,10 +272,10 @@ public class NoteController {
     }
 
     //    Modifier une Note
-    @PutMapping("/updateNote/{id}")
-    public ResponseEntity<Note> updateNote(@PathVariable("id") Long id, @RequestBody Note note){
+    @PutMapping("/updateNote/{id}/note")
+    public ResponseEntity<Note> updateNote(@PathVariable("id") Long id, @RequestParam Double value){
 
-        Note noteFromDb = noteService.update(id, note);
+        Note noteFromDb = noteService.update(id, value);
         if (noteFromDb == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
