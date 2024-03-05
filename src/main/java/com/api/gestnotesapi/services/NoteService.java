@@ -568,6 +568,7 @@ public class NoteService {
     public Note ajouterNoteExamen(Note note) {
         Evaluation evaluation = evaluationService.getByCode(CodeEva.EE);
         note.setEvaluation(evaluation);
+        note.setIsFinal(true);
         Note exist = noteRepo.findByEtudiantAndAnneeAcademiqueAndEvaluationAndCoursAndIsFinalAndSessionsAndActive(
                 note.getEtudiant(), note.getAnneeAcademique(), evaluation, note.getCours(), true, note.getSessions(), true
         );
