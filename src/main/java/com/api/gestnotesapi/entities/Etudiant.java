@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class Etudiant implements Serializable{
     private Long id;
 
     @Column(name = "DATEDENAISSANCE")
-    private LocalDate dateDeNaissance;
+    private Date dateDeNaissance;
 
     @Column(name = "EMAIL", unique = true)
     private String email;

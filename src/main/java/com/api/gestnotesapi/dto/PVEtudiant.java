@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ public class PVEtudiant {
     private String matricule;
     private String nom;
     private String lieuDeNaissance;
-    private LocalDate dateDeNaissance;
+    private Date dateDeNaissance;
 
     List<CoursFond> coursFondList;
     private Double moyGeneFond;

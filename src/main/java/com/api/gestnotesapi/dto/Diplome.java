@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class Diplome {
     private String nom;
     private String matricule;
     private String lieuDeNaissance;
-    private LocalDate dateDeNaissance;
+    private Date dateDeNaissance;
 
 //    Option
     private String optionFrench;

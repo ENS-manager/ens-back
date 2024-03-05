@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -13,7 +14,7 @@ import java.util.List;
 public class PVGrandJuryDto {
     String matricule;
     String nom;
-    LocalDate dateDeNaissance;
+    Date dateDeNaissance;
     String lieuDeNaissance;
     Double moyenneEcrite;
     Double moyenneGene;
